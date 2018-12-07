@@ -1,3 +1,32 @@
 <div class="p-5">
     <h1>Welcome on OVH Manager</h1>
+    <p>This is inside AngularJS</p>
+    <pre ng-hide="$ctrl.bar">foo=<span ng-bind="$ctrl.foo"></span></pre>
+    <hr />
+    <p>Those are React components :</p>
+    <react-component
+      component="$ctrl.react.Button"
+      bindings="{
+        onClick: $ctrl.reactButtonClicked
+      }"
+      >
+    </react-component>
+    <p>
+      <small>Click on me! My callback action will be executed in AngularJS event loop</small>
+    </p>
+    <react-component
+      component="$ctrl.react.Toggle"
+      bindings="{
+        onChange: $ctrl.reactToggleClicked
+      }"
+      >
+    </react-component>
+    <p>
+      <small>Click on me! My callback action will be executed in AngularJS event loop</small>
+    </p>
+    <react-component
+      component="$ctrl.react.Cards"
+      props="$ctrl.creditCard"
+      >
+    </react-component>
 </div>

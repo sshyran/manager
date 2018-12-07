@@ -4,7 +4,14 @@
   "license": "BSD-3-Clause",
   "main": "./dist/cjs/index.js",
   "dependencies": {
-    "oclazyload": "^1.1.0"
+    "oclazyload": "^1.1.0",
+    "rc-slider": "^8.6.4",
+    "react": "^15.0.0",
+    "react-credit-cards": "^0.7.0",
+    "react-dom": "^15.0.0",
+    "react-star-rating": "^1.4.2",
+    "react-svg-buttons": "^0.4.0",
+    "react-toggle": "^4.0.2"
   },
   "peerDependencies": {
     "@ovh-ux/manager-core": "^1.0.0-alpha.0",
@@ -17,6 +24,6 @@
     "prepare": "yarn run build"
   },
   "devDependencies": {
-    "@ovh-ux/component-rollup-config": "5.0.0-beta.1"
+    "@ovh-ux/component-rollup-config": "5.0.0-beta.2"
   }
 }
