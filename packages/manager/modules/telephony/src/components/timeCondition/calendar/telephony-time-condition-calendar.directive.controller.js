@@ -1,4 +1,4 @@
-angular.module('managerApp').controller('voipTimeConditionCalendarCtrl', function voipTimeConditionCalendarCtrl($q, $translate, $translatePartialLoader) {
+export default function voipTimeConditionCalendarCtrl($q) {
   const self = this;
 
   self.loading = {
@@ -20,24 +20,12 @@ angular.module('managerApp').controller('voipTimeConditionCalendarCtrl', functio
     =            INITIALIZATION            =
     ====================================== */
 
-  /* ----------  Load translations  ----------*/
-
-  function getTranslations() {
-    self.loading.translations = true;
-
-    $translatePartialLoader.addPart('../components/telecom/telephony/timeCondition/condition');
-    return $translate.refresh().finally(() => {
-      self.loading.translations = false;
-    });
-  }
-
   /* ----------  Component initialization  ----------*/
 
   self.$onInit = function $onInit() {
     self.loading.init = true;
 
     return $q.all([
-      getTranslations(),
       self.timeCondition.getConditions(),
     ]).finally(() => {
       self.loading.init = false;
@@ -45,4 +33,4 @@ angular.module('managerApp').controller('voipTimeConditionCalendarCtrl', functio
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

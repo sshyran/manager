@@ -1,7 +1,15 @@
-angular.module('managerApp').directive('voipTimeConditionCalendar', ($compile, $timeout, TucToast, VoipTimeConditionCondition, uiCalendarConfig, VOIP_TIMECONDITION_ORDERED_DAYS) => ({
+import angular from 'angular';
+import _ from 'lodash';
+import moment from 'moment';
+
+import calendarController from './telephony-time-condition-calendar.directive.controller';
+import calendarTemplate from './telephony-time-condition-calendar.html';
+
+export default /* @ngInject */ ($compile, $timeout, TucToast,
+  VoipTimeConditionCondition, uiCalendarConfig, VOIP_TIMECONDITION_ORDERED_DAYS) => ({
   restrict: 'EA',
-  templateUrl: 'components/telecom/telephony/timeCondition/calendar/telephony-time-condition-calendar.html',
-  controller: 'voipTimeConditionCalendarCtrl',
+  template: calendarTemplate,
+  controller: calendarController,
   controllerAs: '$ctrl',
   bindToController: true,
   scope: {
@@ -267,4 +275,4 @@ angular.module('managerApp').directive('voipTimeConditionCalendar', ($compile, $
       }
     });
   },
-}));
+});
