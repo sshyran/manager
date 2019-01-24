@@ -1,8 +1,10 @@
+import _ from 'lodash';
+
 /**
  *  This factory manages the conference feature of a number.
  *  This manages the conference of /telephony/{billingAccount}/number API.
  */
-angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant', (OvhApiTelephony) => {
+export default /* @ngInject */ (OvhApiTelephony) => {
   /*= ==================================
     =            CONSTRUCTOR            =
     =================================== */
@@ -51,7 +53,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
   /* ----------  FEATURE OPTIONS  ----------*/
 
   TelephonyGroupNumberConferenceParticipant.prototype
-    .setInfos = function (participantOptionsParam) {
+    .setInfos = function setInfos(participantOptionsParam) {
       const self = this;
       let participantOptions = participantOptionsParam;
 
@@ -68,25 +70,26 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
       return self;
     };
 
-  TelephonyGroupNumberConferenceParticipant.prototype.setEnergyEquivalent = function () {
-    const self = this;
+  TelephonyGroupNumberConferenceParticipant
+    .prototype.setEnergyEquivalent = function setEnergyEquivalent() {
+      const self = this;
 
-    switch (self.energy) {
-      case 450:
-        self.energyEquivalence = 1;
-        break;
-      case 150:
-        self.energyEquivalence = 3;
-        break;
-      case 0:
-        self.energyEquivalence = 4;
-        break;
-      default:
-        self.energyEquivalence = 2; // because default energy is 300 (equivalence of 2)
-    }
+      switch (self.energy) {
+        case 450:
+          self.energyEquivalence = 1;
+          break;
+        case 150:
+          self.energyEquivalence = 3;
+          break;
+        case 0:
+          self.energyEquivalence = 4;
+          break;
+        default:
+          self.energyEquivalence = 2; // because default energy is 300 (equivalence of 2)
+      }
 
-    return self;
-  };
+      return self;
+    };
 
   /* ----------  API CALLS  ----------*/
 
@@ -95,7 +98,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
      *
      *  @return {Promise} That return a Telephony Task
      */
-  TelephonyGroupNumberConferenceParticipant.prototype.mute = function () {
+  TelephonyGroupNumberConferenceParticipant.prototype.mute = function mute() {
     const self = this;
 
     return OvhApiTelephony.Conference().Participants().v6().mute({
@@ -110,7 +113,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
      *
      *  @return {Promise} That return a Telephony Task
      */
-  TelephonyGroupNumberConferenceParticipant.prototype.unmute = function () {
+  TelephonyGroupNumberConferenceParticipant.prototype.unmute = function unmute() {
     const self = this;
 
     return OvhApiTelephony.Conference().Participants().v6().unmute({
@@ -125,7 +128,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
      *
      *  @return {Promise} That return a Telephony Task
      */
-  TelephonyGroupNumberConferenceParticipant.prototype.kick = function () {
+  TelephonyGroupNumberConferenceParticipant.prototype.kick = function kick() {
     const self = this;
 
     return OvhApiTelephony.Conference().Participants().v6().kick({
@@ -140,7 +143,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
      *
      *  @return {Promise} That return a Telephony Task
      */
-  TelephonyGroupNumberConferenceParticipant.prototype.deaf = function () {
+  TelephonyGroupNumberConferenceParticipant.prototype.deaf = function deaf() {
     const self = this;
 
     return OvhApiTelephony.Conference().Participants().v6().deaf({
@@ -155,7 +158,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
      *
      *  @return {Promise} That return a Telephony Task
      */
-  TelephonyGroupNumberConferenceParticipant.prototype.undeaf = function () {
+  TelephonyGroupNumberConferenceParticipant.prototype.undeaf = function undeaf() {
     const self = this;
 
     return OvhApiTelephony.Conference().Participants().v6().undeaf({
@@ -170,7 +173,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
      *
      *  @return {Promise} That return a Telephony Task
      */
-  TelephonyGroupNumberConferenceParticipant.prototype.updateEnergy = function (value) {
+  TelephonyGroupNumberConferenceParticipant.prototype.updateEnergy = function updateEnergy(value) {
     const self = this;
 
     return OvhApiTelephony.Conference().Participants().v6().energy({
@@ -185,4 +188,4 @@ angular.module('managerApp').factory('TelephonyGroupNumberConferenceParticipant'
   /* -----  End of PROTOTYPE METHODS  ------*/
 
   return TelephonyGroupNumberConferenceParticipant;
-});
+};
