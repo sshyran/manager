@@ -106,7 +106,7 @@ export default /* @ngInject */ ($compile, $locale) => ({
       };
 
       element.attr({
-        'data-responsive-popover': "'components/telecom/telephony/scheduler/events/telephony-scheduler-events-popup.html'",
+        'data-responsive-popover': "'telephony/scheduler/events/telephony-scheduler-events-popup.html'",
         'data-popover-append-to-body': 'true', // as we will use a form and scheduler is wrapped into a form element, we will append popover to body.
         'data-popover-trigger': 'none',
         'data-popover-placement': 'auto left',

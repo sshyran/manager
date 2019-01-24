@@ -1,4 +1,7 @@
-angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function ($filter, telephonyScheduler) {
+import _ from 'lodash';
+import moment from 'moment';
+
+export default /* @ngInject */ function ($filter, telephonyScheduler) {
   const self = this;
 
   self.loading = {
@@ -41,7 +44,7 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
     return timeSlots;
   }
 
-  self.getAvailableEndSlots = function () {
+  self.getAvailableEndSlots = function getAvailableEndSlots() {
     const dateStartToMoment = moment(self.event.dateStart);
 
     if (moment(self.event.dateEnd).isSame(self.event.dateStart, 'day')) {
@@ -60,35 +63,35 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
 
   /* ----------  ngModel getterSetter options  ----------*/
 
-  self.parseFromDate = function (newDate) {
+  self.parseFromDate = function parseFromDate(newDate) {
     if (arguments.length) {
       return (self.event.dateStart = newDate); // eslint-disable-line
     }
     return $filter('date')(self.event.dateStart, 'shortDate');
   };
 
-  self.parseFromHour = function (newHour) {
+  self.parseFromHour = function parseToHour(newHour) {
     if (arguments.length) {
       return (self.event.dateStart = parseHourChange(self.event.dateStart, newHour)); // eslint-disable-line
     }
     return moment(self.event.dateStart).format('HH:mm');
   };
 
-  self.parseToDate = function (newDate) {
+  self.parseToDate = function parseToDate(newDate) {
     if (arguments.length) {
       return (self.event.dateEnd = newDate); // eslint-disable-line
     }
     return $filter('date')(self.event.dateEnd, 'shortDate');
   };
 
-  self.parseToHour = function (newHour) {
+  self.parseToHour = function parseToHour(newHour) {
     if (arguments.length) {
       return (self.event.dateEnd = parseHourChange(self.event.dateEnd, newHour)); // eslint-disable-line
     }
     return moment(self.event.dateEnd).format('HH:mm');
   };
 
-  self.rightPageDateModel = function (newDate) {
+  self.rightPageDateModel = function rightPageDateModel(newDate) {
     if (arguments.length) {
       if (self.model.specialEdit.attr === 'dateStart') {
         return (self.event.dateStart = newDate); // eslint-disable-line
@@ -100,12 +103,12 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
 
   /* ----------  category availablity  ----------*/
 
-  self.convertCategoryToSlot = function (category) {
+  self.convertCategoryToSlot = function convertCategoryToSlot(category) {
     return telephonyScheduler
       .convertCategoryToSlot(self.timeCondition, category || self.event.categories);
   };
 
-  self.isCategoryAvailable = function (category) {
+  self.isCategoryAvailable = function isCategoryAvailable(category) {
     return self.scheduler.isEventInExistingRange({
       categories: category,
       dateStart: self.event.dateStart,
@@ -127,11 +130,11 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
     =            ACTIONS            =
     =============================== */
 
-  self.manageCancel = function () {
+  self.manageCancel = function manageCancel() {
     self.onCancel()(self.event);
   };
 
-  self.manageSave = function () {
+  self.manageSave = function manageSave() {
     if (self.event.status === 'CREATING') {
       // add event to scheduler list
       // and flag event to be created by changing his status
@@ -140,7 +143,7 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
     self.onSave()(self.event);
   };
 
-  self.manageDelete = function () {
+  self.manageDelete = function manageDelete() {
     if (self.event.status === 'TOCREATE') {
       self.scheduler.removeEvent(self.event);
     } else {
@@ -150,12 +153,12 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
     self.onDelete()(self.event);
   };
 
-  self.manageDeleteConfirmation = function () {
+  self.manageDeleteConfirmation = function manageDeleteConfirmation() {
     self.model.specialEdit.attr = 'delete';
     self.model.specialEdit.move = true;
   };
 
-  self.manageOnDateChange = function () {
+  self.manageOnDateChange = function manageOnDateChange() {
     if (self.model.specialEdit.attr === 'dateStart') {
       // if start date is after end date, set end date to end of start date day.
       if (moment(self.event.dateStart).isAfter(self.event.dateEnd)) {
@@ -190,18 +193,18 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
     self.model.specialEdit.move = false;
   };
 
-  self.manageOnFromHourStart = function () {
+  self.manageOnFromHourStart = function manageOnFromHourStart() {
     if (moment(self.event.dateEnd).isSame(self.event.dateStart, 'day')) {
       self.event.dateEnd = moment(self.event.dateStart).add(15, 'minutes').toDate();
     }
   };
 
-  self.setAllDay = function (newValue) {
+  self.setAllDay = function setAllDay(newValue) {
     self.event.allDay = newValue;
     self.manageOnAllDayChange();
   };
 
-  self.manageOnAllDayChange = function () {
+  self.manageOnAllDayChange = function manageOnAllDayChange() {
     if (self.event.allDay) {
       self.event.dateStart = moment(self.event.dateStart).startOf('day').toDate();
       self.event.dateEnd = moment(self.event.dateEnd).endOf('day').toDate();
@@ -218,7 +221,7 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
     =            INITIALIZATION            =
     ====================================== */
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.loading.init = true;
     self.timeSlots = createTimeSlots();
 
@@ -237,4 +240,4 @@ angular.module('managerApp').controller('TelephonySchedulerEventsCtrl', function
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}
