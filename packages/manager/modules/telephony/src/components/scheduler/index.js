@@ -7,6 +7,7 @@ import constants from './telephony-scheduler.constant';
 import actions from './actions';
 import events from './events';
 import filters from './filters';
+import params from './params';
 
 import './telephony-scheduler.less';
 
@@ -16,6 +17,7 @@ angular.module(moduleName, [
   actions,
   events,
   filters,
+  params,
 ])
   .run(/* @ngTranslationsInject ./translations */)
   .constant('SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE', constants.SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE)

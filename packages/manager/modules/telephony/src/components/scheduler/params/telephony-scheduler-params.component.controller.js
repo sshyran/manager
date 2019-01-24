@@ -1,4 +1,4 @@
-angular.module('managerApp').controller('TelephonySchedulerParamsCtrl', function ($q, $translate, telephonyScheduler) {
+export default /* @ngInject */ function ($q, $translate, telephonyScheduler) {
   const self = this;
 
   self.loading = {
@@ -17,7 +17,7 @@ angular.module('managerApp').controller('TelephonySchedulerParamsCtrl', function
     });
   }
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.loading.init = true;
     self.telephonySchedulerCtrl.loading.params = true;
 
@@ -28,4 +28,4 @@ angular.module('managerApp').controller('TelephonySchedulerParamsCtrl', function
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

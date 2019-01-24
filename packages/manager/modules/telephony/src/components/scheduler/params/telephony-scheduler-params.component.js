@@ -1,9 +1,10 @@
-(function () {
-  angular.module('managerApp').component('telephonySchedulerParams', {
-    require: {
-      telephonySchedulerCtrl: '^telephonyScheduler',
-    },
-    templateUrl: 'components/telecom/telephony/scheduler/params/telephony-scheduler-params.html',
-    controller: 'TelephonySchedulerParamsCtrl',
-  });
-}());
+import controller from './telephony-scheduler-params.component.controller';
+import template from './telephony-scheduler-params.html';
+
+export default {
+  require: {
+    telephonySchedulerCtrl: '^telephonyScheduler',
+  },
+  template,
+  controller,
+};
