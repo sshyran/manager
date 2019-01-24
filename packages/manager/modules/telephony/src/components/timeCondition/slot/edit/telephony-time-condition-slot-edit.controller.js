@@ -1,4 +1,7 @@
-angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', function ($scope, $timeout, $filter, $q, TelephonyMediator) {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ function ($scope, $timeout, $filter, $q, TelephonyMediator) {
   const self = this;
 
   self.loading = {
@@ -24,7 +27,7 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
     =            HELPERS            =
     =============================== */
 
-  self.getServiceType = function (service) {
+  self.getServiceType = function getServiceType(service) {
     if (service.serviceType === 'alias') {
       return 'number';
     }
@@ -36,7 +39,7 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
     return service.isPlugNFax ? 'plug_fax' : 'line';
   };
 
-  self.filterGroupServices = function (group) {
+  self.filterGroupServices = function filterGroupServices(group) {
     if (self.model.slotType === 'number_ovh') {
       return group.getAllServices();
     }
@@ -44,14 +47,14 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
     return [].concat(group.lines, group.fax);
   };
 
-  self.filterDisplayedGroup = function (group) {
+  self.filterDisplayedGroup = function filterDisplayedGroup(group) {
     return $filter('tucPropsFilter')(self.filterGroupServices(group), {
       serviceName: self.model.search,
       description: self.model.search,
     }).length;
   };
 
-  self.isSlotValid = function () {
+  self.isSlotValid = function isSlotValid() {
     return !_.isEmpty(self.slot.number);
   };
 
@@ -63,12 +66,12 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
 
   /* ----------  SlotType actions  ----------*/
 
-  self.onSlotTypeBtnClick = function () {
+  self.onSlotTypeBtnClick = function onSlotNumberBtnClick() {
     self.popoverStatus.move = true;
     self.popoverStatus.rightPage = 'slotType';
   };
 
-  self.onSlotTypeChange = function () {
+  self.onSlotTypeChange = function onSlotTypeChange() {
     self.popoverStatus.move = false;
     self.model.search = '';
 
@@ -102,12 +105,12 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
 
   /* ----------  SlotNumber actions  ----------*/
 
-  self.onSlotNumberBtnClick = function () {
+  self.onSlotNumberBtnClick = function onSlotNumberBtnClick() {
     self.popoverStatus.move = true;
     self.popoverStatus.rightPage = 'number';
   };
 
-  self.onSlotNumberChange = function () {
+  self.onSlotNumberChange = function onSlotNumberChange() {
     self.popoverStatus.move = false;
 
     // refresh ovh number
@@ -116,11 +119,11 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
 
   /* ----------  Footer actions  ----------*/
 
-  self.onValidateBtnClick = function () {
+  self.onValidateBtnClick = function onValidateBtnClick() {
     self.slot.stopEdition();
   };
 
-  self.onCancelBtnClick = function () {
+  self.onCancelBtnClick = function onCancelBtnClick() {
     self.$onDestroy();
   };
 
@@ -130,7 +133,7 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
     =            INITIALIZATION            =
     ====================================== */
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.loading.init = true;
 
     return $q.allSettled([
@@ -159,9 +162,9 @@ angular.module('managerApp').controller('voipTimeConditionSlotEditCtrl', functio
     });
   };
 
-  self.$onDestroy = function () {
+  self.$onDestroy = function $onDestroy() {
     self.slot.stopEdition(true);
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

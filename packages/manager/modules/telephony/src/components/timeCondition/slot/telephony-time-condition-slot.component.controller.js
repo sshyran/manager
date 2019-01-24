@@ -1,4 +1,7 @@
-angular.module('managerApp').controller('voipTimeConditionSlotCtrl', class voipTimeConditionSlotCtrl {
+import _ from 'lodash';
+
+export default class voipTimeConditionSlotCtrl {
+  /* @ngInject */
   constructor($state) {
     this.$state = $state;
   }
@@ -10,4 +13,4 @@ angular.module('managerApp').controller('voipTimeConditionSlotCtrl', class voipT
 
     return _.get(this.slot, property, '');
   }
-});
+}

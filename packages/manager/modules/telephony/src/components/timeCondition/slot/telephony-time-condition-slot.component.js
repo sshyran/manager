@@ -1,20 +1,13 @@
-(function () {
-  angular.module('managerApp').run(($translate, asyncLoader) => {
-    asyncLoader.addTranslations(
-      import(`./translations/Messages_${$translate.use()}.xml`)
-        .catch(() => import(`./translations/Messages_${$translate.fallbackLanguage()}.xml`))
-        .then(x => x.default),
-    );
-    $translate.refresh();
-  });
-  angular.module('managerApp').component('voipTimeConditionSlot', {
-    templateUrl: 'components/telecom/telephony/timeCondition/slot/telephony-time-condition-slot.html',
-    bindings: {
-      slot: '=timeConditionSlot',
-      enableEdition: '<?slotEnableEdition',
-      hasPopover: '<?',
-      isScheduler: '<?',
-    },
-    controller: 'voipTimeConditionSlotCtrl',
-  });
-}());
+import template from './telephony-time-condition-slot.html';
+import controller from './telephony-time-condition-slot.component.controller';
+
+export default {
+  template,
+  bindings: {
+    slot: '=timeConditionSlot',
+    enableEdition: '<?slotEnableEdition',
+    hasPopover: '<?',
+    isScheduler: '<?',
+  },
+  controller,
+};
