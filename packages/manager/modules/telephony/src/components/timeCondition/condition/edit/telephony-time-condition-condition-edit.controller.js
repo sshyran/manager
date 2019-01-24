@@ -1,4 +1,8 @@
-angular.module('managerApp').controller('voipTimeConditionConditionCtrl', function ($scope, $timeout, $translate) {
+import _ from 'lodash';
+import angular from 'angular';
+import moment from 'moment';
+
+export default /* @ngInject */ function ($scope, $timeout, $translate) {
   const self = this;
 
   self.loading = {
@@ -71,7 +75,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     self.condition.timeTo = moment(self.model.timeTo).subtract(1, 'second').format('HH:mm:ss');
   }
 
-  self.isConditionValid = function () {
+  self.isConditionValid = function isConditionValid() {
     // reset overlap status
     self.overlapDetected = false;
 
@@ -100,7 +104,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     =            EVENTS            =
     ============================== */
 
-  self.onRepeaterBtnClick = function () {
+  self.onRepeaterBtnClick = function onRepeaterBtnClick() {
     self.popoverStatus.move = true;
     self.popoverStatus.rightPage = 'repeater';
   };
@@ -133,7 +137,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     self.repeatToDays = angular.copy(self.repeaterChoices);
   }
 
-  self.updateRepeaterChoices = function (dayActive, day) {
+  self.updateRepeaterChoices = function updateRepeaterChoices(dayActive, day) {
     if (day.id < 7) {
       handleDay(dayActive, day);
     } else {
@@ -143,7 +147,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     self.repeatToDays = _.sortBy(self.repeatToDays, 'id');
   };
 
-  self.moveBackward = function () {
+  self.moveBackward = function moveBackward() {
     const choices = self.repeatToDays
       .filter(({ active, id }) => active && ![7, 8].includes(id))
       .map(({ id }) => id);
@@ -166,19 +170,19 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
 
   /* ----------  Policy  ----------*/
 
-  self.onPolicyBtnClick = function () {
+  self.onPolicyBtnClick = function onPolicyBtnClick() {
     self.popoverStatus.move = true;
     self.popoverStatus.rightPage = 'policy';
   };
 
-  self.onSlotTypeChange = function () {
+  self.onSlotTypeChange = function onSlotTypeChange() {
     self.popoverStatus.move = false;
     self.activeSlot = getActiveSlot();
   };
 
   /* ----------  TimeFrom and TimeTo  ----------*/
 
-  self.onTimeFromChange = function () {
+  self.onTimeFromChange = function onTimeFromChange() {
     const timeToMoment = moment(self.model.timeTo);
     const isEndMidnight = timeToMoment.get('hour') === 0 && timeToMoment.get('minute') === 0;
     if (!isEndMidnight && self.model.timeFrom >= self.model.timeTo) {
@@ -187,7 +191,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     refreshTime();
   };
 
-  self.onTimeToChange = function () {
+  self.onTimeToChange = function onTimeToChange() {
     const timeToMoment = moment(self.model.timeTo);
     const isMidnight = timeToMoment.get('hour') === 0 && timeToMoment.get('minute') === 0;
     if (!isMidnight && self.model.timeFrom >= self.model.timeTo) {
@@ -198,7 +202,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
 
   /* ----------  Delete condition  ----------*/
 
-  self.onDeleteConfirmBtnClick = function () {
+  self.onDeleteConfirmBtnClick = function onDeleteConfirmBtnClick() {
     if (_.startsWith(self.condition.conditionId, 'tmp_')) {
       self.timeCondition.removeCondition(self.condition);
     } else {
@@ -209,7 +213,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
 
   /* ----------  Footer actions  ----------*/
 
-  self.onValidateBtnClick = function () {
+  self.onValidateBtnClick = function onValidateBtnClick() {
     let repeatToDays = [];
     if (self.condition.state === 'DRAFT') {
       self.condition.state = 'TO_CREATE';
@@ -223,11 +227,11 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     }
   };
 
-  self.onCancelBtnClick = function () {
+  self.onCancelBtnClick = function onCancelBtnClick() {
     self.$onDestroy();
   };
 
-  self.onDeleteBtnClick = function () {
+  self.onDeleteBtnClick = function onDeleteBtnClick() {
     self.popoverStatus.move = true;
     self.popoverStatus.rightPage = 'delete';
   };
@@ -238,7 +242,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     =            INITIALIZATION            =
     ====================================== */
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.loading.init = true;
 
     return $timeout(angular.noop, 99).then(() => {
@@ -275,7 +279,7 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
     });
   };
 
-  self.$onDestroy = function () {
+  self.$onDestroy = function $onDestroy() {
     if (self.condition.state === 'DRAFT') {
       self.timeCondition.removeCondition(self.condition);
     } else {
@@ -288,4 +292,4 @@ angular.module('managerApp').controller('voipTimeConditionConditionCtrl', functi
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}
