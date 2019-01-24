@@ -1,4 +1,6 @@
-angular.module('managerApp').controller('TelephonySchedulerFiltersCtrl', function (telephonyScheduler) {
+import _ from 'lodash';
+
+export default /* @ngInject */ function (telephonyScheduler) {
   const self = this;
   let categories = null;
 
@@ -12,7 +14,7 @@ angular.module('managerApp').controller('TelephonySchedulerFiltersCtrl', functio
     =            HELPERS            =
     =============================== */
 
-  self.convertCategoryToSlot = function (category) {
+  self.convertCategoryToSlot = function convertCategoryToSlot(category) {
     return telephonyScheduler
       .convertCategoryToSlot(self.telephonySchedulerCtrl.timeCondition, category);
   };
@@ -23,7 +25,7 @@ angular.module('managerApp').controller('TelephonySchedulerFiltersCtrl', functio
     =            ACTIONS            =
     =============================== */
 
-  self.toggleCategoryDisplay = function (category) {
+  self.toggleCategoryDisplay = function toggleCategoryDisplay(category) {
     _.set(category, 'active', !category.active);
 
     self.filters.categories = _.chain(categories).filter({
@@ -39,7 +41,7 @@ angular.module('managerApp').controller('TelephonySchedulerFiltersCtrl', functio
     =            INITIALIZATION            =
     ====================================== */
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.loading.init = true;
     self.telephonySchedulerCtrl.loading.filters = true;
 
@@ -65,4 +67,4 @@ angular.module('managerApp').controller('TelephonySchedulerFiltersCtrl', functio
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

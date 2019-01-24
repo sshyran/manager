@@ -1,13 +1,14 @@
-(function () {
-  angular.module('managerApp').component('telephonySchedulerFilters', {
-    require: {
-      telephonySchedulerCtrl: '^telephonyScheduler',
-    },
-    templateUrl: 'components/telecom/telephony/scheduler/filters/telephony-scheduler-filters.html',
-    controller: 'TelephonySchedulerFiltersCtrl',
-    bindings: {
-      filters: '=ngModel',
-      onChange: '&telephonySchedulerFiltersOnChange',
-    },
-  });
-}());
+import controller from './telephony-scheduler-filters.component.controller';
+import template from './telephony-scheduler-filters.html';
+
+export default {
+  require: {
+    telephonySchedulerCtrl: '^telephonyScheduler',
+  },
+  template,
+  controller,
+  bindings: {
+    filters: '=ngModel',
+    onChange: '&telephonySchedulerFiltersOnChange',
+  },
+};
