@@ -1,4 +1,7 @@
-angular.module('managerApp').controller('TelephonySchedulerExportCtrl', function ($timeout, $uibModalInstance, modalData, telephonyScheduler, SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE) {
+import _ from 'lodash';
+
+export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData,
+  telephonyScheduler, SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE) {
   const self = this;
   let categories = null;
 
@@ -19,7 +22,7 @@ angular.module('managerApp').controller('TelephonySchedulerExportCtrl', function
     =            HELPERS            =
     =============================== */
 
-  self.convertCategoryToSlot = function (category) {
+  self.convertCategoryToSlot = function convertCategoryToSlot(category) {
     return _.find(self.timeCondition.slots, {
       name: _.get(SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE, category),
     });
@@ -31,15 +34,15 @@ angular.module('managerApp').controller('TelephonySchedulerExportCtrl', function
     =            ACTIONS            =
     =============================== */
 
-  self.cancel = function (message) {
+  self.cancel = function cancel(message) {
     return $uibModalInstance.dismiss(message);
   };
 
-  self.close = function (datas) {
+  self.close = function close(datas) {
     return $uibModalInstance.close(datas);
   };
 
-  self.startExport = function () {
+  self.startExport = function startExport() {
     self.loading.export = true;
 
     return self.scheduler.getEvents().then(() => {
@@ -110,4 +113,4 @@ angular.module('managerApp').controller('TelephonySchedulerExportCtrl', function
   /* -----  End of INITIALIZATION  ------*/
 
   init();
-});
+}

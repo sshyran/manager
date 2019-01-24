@@ -3,11 +3,16 @@ import voipScheduler from './telephony-scheduler.factory';
 import voipSchedulerDirective from './telephony-scheduler.directive';
 import voipSchedulerService from './telephony-scheduler.service';
 import constants from './telephony-scheduler.constant';
+
+import actions from './actions';
 import events from './events';
+
+import './telephony-scheduler.less';
 
 const moduleName = 'ovhManagerTelephonyScheduler';
 
 angular.module(moduleName, [
+  actions,
   events,
 ])
   .run(/* @ngTranslationsInject ./translations */)

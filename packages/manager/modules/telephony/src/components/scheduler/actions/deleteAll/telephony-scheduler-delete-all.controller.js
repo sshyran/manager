@@ -1,5 +1,6 @@
-angular.module('managerApp').controller('TelephonySchedulerDeleteAllCtrl', class TelephonySchedulerDeleteAllCtrl {
+export default class TelephonySchedulerDeleteAllCtrl {
+  /* @ngInject */
   constructor($uibModalInstance) {
     this.$uibModalInstance = $uibModalInstance;
   }
-});
+}
