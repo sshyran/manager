@@ -1,4 +1,7 @@
-angular.module('managerApp').factory('TelephonyGroupNumberEasyHunting', ($q, VoipScheduler, VoipTimeCondition, OvhApiTelephony) => {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ ($q, VoipScheduler, VoipTimeCondition, OvhApiTelephony) => {
   /*= ==================================
     =            CONSTRUCTOR            =
     =================================== */
@@ -45,7 +48,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberEasyHunting', ($q, Voi
 
   /* ----------  FEATURE OPTIONS  ----------*/
 
-  TelephonyGroupNumberEasyHunting.prototype.setOptions = function () {
+  TelephonyGroupNumberEasyHunting.prototype.setOptions = function setOptions() {
     const self = this;
 
     return self;
@@ -53,7 +56,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberEasyHunting', ($q, Voi
 
   /* ----------  HELPERS  ----------*/
 
-  TelephonyGroupNumberEasyHunting.prototype.isCcs = function () {
+  TelephonyGroupNumberEasyHunting.prototype.isCcs = function isCcs() {
     const self = this;
 
     return self.featureType === 'contactCenterSolution';
@@ -61,7 +64,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberEasyHunting', ($q, Voi
 
   /* ----------  EDITION  ----------*/
 
-  TelephonyGroupNumberEasyHunting.prototype.startEdition = function () {
+  TelephonyGroupNumberEasyHunting.prototype.startEdition = function startEdition() {
     const self = this;
 
     self.inEdition = true;
@@ -153,4 +156,4 @@ angular.module('managerApp').factory('TelephonyGroupNumberEasyHunting', ($q, Voi
   /* -----  End of PROTOTYPE METHODS  ------*/
 
   return TelephonyGroupNumberEasyHunting;
-});
+};

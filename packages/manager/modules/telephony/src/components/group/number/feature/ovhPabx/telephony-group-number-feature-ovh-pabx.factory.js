@@ -1,4 +1,7 @@
-angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ (
   $q, VoipScheduler, TelephonyGroupNumberOvhPabxDialplan, TelephonyGroupNumberOvhPabxSound,
   TelephonyGroupNumberOvhPabxMenu, TelephonyGroupNumberOvhPabxTts, OvhApiTelephony,
 ) => {
@@ -57,7 +60,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  FEATURE OPTIONS  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.setOptions = function () {
+  TelephonyGroupNumberOvhPabx.prototype.setOptions = function setOptions() {
     const self = this;
 
     return self;
@@ -65,13 +68,13 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  HELPERS  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.isCcs = function () {
+  TelephonyGroupNumberOvhPabx.prototype.isCcs = function isCcs() {
     const self = this;
 
     return self.featureType === 'contactCenterSolutionExpert';
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.isTtsAvailable = function () {
+  TelephonyGroupNumberOvhPabx.prototype.isTtsAvailable = function isTtsAvailable() {
     const self = this;
 
     return self.isCcs();
@@ -79,7 +82,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  EDITION  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.startEdition = function () {
+  TelephonyGroupNumberOvhPabx.prototype.startEdition = function startEdition() {
     const self = this;
 
     self.inEdition = true;
@@ -90,7 +93,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     return self;
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.stopEdition = function (cancel) {
+  TelephonyGroupNumberOvhPabx.prototype.stopEdition = function stopEdition(cancel) {
     const self = this;
 
     if (self.saveForEdition && cancel) {
@@ -103,7 +106,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     return self;
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.hasChange = function (attr) {
+  TelephonyGroupNumberOvhPabx.prototype.hasChange = function hasChange(attr) {
     const self = this;
 
     if (!self.inEdition || !self.saveForEdition) {
@@ -119,7 +122,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  SCHEDULER  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.getScheduler = function () {
+  TelephonyGroupNumberOvhPabx.prototype.getScheduler = function getScheduler() {
     const self = this;
 
     if (!self.scheduler) {
@@ -134,7 +137,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  DIALPLAN  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.getDialplans = function () {
+  TelephonyGroupNumberOvhPabx.prototype.getDialplans = function getDialplans() {
     const self = this;
 
     return OvhApiTelephony.OvhPabx().Dialplan().v6()
@@ -160,7 +163,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
         )));
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.addDialplan = function (dialplanOptions) {
+  TelephonyGroupNumberOvhPabx.prototype.addDialplan = function addDialplan(dialplanOptions) {
     const self = this;
     let dialplan = _.find(self.dialplans, {
       dialplanId: dialplanOptions.dialplanId,
@@ -182,7 +185,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
   /**
      *  Remove dialplan from list without calling API.
      */
-  TelephonyGroupNumberOvhPabx.prototype.removeDialplan = function (dialplan) {
+  TelephonyGroupNumberOvhPabx.prototype.removeDialplan = function removeDialplan(dialplan) {
     const self = this;
 
     _.remove(self.dialplans, dialplan);
@@ -192,7 +195,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  SOUNDS  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.getSound = function (soundId) {
+  TelephonyGroupNumberOvhPabx.prototype.getSound = function getSound(soundId) {
     const self = this;
 
     return _.find(self.sounds, {
@@ -200,7 +203,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     });
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.getSounds = function () {
+  TelephonyGroupNumberOvhPabx.prototype.getSounds = function getSounds() {
     const self = this;
 
     return OvhApiTelephony.OvhPabx().Sound().v6()
@@ -235,7 +238,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
         )));
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.addSound = function (soundOptions) {
+  TelephonyGroupNumberOvhPabx.prototype.addSound = function addSound(soundOptions) {
     const self = this;
     let sound = null;
 
@@ -261,7 +264,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
   /**
      *  Remove sound from list.
      */
-  TelephonyGroupNumberOvhPabx.prototype.removeSound = function (sound) {
+  TelephonyGroupNumberOvhPabx.prototype.removeSound = function removeSound(sound) {
     const self = this;
 
     _.remove(self.sounds, sound);
@@ -271,7 +274,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  MENUS  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.getMenu = function (menu) {
+  TelephonyGroupNumberOvhPabx.prototype.getMenu = function getMenu(menu) {
     const self = this;
     const menuId = menu.constructor.name === 'TelephonyGroupNumberOvhPabxMenu' ? menu.id : menu;
 
@@ -280,7 +283,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     });
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.getMenus = function (loadEntries) {
+  TelephonyGroupNumberOvhPabx.prototype.getMenus = function getMenus(loadEntries) {
     const self = this;
 
     return OvhApiTelephony.OvhPabx().Menu().v6()
@@ -320,7 +323,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
         }));
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.addMenu = function (menuOptionsParam) {
+  TelephonyGroupNumberOvhPabx.prototype.addMenu = function addMenu(menuOptionsParam) {
     const self = this;
     let menu = null;
     let menuOptions = menuOptionsParam;
@@ -351,7 +354,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
   /**
      *  Remove menu from list.
      */
-  TelephonyGroupNumberOvhPabx.prototype.removeMenu = function (menu) {
+  TelephonyGroupNumberOvhPabx.prototype.removeMenu = function removeMenu(menu) {
     const self = this;
 
     _.remove(self.menus, menu);
@@ -367,7 +370,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
      *  Create factory and add instance of the factory inside queues array.
      */
 
-  TelephonyGroupNumberOvhPabx.prototype.getQueue = function (queueId) {
+  TelephonyGroupNumberOvhPabx.prototype.getQueue = function getQueue(queueId) {
     const self = this;
 
     return _.find(self.queues, {
@@ -375,7 +378,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     });
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.getQueues = function () {
+  TelephonyGroupNumberOvhPabx.prototype.getQueues = function getQueues() {
     const self = this;
 
     return OvhApiTelephony.OvhPabx().Hunting().Queue().v6()
@@ -406,7 +409,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  TTS  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.getSingleTts = function (ttsId) {
+  TelephonyGroupNumberOvhPabx.prototype.getSingleTts = function getSingleTts(ttsId) {
     const self = this;
 
     return _.find(self.tts, {
@@ -414,7 +417,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     });
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.getTts = function () {
+  TelephonyGroupNumberOvhPabx.prototype.getTts = function getTts() {
     const self = this;
 
     return OvhApiTelephony.OvhPabx().Tts().v6()
@@ -441,7 +444,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
         )));
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.addTts = function (ttsOptionsParam) {
+  TelephonyGroupNumberOvhPabx.prototype.addTts = function addTts(ttsOptionsParam) {
     const self = this;
     let ttsOptions = ttsOptionsParam;
     let tts = null;
@@ -469,7 +472,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
     return tts;
   };
 
-  TelephonyGroupNumberOvhPabx.prototype.removeTts = function (tts) {
+  TelephonyGroupNumberOvhPabx.prototype.removeTts = function removeTts(tts) {
     const self = this;
 
     _.remove(self.tts, {
@@ -481,13 +484,13 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
 
   /* ----------  HELPERS  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.inPendingState = function () {
+  TelephonyGroupNumberOvhPabx.prototype.inPendingState = function inPendingState() {
     return false;
   };
 
   /* ----------  INITIALIZATION  ----------*/
 
-  TelephonyGroupNumberOvhPabx.prototype.init = function (resetCache) {
+  TelephonyGroupNumberOvhPabx.prototype.init = function init(resetCache) {
     const self = this;
 
     if (resetCache) {
@@ -503,4 +506,4 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabx', (
   /* -----  End of PROTOTYPE METHODS  ------*/
 
   return TelephonyGroupNumberOvhPabx;
-});
+};
