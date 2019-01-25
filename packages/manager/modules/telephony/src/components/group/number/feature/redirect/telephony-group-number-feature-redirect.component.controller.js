@@ -1,4 +1,7 @@
-angular.module('managerApp').controller('TelephonyNumberRedirectCtrl', function ($q, $translate, TelephonyMediator, tucVoipServiceTask, TucToast) {
+import _ from 'lodash';
+
+export default /* @ngInject */ function ($q, $translate,
+  TelephonyMediator, tucVoipServiceTask, TucToast) {
   const self = this;
   let selectedService = null;
 
@@ -99,12 +102,12 @@ angular.module('managerApp').controller('TelephonyNumberRedirectCtrl', function 
     =            EVENTS            =
     ============================== */
 
-  self.onDestinationChange = function () {
+  self.onDestinationChange = function onDestinationChange() {
     const isPending = self.numberCtrl.number.feature.destination === 'pending';
     self.displayHelpers.serviceChoicePopoverOptions.popoverIsOpen = isPending;
   };
 
-  self.onFeatureStartEdit = function () {
+  self.onFeatureStartEdit = function onFeatureStartEdit() {
     if (!self.numberCtrl.number.feature.destination
       && self.displayHelpers.hasOtherGroups && self.displayHelpers.currentGroupServiceCount > 4) {
       self.displayHelpers.serviceChoicePopoverOptions.popoverIsOpen = true;
@@ -114,17 +117,17 @@ angular.module('managerApp').controller('TelephonyNumberRedirectCtrl', function 
     return refreshAvailableServices();
   };
 
-  self.onFeatureStopEdit = function () {
+  self.onFeatureStopEdit = function onFeatureStopEdit() {
     self.destinationService = getDestinationService();
   };
 
-  self.manageCancelChoice = function () {
+  self.manageCancelChoice = function manageCancelChoice() {
     self.numberCtrl.number.feature.destination = selectedService ? selectedService.serviceName
       : self.numberCtrl.number.feature.stopEdition(true).startEdition().destination;
     return refreshAvailableServices();
   };
 
-  self.manageValidateChoice = function (service) {
+  self.manageValidateChoice = function manageValidateChoice(service) {
     self.numberCtrl.number.feature.destination = service.serviceName;
     return self.numberCtrl.saveNumber();
   };
@@ -138,7 +141,7 @@ angular.module('managerApp').controller('TelephonyNumberRedirectCtrl', function 
   /**
      *  Component initialization
      */
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.numberCtrl.loading.feature = true;
 
     // set save feature function
@@ -168,7 +171,7 @@ angular.module('managerApp').controller('TelephonyNumberRedirectCtrl', function 
     });
   };
 
-  self.$onDestroy = function () {
+  self.$onDestroy = function $onDestroy() {
     // stop edition of the feature
     self.numberCtrl.number.feature.stopEdition(true);
 
@@ -177,4 +180,4 @@ angular.module('managerApp').controller('TelephonyNumberRedirectCtrl', function 
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

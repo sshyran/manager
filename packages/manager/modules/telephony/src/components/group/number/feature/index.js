@@ -5,11 +5,13 @@ import easyPabxFactory from './easyPabx/telephony-group-number-feature-easy-pabx
 import miniPabxFactory from './miniPabx/telephony-group-number-feature-easy-pabx.factory';
 
 import conference from './conference';
+import redirect from './redirect';
 
 const moduleName = 'ovhManagerTelephonyGroupNumberFeature';
 
 angular.module(moduleName, [
   conference,
+  redirect,
 ])
   .factory('TelephonyGroupNumberFeature', featureFactory)
   .factory('TelephonyGroupNumberEasyHunting', easyHuntingFactory)
