@@ -1,4 +1,8 @@
-angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtensionCtrl', function ($q, $scope, $timeout, $translate, TucToast, TUC_UI_SORTABLE_HELPERS) {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
+  TucToast, TUC_UI_SORTABLE_HELPERS) {
   const self = this;
   let redrawInterval = null;
 
@@ -29,11 +33,11 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     =            HELPERS            =
     =============================== */
 
-  self.isLoading = function () {
+  self.isLoading = function isLoading() {
     return self.loading.init || (self.extension && (['OK', 'DELETE_PENDING'].indexOf(self.extension.status) === -1 || _.some(self.extension.screenListConditions, screenListCondition => ['CREATING', 'DELETING'].indexOf(screenListCondition.state) !== -1) || _.some(self.extension.timeConditions, timeCondition => ['CREATING', 'DELETING'].indexOf(timeCondition.state) !== -1)));
   };
 
-  self.startRedraw = function () {
+  self.startRedraw = function startRedraw() {
     if (!redrawInterval) {
       redrawInterval = setInterval(() => {
         self.numberCtrl.jsplumbInstance.customRepaint();
@@ -41,7 +45,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     }
   };
 
-  self.stopRedraw = function () {
+  self.stopRedraw = function stopRedraw() {
     if (redrawInterval) {
       clearInterval(redrawInterval);
       redrawInterval = null;
@@ -51,19 +55,19 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     }
   };
 
-  self.getExtensionAttr = function (attr) {
+  self.getExtensionAttr = function getExtensionAttr(attr) {
     return _.get(self.extension.inEdition ? self.extension.saveForEdition : self.extension, attr);
   };
 
-  self.extensionHasConditions = function () {
+  self.extensionHasConditions = function extensionHasConditions() {
     return self.getExtensionAttr('schedulerCategory') || self.getExtensionAttr('screenListType') || self.getExtensionAttr('timeConditions').length;
   };
 
-  self.getRuleAttr = function (attr, rule) {
+  self.getRuleAttr = function getRuleAttr(attr, rule) {
     return _.get(rule.inEdition ? rule.saveForEdition : rule, attr);
   };
 
-  self.getRuleMenu = function (rule) {
+  self.getRuleMenu = function getRuleMenu(rule) {
     const ruleActionParam = self.getRuleAttr('actionParam', rule);
     if (_.isNumber(ruleActionParam)) {
       return self.numberCtrl.number.feature.getMenu(ruleActionParam);
@@ -71,11 +75,11 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     return rule.ivrMenu;
   };
 
-  self.getRulesCount = function () {
+  self.getRulesCount = function getRuleMenu() {
     return self.extension.rules.length + self.extension.negativeRules.length;
   };
 
-  self.getEndpointUuid = function () {
+  self.getEndpointUuid = function getEndpointUuid() {
     return self.uuid;
   };
 
@@ -92,7 +96,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
      *  Used by telephonyNumberOvhPabxDialplanExtensionRuleEditCtrl when a rule edition is canceled.
      *  Used by telephonyNumberOvhPabxDialplanExtensionRuleCtrl when a rule is deleted.
      */
-  self.checkForDisplayHelpers = function () {
+  self.checkForDisplayHelpers = function checkForDisplayHelpers() {
     if (!self.extension.rules.length) {
       self.displayHelpers.collapsed = true;
       self.displayHelpers.expanded = false;
@@ -105,7 +109,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     =            ACTIONS            =
     =============================== */
 
-  self.onExtensionOutsideClick = function () {
+  self.onExtensionOutsideClick = function onExtensionOutsideClick() {
     if (self.extension.status !== 'DELETE_PENDING') {
       return;
     }
@@ -116,7 +120,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  ACTIVATE/DESACTIVATE  ----------*/
 
-  self.toggleEnabledState = function () {
+  self.toggleEnabledState = function toggleEnabledState() {
     self.loading.save = true;
 
     const actionPromise = self.extension.enabled
@@ -129,7 +133,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  ADD RULE  ----------*/
 
-  self.addRule = function (isNegative) {
+  self.addRule = function addRule(isNegative) {
     if (!isNegative) {
       self.displayHelpers.collapsed = false;
       self.displayHelpers.expanded = true;
@@ -148,7 +152,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  MANAGE CONDITIONS  ----------*/
 
-  self.onManageConditionBtnClick = function () {
+  self.onManageConditionBtnClick = function onManageConditionBtnClick() {
     self.popoverStatus.isOpen = true;
   };
 
@@ -157,7 +161,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   /**
      *  Call API to delete extension
      */
-  self.onConfirmDeleteBtnClick = function () {
+  self.onConfirmDeleteBtnClick = function onConfirmDeleteBtnClick() {
     return self.extension.remove().then(() => {
       // remove extension from list
       self.dialplan.removeExtension(self.extension);
@@ -179,24 +183,24 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  COLLAPSE  ---------- */
 
-  self.onExtensionCollapsed = function (isNegative) {
+  self.onExtensionCollapsed = function onExtensionCollapsed(isNegative) {
     self.numberCtrl.jsplumbInstance.customRepaint().then(() => {
       setConnectionVisibility(true);
       _.set(self.displayHelpers, isNegative ? 'negativeExpanded' : 'expanded', false);
     });
   };
 
-  self.onExtensionExpanded = function () {
+  self.onExtensionExpanded = function onExtensionExpanded() {
     self.numberCtrl.jsplumbInstance.customRepaint().then(() => {
       setConnectionVisibility(true);
     });
   };
 
-  self.onExtensionCollapsing = function () {
+  self.onExtensionCollapsing = function onExtensionCollapsing() {
     setConnectionVisibility(false);
   };
 
-  self.onExtensionExpanding = function (isNegative) {
+  self.onExtensionExpanding = function onExtensionExpanding(isNegative) {
     _.set(self.displayHelpers, isNegative ? 'negativeExpanded' : 'expanded', true);
   };
 
@@ -206,7 +210,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     =            INITIALIZATION            =
     ====================================== */
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     let sortInterval = null;
     let initPromise = $q.when(true);
     const sortableOptions = {
@@ -281,4 +285,4 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

@@ -1,13 +1,14 @@
-(function () {
-  angular.module('managerApp').component('telephonyNumberOvhPabxDialplan', {
-    templateUrl: 'components/telecom/telephony/group/number/feature/ovhPabx/dialplan/telephony-group-number-feature-ovh-pabx-dialplan.html',
-    bindings: {
-      dialplan: '=telephonyNumberOvhPabxDialplan',
-    },
-    require: {
-      numberCtrl: '^^telephonyNumber',
-      ovhPabxCtrl: '^^telephonyNumberOvhPabx',
-    },
-    controller: 'telephonyNumberOvhPabxDialplanCtrl',
-  });
-}());
+import template from './telephony-group-number-feature-ovh-pabx-dialplan.html';
+import controller from './telephony-group-number-feature-ovh-pabx-dialplan.component.controller';
+
+export default {
+  template,
+  bindings: {
+    dialplan: '=telephonyNumberOvhPabxDialplan',
+  },
+  require: {
+    numberCtrl: '^^telephonyNumber',
+    ovhPabxCtrl: '^^telephonyNumberOvhPabx',
+  },
+  controller,
+};
