@@ -182,7 +182,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
     const importModal = $uibModal.open({
       animation: true,
       backdrop: 'static',
-      templateUrl: 'components/telecom/telephony/scheduler/actions/import/telephony-scheduler-import.html',
+      templateUrl: 'telephony/scheduler/actions/import/telephony-scheduler-import.html',
       controller: 'TelephonySchedulerImportCtrl',
       controllerAs: 'SchedulerImportCtrl',
       resolve: {
@@ -230,7 +230,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
     const exportModal = $uibModal.open({
       animation: true,
       backdrop: 'static',
-      templateUrl: 'components/telecom/telephony/scheduler/actions/export/telephony-scheduler-export.html',
+      templateUrl: 'telephony/scheduler/actions/export/telephony-scheduler-export.html',
       controller: 'TelephonySchedulerExportCtrl',
       controllerAs: 'SchedulerExportCtrl',
       resolve: {
@@ -260,7 +260,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
     const bankHolidaysModal = $uibModal.open({
       animation: true,
       backdrop: 'static',
-      templateUrl: 'components/telecom/telephony/scheduler/actions/bankHolidays/telephony-scheduler-bank-holidays.html',
+      templateUrl: 'telephony/scheduler/actions/bankHolidays/telephony-scheduler-bank-holidays.html',
       controller: 'TelephonySchedulerBankHolidaysCtrl',
       controllerAs: 'SchedulerHolidaysCtrl',
       resolve: {
@@ -296,7 +296,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
     self.loading.deleteAll = true;
 
     $uibModal.open({
-      templateUrl: 'components/telecom/telephony/scheduler/actions/deleteAll/telephony-scheduler-delete-all.html',
+      templateUrl: 'telephony/scheduler/actions/deleteAll/telephony-scheduler-delete-all.html',
       controller: 'TelephonySchedulerDeleteAllCtrl',
       controllerAs: '$ctrl',
     }).result
