@@ -10,7 +10,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
   self.popoverStatus = {
     isOpen: false,
     move: false,
-    templateUrl: 'components/telecom/telephony/group/number/feature/ovhPabx/menu/edit/telephony-group-number-feature-ovh-pabx-menu-edit.html',
+    templateUrl: 'telephony/group/number/feature/ovhPabx/menu/edit/telephony-group-number-feature-ovh-pabx-menu-edit.html',
     isParentClicked: false,
   };
 

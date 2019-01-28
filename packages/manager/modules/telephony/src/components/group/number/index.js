@@ -5,9 +5,12 @@ import groupNumberComponent from './telephony-group-number.component';
 import groupNumberFactory from './telephony-group-number.factory';
 import './telephony-group-number.less';
 
+import feature from './feature';
+
 const moduleName = 'ovhManagerTelephonyGroupNumber';
 
 angular.module(moduleName, [
+  feature,
 ])
   .run(/* @ngTranslationsInject ./translations */)
   .constant('TELPHONY_NUMBER_JSPLUMB_INSTANCE_OPTIONS', constant.TELPHONY_NUMBER_JSPLUMB_INSTANCE_OPTIONS)
