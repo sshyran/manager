@@ -1,4 +1,8 @@
-angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', function ($q, $scope, $timeout, $translate, $translatePartialLoader, TucToast, TELEPHONY_NUMBER_JSPLUMB_ENDPOINTS_OPTIONS, TELEPHONY_NUMBER_JSPLUMB_CONNECTIONS_OPTIONS) {
+import _ from 'lodash';
+
+export default /* @ngInject */ function ($q, $scope, $timeout, $translate, $translatePartialLoader,
+  TucToast, TELEPHONY_NUMBER_JSPLUMB_ENDPOINTS_OPTIONS,
+  TELEPHONY_NUMBER_JSPLUMB_CONNECTIONS_OPTIONS) {
   const self = this;
 
   self.loading = {
@@ -28,30 +32,30 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
     =            HELPERS            =
     =============================== */
 
-  self.isLoading = function () {
+  self.isLoading = function isLoading() {
     return self.loading.init || (self.menu && ['OK', 'DRAFT', 'DELETE_PENDING'].indexOf(self.menu.status) === -1);
   };
 
-  self.isDisabled = function () {
+  self.isDisabled = function isDisabled() {
     return self.extensionCtrl && !self.extensionCtrl.extension.enabled;
   };
 
-  self.hasMenuEntryOrDialPlanExtension = function () {
+  self.hasMenuEntryOrDialPlanExtension = function hasMenuEntryOrDialPlanExtension() {
     return !!(self.menuEntry || self.dialplanRule);
   };
 
-  self.getParentEndpointUuid = function () {
+  self.getParentEndpointUuid = function getParentEndpointUuid() {
     if (self.dialplanRule && self.dialplanRule.negativeAction) {
       return `${self.parentCtrl.uuid}-condition`;
     }
     return self.parentCtrl.uuid;
   };
 
-  self.getEndpointUuid = function () {
+  self.getEndpointUuid = function getEndpointUuid() {
     return self.uuid;
   };
 
-  self.getEntryAttr = function (attr, entryParam) {
+  self.getEntryAttr = function getEntryAttr(attr, entryParam) {
     let entry = entryParam;
     if (!entry) {
       entry = self.menuEntry;
@@ -59,12 +63,12 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
     return _.get(entry.inEdition ? entry.saveForEdition : entry, attr);
   };
 
-  self.getRuleAttr = function (attr) {
+  self.getRuleAttr = function getRuleAttr(attr) {
     return _.get(self.dialplanRule.inEdition
       ? self.dialplanRule.saveForEdition : self.dialplanRule, attr);
   };
 
-  self.getDialplanRuleRealPosition = function () {
+  self.getDialplanRuleRealPosition = function getDialplanRuleRealPosition() {
     if (!self.extensionCtrl) {
       return 1;
     }
@@ -73,7 +77,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
       : self.extensionCtrl.extension.rules, self.dialplanRule) + 1;
   };
 
-  self.getEntryMenu = function (entry) {
+  self.getEntryMenu = function getEntryMenu(entry) {
     const entryActionParam = self.getEntryAttr('actionParam', entry);
     if (_.isNumber(entryActionParam)) {
       return self.ovhPabx.getMenu(entryActionParam);
@@ -93,7 +97,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
      *  Used to determine if extensions must be displayed or not.
      *  Used by telephonyNumberOvhPabxMenuEditCtrl when an entry is deleted/cancelled.
      */
-  self.checkForDisplayHelpers = function () {
+  self.checkForDisplayHelpers = function checkForDisplayHelpers() {
     if (self.menu && !self.menu.entries.length) {
       self.displayHelpers.collapsed = true;
       self.displayHelpers.expanded = false;
@@ -108,22 +112,22 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
     =            EVENTS            =
     ============================== */
 
-  self.onEditMenuBtnClick = function () {
-    self.popoverStatus.templateUrl = 'components/telecom/telephony/group/number/feature/ovhPabx/menu/edit/telephony-group-number-feature-ovh-pabx-menu-edit.html';
+  self.onEditMenuBtnClick = function onEditMenuBtnClick() {
+    self.popoverStatus.templateUrl = 'telephony/group/number/feature/ovhPabx/menu/edit/telephony-group-number-feature-ovh-pabx-menu-edit.html';
     self.popoverStatus.isOpen = true;
   };
 
-  self.onEditMenuEntryBtnClick = function () {
-    self.popoverStatus.templateUrl = 'components/telecom/telephony/group/number/feature/ovhPabx/menu/entry/edit/telephony-group-number-feature-ovh-pabx-menu-entry-edit.html';
+  self.onEditMenuEntryBtnClick = function onEditMenuEntryBtnClick() {
+    self.popoverStatus.templateUrl = 'telephony/group/number/feature/ovhPabx/menu/entry/edit/telephony-group-number-feature-ovh-pabx-menu-entry-edit.html';
     self.popoverStatus.isOpen = true;
   };
 
-  self.onDialplanRuleEditBtnClick = function () {
-    self.popoverStatus.templateUrl = 'components/telecom/telephony/group/number/feature/ovhPabx/dialplan/extension/rule/edit/telephony-group-number-feature-ovh-pabx-dialplan-extension-rule-edit.html';
+  self.onDialplanRuleEditBtnClick = function onDialplanRuleEditBtnClick() {
+    self.popoverStatus.templateUrl = 'telephony/group/number/feature/ovhPabx/dialplan/extension/rule/edit/telephony-group-number-feature-ovh-pabx-dialplan-extension-rule-edit.html';
     self.popoverStatus.isOpen = true;
   };
 
-  self.onDeleteCancelBtnClick = function () {
+  self.onDeleteCancelBtnClick = function onDeleteCancelBtnClick() {
     if (self.menu.status !== 'DRAFT') {
       if (!self.hasMenuEntryOrDialPlanExtension()) {
         self.menu.status = 'OK';
@@ -135,7 +139,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
     }
   };
 
-  self.onMenuDeleteConfirmBtnClick = function () {
+  self.onMenuDeleteConfirmBtnClick = function onMenuDeleteConfirmBtnClick() {
     if (!self.hasMenuEntryOrDialPlanExtension()) {
       return self.menu.remove().then(() => {
         self.ovhPabx.removeMenu(self.menu);
@@ -171,7 +175,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
     return $q.when(null);
   };
 
-  self.addMenuEntry = function () {
+  self.addMenuEntry = function addMenuEntry() {
     self.popoverStatus.isParentClicked = true;
     self.displayHelpers.collapsed = false;
     self.displayHelpers.expanded = true;
@@ -185,28 +189,28 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
 
   /* ----------  COLLAPSE  ---------- */
 
-  self.onEntryCollapsed = function () {
+  self.onEntryCollapsed = function onEntryCollapsed() {
     self.jsplumbInstance.customRepaint().then(() => {
       setConnectionVisibility(true);
       self.displayHelpers.expanded = false;
     });
   };
 
-  self.onEntryExpanded = function () {
+  self.onEntryExpanded = function onEntryExpanded() {
     self.jsplumbInstance.customRepaint().then(() => {
       setConnectionVisibility(true);
     });
   };
 
-  self.onEntryCollapsing = function () {
+  self.onEntryCollapsing = function onEntryCollapsing() {
     setConnectionVisibility(false);
   };
 
-  self.onEntryExpanding = function () {
+  self.onEntryExpanding = function onEntryExpanding() {
     self.displayHelpers.expanded = true;
   };
 
-  self.onMenuOutsideClick = function () {
+  self.onMenuOutsideClick = function onMenuOutsideClick() {
     if ((self.menuEntry && self.menuEntry.status === 'DELETE_PENDING')
         || (self.dialplanRule && self.dialplanRule.status === 'DELETE_PENDING')
         || (self.menu && self.menu.status === 'DELETE_PENDING')) {
@@ -237,7 +241,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
 
   /* ----------  Component initialization  ----------*/
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     const initPromises = {
       translations: getTranslations(),
     };
@@ -272,7 +276,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
     });
   };
 
-  self.$onDestroy = function () {
+  self.$onDestroy = function $onDestroy() {
     if (self.menu) {
       self.menu.stopEdition(true);
     }
@@ -287,4 +291,4 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuCtrl', functi
   });
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

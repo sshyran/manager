@@ -3,6 +3,7 @@ import component from './telephony-group-number-feature-ovh-pabx.component';
 import factory from './telephony-group-number-feature-ovh-pabx.factory';
 
 import dialplan from './dialplan';
+import menu from './menu';
 import sound from './sound';
 import tts from './tts';
 
@@ -10,6 +11,7 @@ const moduleName = 'ovhManagerTelephonyGroupNumberFeatureOvhPabx';
 
 angular.module(moduleName, [
   dialplan,
+  menu,
   sound,
   tts,
 ])

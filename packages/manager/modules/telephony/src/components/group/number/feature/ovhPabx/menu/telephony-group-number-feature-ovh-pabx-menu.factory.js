@@ -1,4 +1,7 @@
-angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabxMenuEntry) => {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabxMenuEntry) => {
   const allDtmfKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
 
   /*= ==================================
@@ -47,7 +50,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
 
   /* -----  End of CONSTRUCTOR  ------*/
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.setInfos = function (menuOptions) {
+  TelephonyGroupNumberOvhPabxMenu.prototype.setInfos = function setInfos(menuOptions) {
     const self = this;
 
     self.name = menuOptions.name || null;
@@ -66,7 +69,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
 
   /* ----------  API CALLS  ----------*/
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.create = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.create = function create() {
     const self = this;
 
     self.status = 'IN_CREATION';
@@ -90,7 +93,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
     });
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.save = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.save = function save() {
     const self = this;
 
     self.status = 'SAVING';
@@ -111,7 +114,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
     });
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.remove = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.remove = function remove() {
     const self = this;
 
     self.status = 'DELETING';
@@ -128,7 +131,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
 
   /* ----------  ENTRIES  ----------*/
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.getEntries = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.getEntries = function getEntries() {
     const self = this;
 
     return OvhApiTelephony.OvhPabx().Menu().Entry().v6()
@@ -155,7 +158,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
       )));
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.addEntry = function (menuEntryOptionsParam) {
+  TelephonyGroupNumberOvhPabxMenu.prototype.addEntry = function addEntry(menuEntryOptionsParam) {
     const self = this;
     let entry = null;
     let menuEntryOptions = menuEntryOptionsParam;
@@ -187,7 +190,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
     return entry;
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.removeEntry = function (entry) {
+  TelephonyGroupNumberOvhPabxMenu.prototype.removeEntry = function removeEntry(entry) {
     const self = this;
 
     _.remove(self.entries, entry);
@@ -195,23 +198,25 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
     return self;
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.hasAvailableDtmfEntryKey = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.hasAvailableDtmfEntryKey = function
+  hasAvailableDtmfEntryKey() {
     const self = this;
     return !!self.getFirstAvailableDtmfEntryKey();
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.getFirstAvailableDtmfEntryKey = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.getFirstAvailableDtmfEntryKey = function
+  getFirstAvailableDtmfEntryKey() {
     const self = this;
     return _.first(_.difference(allDtmfKeys, _.map(self.entries, 'dtmf')));
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.getAllDtmfEntryKeys = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.getAllDtmfEntryKeys = function getAllDtmfEntryKeys() {
     return allDtmfKeys;
   };
 
   /* ----------  EDITION  ----------*/
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.startEdition = function () {
+  TelephonyGroupNumberOvhPabxMenu.prototype.startEdition = function startEdition() {
     const self = this;
 
     self.inEdition = true;
@@ -227,7 +232,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
     return self;
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.stopEdition = function (cancel) {
+  TelephonyGroupNumberOvhPabxMenu.prototype.stopEdition = function stopEdition(cancel) {
     const self = this;
 
     if (self.saveForEdition && cancel) {
@@ -245,7 +250,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
     return self;
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.hasChange = function (attr) {
+  TelephonyGroupNumberOvhPabxMenu.prototype.hasChange = function hasChange(attr) {
     const self = this;
 
     if (!self.inEdition || !self.saveForEdition) {
@@ -261,4 +266,4 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxMenu', ($q, Ovh
   /* -----  End of PROTOTYPE METHODS  ------*/
 
   return TelephonyGroupNumberOvhPabxMenu;
-});
+};

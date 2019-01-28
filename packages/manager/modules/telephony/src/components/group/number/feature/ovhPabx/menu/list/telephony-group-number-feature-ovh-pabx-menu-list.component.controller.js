@@ -1,4 +1,8 @@
-angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', function ($q, $timeout, $filter, $translate, $translatePartialLoader, TucToast) {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ function ($q, $timeout, $filter,
+  $translate, $translatePartialLoader, TucToast) {
   const self = this;
 
   self.loading = {
@@ -21,7 +25,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', fu
     =            HELPERS            =
     =============================== */
 
-  self.orderByName = function () {
+  self.orderByName = function orderByName() {
     self.menus.orderDesc = !self.menus.orderDesc;
   };
 
@@ -29,7 +33,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', fu
     return _.some(menu.entries, entry => entry.action === 'menuSub' && (entry.actionParam === self.disableMenuId || isDisabledMenuUsedInEntry(self.ovhPabx.getMenu(entry.actionParam))));
   }
 
-  self.isMenuChoiceDisabled = function (menu) {
+  self.isMenuChoiceDisabled = function isMenuChoiceDisabled(menu) {
     return self.disableMenuId
       && (self.disableMenuId === menu.menuId || isDisabledMenuUsedInEntry(menu));
   };
@@ -40,7 +44,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', fu
     =            EVENTS            =
     ============================== */
 
-  self.onMenuDeleteConfirm = function (menu) {
+  self.onMenuDeleteConfirm = function onMenuDeleteConfirm(menu) {
     return menu.remove().then(() => {
       self.ovhPabx.removeMenu(menu);
       self.onSelectedMenuChanged(null);
@@ -56,7 +60,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', fu
     });
   };
 
-  self.onSelectedMenuChanged = function (menu) {
+  self.onSelectedMenuChanged = function onSelectedMenuChanged(menu) {
     if (self.onMenuSelected && _.isFunction(self.onMenuSelected())) {
       $timeout(() => {
         self.onMenuSelected()(menu);
@@ -92,7 +96,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', fu
 
   /* ----------  Component initialization  ----------*/
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     if (!self.numberCtrl && !self.ovhPabx) {
       throw new Error('telephonyNumberOvhPabxMenuList must have telephonyNumber component as parent or must have ovhPabx attribute specified');
     }
@@ -119,4 +123,4 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxMenuListCtrl', fu
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}
