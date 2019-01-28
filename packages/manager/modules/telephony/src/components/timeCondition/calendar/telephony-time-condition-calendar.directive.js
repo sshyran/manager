@@ -30,7 +30,7 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
       _.set(event, 'scope', iScope.$new());
       _.set(event, 'scope.isPopoverOpen', false);
       element.attr({
-        'data-responsive-popover': "'components/telecom/telephony/timeCondition/condition/edit/telephony-time-condition-condition-edit.html'",
+        'data-responsive-popover': "'telephony/timeCondition/condition/edit/telephony-time-condition-condition-edit.html'",
         'data-popover-trigger': 'outsideClick',
         'data-popover-placement': 'auto right',
         'data-popover-class': 'pretty-popover voip-time-condition-condition-edit-popover',

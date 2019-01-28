@@ -6,6 +6,8 @@ import calendar from './calendar';
 import condition from './condition';
 import slot from './slot';
 
+import './telephony-time-condition.less';
+
 const moduleName = 'ovhManagerTelephonyTimeCondition';
 
 angular.module(moduleName, [
