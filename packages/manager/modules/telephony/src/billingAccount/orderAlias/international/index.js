@@ -1,13 +1,12 @@
 import angular from 'angular';
-
-import './billing-account-manageContacts.less';
+import 'ui-select';
 
 import routing from './billing-account-orderAlias-international.routes';
 
 const moduleName = 'ovhManagerTelephony.billingAccount.orderAlias.international';
 
 angular
-  .module(moduleName, [])
+  .module(moduleName, ['ui.select'])
   .config(routing);
 
 export default moduleName;

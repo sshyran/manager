@@ -74,7 +74,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
       .then(ids => $q.all(_.map(_.chunk(ids, 50), chunkIds => OvhApiTelephony.Line().v6().getBatch({
         billingAccount: ba.billingAccount,
         serviceName: chunkIds,
-      }).$promise)).then(chunkResult => _.pluck(_.flatten(chunkResult), 'value')));
+      }).$promise)).then(chunkResult => _.map(_.flatten(chunkResult), 'value')));
 
     // get batch alias details
     const aliases = OvhApiTelephony.Number().v6()
@@ -89,7 +89,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
             serviceName: chunkIds,
           }).$promise,
         ))
-        .then(chunkResult => _.pluck(_.flatten(chunkResult), 'value')));
+        .then(chunkResult => _.map(_.flatten(chunkResult), 'value')));
 
     return $q.all({
       lines,

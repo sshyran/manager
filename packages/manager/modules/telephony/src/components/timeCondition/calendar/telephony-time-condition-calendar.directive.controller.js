@@ -1,4 +1,4 @@
-export default function voipTimeConditionCalendarCtrl($q) {
+export default /* @ngInject */ function voipTimeConditionCalendarCtrl($q) {
   const self = this;
 
   self.loading = {

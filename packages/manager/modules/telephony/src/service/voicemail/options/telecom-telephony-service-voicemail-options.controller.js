@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import angular from 'angular';
 
-export default function ($scope, $stateParams, $q, $translate, $timeout,
+export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $timeout,
   TucToastError, OvhApiTelephony, OvhApiMe) {
   const self = this;
   let removeRecord = null;

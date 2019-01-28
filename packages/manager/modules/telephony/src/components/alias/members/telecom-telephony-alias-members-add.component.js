@@ -9,7 +9,7 @@ export default {
     api: '=',
   },
   template,
-  controller($q, $translate, $uibModal, TucToast, TucToastError) {
+  /* @ngInject */ controller($q, $translate, $uibModal, TucToast, TucToastError) {
     const self = this;
 
     self.$onInit = function $onInit() {

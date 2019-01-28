@@ -1,11 +1,15 @@
-angular.module('managerApp').component('telecomTelephonyBillingAccountOrderAliasCoordinateAddress', {
-  templateUrl: 'app/telecom/telephony/billingAccount/orderAlias/coordinate/address/telecom-telephony-billing-account-orderAlias-coordinate-address.html',
+
+import _ from 'lodash';
+import template from './billing-account-orderAlias-coordinate-address.html';
+
+export default {
+  template,
   bindings: {
     ngModel: '=?',
     regionCode: '@',
     ngDisabled: '=?',
   },
-  controller($scope, OvhApiNewAccount) {
+  /* @ngInject */ controller($scope, OvhApiNewAccount) {
     const self = this;
 
     this.validator = {
@@ -14,7 +18,7 @@ angular.module('managerApp').component('telecomTelephonyBillingAccountOrderAlias
       },
     };
 
-    this.getValidator = function () {
+    this.getValidator = function getValidator() {
       if (this.regionCode) {
         OvhApiNewAccount.CreationRules().v6().get({
           country: this.regionCode === 'uk' ? 'GB' : this.regionCode.toUpperCase(),
@@ -24,9 +28,7 @@ angular.module('managerApp').component('telecomTelephonyBillingAccountOrderAlias
         }).$promise.then((rules) => {
           const zipCodeRegexp = _.get(rules, 'zip.regularExpression');
           if (zipCodeRegexp) {
-            self.validator.isZipcode = function (value) {
-              return new RegExp(zipCodeRegexp).test(value);
-            };
+            self.validator.isZipcode = value => new RegExp(zipCodeRegexp).test(value);
           }
           return self.validator;
         });
@@ -39,8 +41,8 @@ angular.module('managerApp').component('telecomTelephonyBillingAccountOrderAlias
       }
     });
 
-    this.$onInit = function () {
+    this.$onInit = function $onInit() {
       return this.getValidator();
     };
   },
-});
+};

@@ -8,7 +8,15 @@ export default /* @ngInject */ {
     api: '=',
   },
   template,
-  controller($filter, $q, $timeout, $translate, TelephonyMediator, TucToastError, TucToast) {
+  /* @ngInject */ controller(
+    $filter,
+    $q,
+    $timeout,
+    $translate,
+    TelephonyMediator,
+    TucToastError,
+    TucToast,
+  ) {
     const self = this;
 
     /*= ==============================
@@ -16,7 +24,7 @@ export default /* @ngInject */ {
         =============================== */
 
     function fetchEnums() {
-      return TelephonyMediator.getApiModelEnum('telephony.OvhPabxHuntingQueueRecordDisablingLanguageEnum').then(enumValue => enumValue);
+      return TelephonyMediator.getApiModelEnum('telephony.OvhPabxHuntingQueueRecordDisablingLanguageEnum');
     }
 
     function refreshQueues() {

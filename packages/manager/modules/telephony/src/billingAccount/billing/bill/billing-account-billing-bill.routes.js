@@ -1,10 +1,13 @@
+import controller from './billing-account-billing-bill.controller';
+import template from './billing-account-billing-bill.html';
+
 export default /* @ngInject */ ($stateProvider) => {
   $stateProvider.state('telephony.billingAccount.billing.bill', {
     url: '/bill',
     views: {
-      'telephonyView@telecom.telephony': {
-        templateUrl: 'app/telecom/telephony/billingAccount/billing/bill/telecom-telephony-billing-account-billing-bill.html',
-        controller: 'TelecomTelephonyBillingAccountBillingBillCtrl',
+      '@telephony': {
+        template,
+        controller,
         controllerAs: 'BillingAccountBillCtrl',
       },
     },

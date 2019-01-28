@@ -1,7 +1,5 @@
 import angular from 'angular';
 
-import './billing-account-manageContacts.less';
-
 import component from './billing-account-orderAlias-numberChoice.component';
 import componentType from './type/billing-account-orderAlias-numberChoice-type.component';
 

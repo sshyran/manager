@@ -1,4 +1,16 @@
-angular.module('managerApp').controller('TelecomTelephonyAliasOrderSpecialCtrl', function ($q, $translate, $stateParams, OvhApiTelephony, OvhApiOrder, TelecomTelephonyBillingAccountOrderAliasService, TucToast, TucToastError, TELEPHONY_NUMBER_OFFER) {
+import _ from 'lodash';
+
+export default /* @ngInject */ function TelecomTelephonyAliasOrderSpecialCtrl(
+  $q,
+  $translate,
+  $stateParams,
+  OvhApiTelephony,
+  OvhApiOrder,
+  TelecomTelephonyBillingAccountOrderAliasService,
+  TucToast,
+  TucToastError,
+  TELEPHONY_NUMBER_OFFER,
+) {
   const self = this;
 
   /**
@@ -79,7 +91,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasOrderSpecialCtrl',
   /**
    * When quantity changes
    */
-  this.changeQty = function () {
+  this.changeQty = function changeQty() {
     this.form.pool = this.form.amount.value;
     this.form.numberType = this.form.amount.value === 1 ? this.form.numberType : 'common';
   };
@@ -87,7 +99,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasOrderSpecialCtrl',
   /**
    * Invoked when the range changes
    */
-  this.changeRange = function () {
+  this.changeRange = function changeRange() {
     this.loading.numbers = true;
     this.form.range = this.form.numberRange.value;
     getSpecificNumbers(self.user.country, this.form.range).finally(() => {
@@ -99,7 +111,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasOrderSpecialCtrl',
    * Get the Total of the order
    * @returns {String}
    */
-  this.getTotal = function () {
+  this.getTotal = function getTotal() {
     const count = this.form.amount.value;
     if (this.prices) {
       const price = this.prices[this.form.numberType].withTax.text;
@@ -112,7 +124,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasOrderSpecialCtrl',
    * Launch the order process
    * @returns {Promise}
    */
-  this.order = function () {
+  this.order = function order() {
     this.loading.order = true;
     const filter = [
       'city',
@@ -228,4 +240,4 @@ angular.module('managerApp').controller('TelecomTelephonyAliasOrderSpecialCtrl',
   }
 
   init();
-});
+}

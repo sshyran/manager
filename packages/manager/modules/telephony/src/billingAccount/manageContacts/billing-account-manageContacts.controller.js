@@ -28,7 +28,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountManageCont
   }
 
   function getPackXdslServiceIds() {
-    return OvhApiPackXdslVoipLine.v7().services().aggregate('packName').execute().$promise.then(ids => _.pluck(ids, 'key'));
+    return OvhApiPackXdslVoipLine.v7().services().aggregate('packName').execute().$promise.then(ids => _.map(ids, 'key'));
   }
 
   function getLinesContacts() {
@@ -80,7 +80,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountManageCont
             id: chunkIds,
           }).$promise,
         ))
-        .then(chunkResult => _.pluck(_.flatten(chunkResult), 'value')));
+        .then(chunkResult => _.map(_.flatten(chunkResult), 'value')));
   }
 
   function associatePendingTasks(tasks) {

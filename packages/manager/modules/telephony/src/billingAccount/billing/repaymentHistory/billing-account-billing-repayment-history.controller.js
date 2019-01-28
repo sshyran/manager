@@ -35,7 +35,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingRep
           }).$promise,
         ))
         .then((chunkResult) => {
-          const result = _.pluck(_.flatten(chunkResult), 'value');
+          const result = _.map(_.flatten(chunkResult), 'value');
           return _.each(result, (consumption) => {
             _.set(consumption, 'priceValue', consumption.price ? consumption.price.value : null);
           });

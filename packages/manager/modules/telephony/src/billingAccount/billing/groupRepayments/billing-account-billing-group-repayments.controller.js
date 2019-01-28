@@ -55,7 +55,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingGro
 
         // repayable
         const repayable = _.chain(self.consumptions.all).filter('repayable');
-        self.consumptions.repayable.price = repayable.pluck('price').sum().floor(2).value();
+        self.consumptions.repayable.price = repayable.map('price').sum().floor(2).value();
         self.consumptions.repayable.call = repayable.size().value();
         self.consumptions.hasAmountAvailable = _.find(self.consumptions.raw, 'repayable');
 

@@ -11,7 +11,7 @@
 
     <div class="row"
          data-ng-hide="AliasOrderNonGeographicalCtrl.orderDone">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-md-8">
             <form name="orderNumberForm"
                   class="mb-5"
                   id="orderNumberForm"
@@ -104,10 +104,9 @@
     </div>
 
     <!-- Contracts -->
-    <div class="row mt-5"
+    <div class="mt-5"
          data-ng-show="AliasOrderNonGeographicalCtrl.orderDone">
-        <div class="col-md-12"
-             data-ng-if="AliasOrderNonGeographicalCtrl.orderInformations && AliasOrderNonGeographicalCtrl.orderInformations.contracts && AliasOrderNonGeographicalCtrl.orderInformations.contracts.length > 0">
+        <div data-ng-if="AliasOrderNonGeographicalCtrl.orderInformations && AliasOrderNonGeographicalCtrl.orderInformations.contracts && AliasOrderNonGeographicalCtrl.orderInformations.contracts.length > 0">
             <div class="widget-presentation">
                 <h2 class="widget-presentation-title"
                     data-translate="telephony_order_legal">

@@ -53,7 +53,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
           }).$promise,
         ))
         .then((chunkResult) => {
-          const result = _.pluck(_.flatten(chunkResult), 'value');
+          const result = _.map(_.flatten(chunkResult), 'value');
           const emptyGroup = _.get(TUC_TELEPHONY_PHONEBOOK, 'emptyFields.group');
           const emptyPhoneNumber = _.get(TUC_TELEPHONY_PHONEBOOK, 'emptyFields.numbers');
           return _.each(result, (contact) => {
@@ -350,7 +350,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
 
   self.updatePhonebookContactGroups = function updatePhonebookContactGroups() {
     self.phonebookContact.groupsAvailable = _.chain(self.phonebookContact.raw)
-      .pluck('group')
+      .map('group')
       .pull('No group')
       .uniq()
       .compact()

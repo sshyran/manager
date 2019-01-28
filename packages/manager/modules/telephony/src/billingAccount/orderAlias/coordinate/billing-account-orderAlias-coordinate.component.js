@@ -1,12 +1,14 @@
-angular.module('managerApp').component('telecomTelephonyBillingAccountOrderAliasCoordinate', {
-  templateUrl: 'app/telecom/telephony/billingAccount/orderAlias/coordinate/telecom-telephony-billing-account-orderAlias-coordinate.html',
+import template from './billing-account-orderAlias-coordinate.html';
+
+export default {
+  template,
   bindings: {
     ngModel: '=?',
     ngDisabled: '=?',
     regionCode: '@',
     hideChoice: '=?',
   },
-  controller(tucValidator) {
+  /* @ngInject */ controller(tucValidator) {
     this.validator = tucValidator;
   },
-});
+};

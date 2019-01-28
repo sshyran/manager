@@ -1,4 +1,4 @@
-import template from './billing-account-orderAlias-retractation';
+import template from './billing-account-orderAlias-retractation.html';
 
 export default {
   template,
