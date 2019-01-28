@@ -1,4 +1,6 @@
-angular.module('managerApp').controller('telephonyNumberOvhPabxSoundUploaderCtrl', function ($q, $translate, TucToast) {
+import _ from 'lodash';
+
+export default /* @ngInject */ function ($q, $translate, TucToast) {
   const self = this;
 
   /*= ==============================
@@ -53,7 +55,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxSoundUploaderCtrl
     =            EVENTS            =
     ============================== */
 
-  self.onSoundFileChoosed = function (file) {
+  self.onSoundFileChoosed = function onSoundFileChoosed(file) {
     // set model
     self.file = file;
 
@@ -95,7 +97,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxSoundUploaderCtrl
     =            INITIALIZATION            =
     ====================================== */
 
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.$errors = {
       extension: false,
       size: false,
@@ -105,4 +107,4 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxSoundUploaderCtrl
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}

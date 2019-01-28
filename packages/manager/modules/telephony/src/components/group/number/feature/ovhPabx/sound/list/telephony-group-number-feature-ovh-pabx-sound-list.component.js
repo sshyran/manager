@@ -1,24 +1,17 @@
-(function () {
-  angular.module('managerApp').run(($translate, asyncLoader) => {
-    asyncLoader.addTranslations(
-      import(`./translations/Messages_${$translate.use()}.xml`)
-        .catch(() => import(`./translations/Messages_${$translate.fallbackLanguage()}.xml`))
-        .then(x => x.default),
-    );
-    $translate.refresh();
-  });
-  angular.module('managerApp').component('telephonyNumberOvhPabxSoundList', {
-    templateUrl: 'components/telecom/telephony/group/number/feature/ovhPabx/sound/list/telephony-group-number-feature-ovh-pabx-sound-list.html',
-    require: {
-      numberCtrl: '^^?telephonyNumber',
-      ovhPabxCtrl: '^^?telephonyNumberOvhPabx',
-    },
-    bindings: {
-      ovhPabx: '=?ovhPabx',
-      selectedSound: '=?ngModel',
-      withChoice: '<?',
-      onSoundSelected: '&?',
-    },
-    controller: 'telephonyNumberOvhPabxSoundListCtrl',
-  });
-}());
+import template from './telephony-group-number-feature-ovh-pabx-sound-list.html';
+import controller from './telephony-group-number-feature-ovh-pabx-sound-list.component.controller';
+
+export default {
+  template,
+  require: {
+    numberCtrl: '^^?telephonyNumber',
+    ovhPabxCtrl: '^^?telephonyNumberOvhPabx',
+  },
+  bindings: {
+    ovhPabx: '=?ovhPabx',
+    selectedSound: '=?ngModel',
+    withChoice: '<?',
+    onSoundSelected: '&?',
+  },
+  controller,
+};

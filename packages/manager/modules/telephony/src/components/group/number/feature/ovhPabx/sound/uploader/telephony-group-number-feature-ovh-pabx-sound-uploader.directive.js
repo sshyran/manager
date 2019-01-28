@@ -1,4 +1,6 @@
-angular.module('managerApp').directive('telephonyNumberOvhPabxSoundUploader', () => ({
+import controller from './telephony-group-number-feature-ovh-pabx-sound-uploader.directive.controller';
+
+export default () => ({
   restrict: 'A',
   transclude: true,
   require: ['^^?telephonyNumber', '^^?telephonyNumberOvhPabx', 'telephonyNumberOvhPabxSoundUploader'],
@@ -10,7 +12,7 @@ angular.module('managerApp').directive('telephonyNumberOvhPabxSoundUploader', ()
     $errors: '=uploadErrors',
   },
   bindToController: true,
-  controller: 'telephonyNumberOvhPabxSoundUploaderCtrl',
+  controller,
   link(tScope, tElement, tAttributes, controllers) {
     /*= =====================================
             =            INITIALZIATION            =
@@ -41,4 +43,4 @@ angular.module('managerApp').directive('telephonyNumberOvhPabxSoundUploader', ()
 
     init();
   },
-}));
+});
