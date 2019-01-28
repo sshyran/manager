@@ -1,9 +1,10 @@
-(function () {
-  angular.module('managerApp').component('telephonyNumberRedirect', {
-    templateUrl: 'components/telecom/telephony/group/number/feature/redirect/telephony-group-number-feature-redirect.html',
-    require: {
-      numberCtrl: '^telephonyNumber',
-    },
-    controller: 'TelephonyNumberRedirectCtrl',
-  });
-}());
+import controller from './telephony-group-number-feature-redirect.component.controller';
+import template from './telephony-group-number-feature-redirect.html';
+
+export default {
+  template,
+  require: {
+    numberCtrl: '^telephonyNumber',
+  },
+  controller,
+};

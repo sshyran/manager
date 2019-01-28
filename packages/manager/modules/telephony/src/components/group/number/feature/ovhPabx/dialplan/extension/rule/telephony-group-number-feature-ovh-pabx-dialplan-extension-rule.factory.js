@@ -1,4 +1,7 @@
-angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensionRule', ($q, OvhApiTelephony) => {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ ($q, OvhApiTelephony) => {
   /*= ==================================
     =            CONSTRUCTOR            =
     =================================== */
@@ -57,7 +60,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
     ========================================= */
 
   TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype
-    .setInfos = function (ruleOptionsParam) {
+    .setInfos = function setInfos(ruleOptionsParam) {
       const self = this;
       let ruleOptions = ruleOptionsParam;
 
@@ -84,7 +87,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
     };
 
   TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype
-    .getActionFamily = function (actionParam) {
+    .getActionFamily = function getActionFamily(actionParam) {
       const self = this;
       let action = actionParam;
 
@@ -105,7 +108,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
 
   /* ----------  SAVE RULE  ----------*/
 
-  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.save = function () {
+  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.save = function save() {
     const self = this;
 
     self.status = 'SAVING';
@@ -129,7 +132,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
 
   /* ----------  CREATE RULE  ----------*/
 
-  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.create = function () {
+  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.create = function create() {
     const self = this;
 
     self.status = 'CREATING';
@@ -155,7 +158,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
 
   /* ----------  DELETE RULE  ----------*/
 
-  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.remove = function () {
+  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.remove = function remove() {
     const self = this;
 
     self.status = 'DELETING';
@@ -176,7 +179,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
 
   /* ----------  MOVE  ----------*/
 
-  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.move = function (newPosition) {
+  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.move = function move(newPosition) {
     const self = this;
 
     self.status = 'MOVING';
@@ -200,7 +203,8 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
 
   /* ----------  EDITION  ----------*/
 
-  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.startEdition = function () {
+  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.startEdition = function
+  startEdition() {
     const self = this;
 
     self.inEdition = true;
@@ -215,7 +219,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
   };
 
   TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype
-    .stopEdition = function (cancel, saveForEdition) {
+    .stopEdition = function stopEdition(cancel, saveForEdition) {
       const self = this;
 
       if (self.saveForEdition && cancel) {
@@ -236,7 +240,7 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
       return self;
     };
 
-  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.hasChange = function (attr) {
+  TelephonyGroupNumberOvhPabxDialplanExtensionRule.prototype.hasChange = function hasChange(attr) {
     const self = this;
 
     if (!self.inEdition || !self.saveForEdition) {
@@ -252,4 +256,4 @@ angular.module('managerApp').factory('TelephonyGroupNumberOvhPabxDialplanExtensi
   /* -----  End of PROTOTYPE METHODS  ------*/
 
   return TelephonyGroupNumberOvhPabxDialplanExtensionRule;
-});
+};

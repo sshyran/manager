@@ -1,4 +1,8 @@
-angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtensionRuleEditCtrl', function ($scope, $q, $filter, $translate, TelephonyMediator, TucToast) {
+import _ from 'lodash';
+import angular from 'angular';
+
+export default /* @ngInject */ function ($scope, $q, $filter, $translate,
+  TelephonyMediator, TucToast) {
   const self = this;
 
   self.loading = {
@@ -23,7 +27,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     =            HELPERS            =
     =============================== */
 
-  self.isRuleValid = function () {
+  self.isRuleValid = function isRuleValid() {
     switch (self.rule.getActionFamily()) {
       case 'playback':
       case 'voicemail':
@@ -36,7 +40,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     }
   };
 
-  self.isFormValid = function () {
+  self.isFormValid = function isFormValid() {
     const ttsForm = _.get(self.extensionRuleForm, '$ctrl.ttsCreateForm');
     if (ttsForm) {
       return ttsForm.$dirty ? self.extensionRuleForm.$valid : true;
@@ -47,7 +51,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   /**
      *  @todo refactor with service choice popover
      */
-  self.getServiceType = function (service) {
+  self.getServiceType = function getServiceType(service) {
     if (service.serviceType === 'alias') {
       return 'number';
     }
@@ -62,7 +66,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   /**
      *  @todo refactor with service choice popover
      */
-  self.getServiceDisplayedName = function (service, isGroup) {
+  self.getServiceDisplayedName = function getServiceDisplayedName(service, isGroup) {
     if (isGroup) {
       return service.description && service.description !== service.billingAccount ? `${service.description} - ${service.billingAccount}` : service.billingAccount;
     }
@@ -72,7 +76,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   /**
      *  @todo refactor with service choice popover
      */
-  self.getServiceGroupName = function (service) {
+  self.getServiceGroupName = function getServiceGroupName(service) {
     return self.getServiceDisplayedName(_.find(TelephonyMediator.groups, {
       billingAccount: service.billingAccount,
     }), true);
@@ -80,11 +84,11 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  Voicemail selection  ---------- */
 
-  self.filterGroupServices = function (group) {
+  self.filterGroupServices = function filterGroupServices(group) {
     return [].concat(group.lines, group.fax);
   };
 
-  self.filterDisplayedGroup = function (group) {
+  self.filterDisplayedGroup = function filterDisplayedGroup(group) {
     return $filter('tucPropsFilter')(self.filterGroupServices(group), {
       serviceName: self.model.search,
       description: self.model.search,
@@ -99,53 +103,53 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  ACTION CHOICE   ----------*/
 
-  self.onActionChangeClick = function () {
+  self.onActionChangeClick = function onActionChangeClick() {
     self.parentCtrl.popoverStatus.rightPage = 'actions';
     self.parentCtrl.popoverStatus.move = true;
   };
 
-  self.onRuleActionChange = function () {
+  self.onRuleActionChange = function onRuleActionChange() {
     self.parentCtrl.popoverStatus.move = false;
     self.rule.actionParam = '';
   };
 
   /* ----------  PLAYBACK ACTIONS  ----------*/
 
-  self.onPlaybackActionParamButtonClick = function () {
+  self.onPlaybackActionParamButtonClick = function onPlaybackActionParamButtonClick() {
     self.parentCtrl.popoverStatus.rightPage = 'playback';
     self.parentCtrl.popoverStatus.move = true;
   };
 
-  self.onSoundSelected = function () {
+  self.onSoundSelected = function onSoundSelected() {
     self.parentCtrl.popoverStatus.move = false;
   };
 
   /* ----------  VOICEMAIL ACTIONS  ----------*/
 
-  self.onVoicemailActionParamButtonClick = function () {
+  self.onVoicemailActionParamButtonClick = function onVoicemailActionParamButtonClick() {
     self.parentCtrl.popoverStatus.rightPage = 'voicemail';
     self.parentCtrl.popoverStatus.move = true;
   };
 
-  self.onVoicemailActionParamChange = function (service) {
+  self.onVoicemailActionParamChange = function onVoicemailActionParamChange(service) {
     self.parentCtrl.popoverStatus.move = false;
     self.rule.actionParamInfos = service;
   };
 
   /* ----------  IVR ACTIONS  ----------*/
 
-  self.onIvrActionParamButtonClick = function () {
+  self.onIvrActionParamButtonClick = function onIvrActionParamButtonClick() {
     self.parentCtrl.popoverStatus.rightPage = 'ivr';
     self.parentCtrl.popoverStatus.move = true;
   };
 
-  self.onIvrMenuSelectedChange = function (menu) {
+  self.onIvrMenuSelectedChange = function onIvrMenuSelectedChange(menu) {
     if (menu) {
       self.parentCtrl.popoverStatus.move = false;
     }
   };
 
-  self.onAddIvrMenuButtonClick = function () {
+  self.onAddIvrMenuButtonClick = function onAddIvrMenuButtonClick() {
     // close popover
     self.parentCtrl.popoverStatus.isOpen = false;
 
@@ -164,27 +168,27 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  HUNTING  ----------*/
 
-  self.onHuntingActionParamButtonClick = function () {
+  self.onHuntingActionParamButtonClick = function onHuntingActionParamButtonClick() {
     self.parentCtrl.popoverStatus.rightPage = 'hunting';
     self.parentCtrl.popoverStatus.move = true;
   };
 
   /* ----------  TTS  ----------*/
 
-  self.onTtsActionParamButtonClick = function () {
+  self.onTtsActionParamButtonClick = function onTtsActionParamButtonClick() {
     self.parentCtrl.popoverStatus.rightPage = 'tts';
     self.parentCtrl.popoverStatus.move = true;
   };
 
-  self.onAddTtsButtonClick = function () {
+  self.onAddTtsButtonClick = function onAddTtsButtonClick() {
     self.state.collapse = true;
   };
 
-  self.onTtsCreationCancel = function () {
+  self.onTtsCreationCancel = function onTtsCreationCancel() {
     self.state.collapse = false;
   };
 
-  self.onTtsCreationSuccess = function (tts) {
+  self.onTtsCreationSuccess = function onTtsCreationSuccess(tts) {
     self.rule.actionParam = tts.id;
     self.state.collapse = false;
     self.parentCtrl.popoverStatus.move = false;
@@ -192,7 +196,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
 
   /* ----------  FOOTER ACTIONS  ----------*/
 
-  self.onValidateBtnClick = function () {
+  self.onValidateBtnClick = function onValidateBtnClick() {
     const actionPromise = self.rule.status === 'DRAFT' ? self.rule.create() : self.rule.save();
 
     self.parentCtrl.popoverStatus.isOpen = false;
@@ -207,7 +211,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
     });
   };
 
-  self.onCancelBtnClick = function () {
+  self.onCancelBtnClick = function onCancelBtnClick() {
     self.parentCtrl.popoverStatus.isOpen = false;
     self.parentCtrl.popoverStatus.move = false;
 
@@ -228,7 +232,7 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   /**
      *  Rule edition initialization
      */
-  self.$onInit = function () {
+  self.$onInit = function $onInit() {
     self.loading.init = true;
 
     self.parentCtrl = $scope.$parent.$ctrl;
@@ -273,11 +277,11 @@ angular.module('managerApp').controller('telephonyNumberOvhPabxDialplanExtension
   /**
      *  Rule edition destroy
      */
-  self.$onDestroy = function () {
+  self.$onDestroy = function $onDestroy() {
     if (self.rule && !self.parentCtrl.isLoading()) {
       self.rule.stopEdition(true);
     }
   };
 
   /* -----  End of INITIALIZATION  ------*/
-});
+}
