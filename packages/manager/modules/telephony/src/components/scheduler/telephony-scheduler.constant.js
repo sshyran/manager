@@ -1,3 +1,5 @@
+
+
 const SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE = {
   holidays: 'unavailable',
   scheduler1: 'slot1',

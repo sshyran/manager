@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookContactAddCtrl(
   $q,
@@ -18,7 +20,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
     =============================== */
 
   self.isValidNumber = function isValidNumber(value) {
-    return !_.isEmpty(value) ? TelephonyMediator.IsValidNumber(value) : true;
+    return !isEmpty(value) ? TelephonyMediator.IsValidNumber(value) : true;
   };
 
   /* -----  End of HELPERS  ------*/

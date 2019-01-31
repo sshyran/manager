@@ -1,3 +1,7 @@
+
+
+import last from 'lodash/last';
+
 angular.module('managerApp').controller('TelecomTelephonyLineAssistTroubleshootingManualConfigCtrl', function (troubleshootingProcess, tucValidator) {
   const self = this;
 
@@ -70,7 +74,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineAssistTroubleshooti
   };
 
   self.getLgModel = function () {
-    return _.last(self.process.line.phone.brand.split('.'));
+    return last(self.process.line.phone.brand.split('.'));
   };
 
   /* -----  End of HELPERS  ------*/

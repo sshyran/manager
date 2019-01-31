@@ -1,4 +1,9 @@
-import _ from 'lodash';
+
+
+import forEach from 'lodash/forEach';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import set from 'lodash/set';
 import angular from 'angular';
 import moment from 'moment';
 
@@ -25,7 +30,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $filter, 
         serviceName: $stateParams.serviceName,
       }).$promise
       .then(campaignsIds => $q
-        .all(_.map(
+        .all(map(
           campaignsIds,
           id => OvhApiTelephony.Fax().Campaigns().v6().get({
             billingAccount: $stateParams.billingAccount,
@@ -33,10 +38,10 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $filter, 
             id,
           }).$promise,
         ))
-        .then(campaigns => _.each(campaigns, (campaign) => {
-          _.set(campaign, 'reference', campaign.reference.slice(1, -1));
+        .then(campaigns => forEach(campaigns, (campaign) => {
+          set(campaign, 'reference', campaign.reference.slice(1, -1));
           if (tucValidator.isDate(campaign.reference) && (campaign.status === 'error' || campaign.status === 'todo')) {
-            _.set(campaign, 'reference', moment(campaign.reference).format());
+            set(campaign, 'reference', moment(campaign.reference).format());
           }
         })));
   }
@@ -141,7 +146,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $filter, 
       self.refresh();
       TucToast.success($translate.instant('telephony_service_fax_campaigns_start_ok'));
     }, (error) => {
-      TucToast.error($translate.instant('telephony_service_fax_campaigns_start_ko', { error: _.get(error, 'data.message') }));
+      TucToast.error($translate.instant('telephony_service_fax_campaigns_start_ko', { error: get(error, 'data.message') }));
       return $q.reject(error);
     });
   };
@@ -161,7 +166,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $filter, 
       self.refresh();
       TucToast.success($translate.instant('telephony_service_fax_campaigns_stop_ok'));
     }, (error) => {
-      TucToast.error($translate.instant('telephony_service_fax_campaigns_stop_ko', { error: _.get(error, 'data.message') }));
+      TucToast.error($translate.instant('telephony_service_fax_campaigns_stop_ko', { error: get(error, 'data.message') }));
       return $q.reject(error);
     });
   };

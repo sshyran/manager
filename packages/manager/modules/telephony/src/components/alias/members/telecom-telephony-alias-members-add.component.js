@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import assign from 'lodash/assign';
+import filter from 'lodash/filter';
+import forEach from 'lodash/forEach';
+import map from 'lodash/map';
+import pullAt from 'lodash/pullAt';
 
 import template from './telecom-telephony-alias-members-add.html';
 import addModalCtrl from './telecom-telephony-alias-members-add-modal.controller';
@@ -49,9 +55,9 @@ export default {
     };
 
     self.getServicesToExclude = function getServicesToExclude() {
-      const services = _.pluck(self.api.getMemberList(), 'number').concat(self.addMemberForm.numbers);
+      const services = map(self.api.getMemberList(), 'number').concat(self.addMemberForm.numbers);
       self.servicesToExclude.splice(0, self.servicesToExclude.length);
-      _.each(services, (s) => {
+      forEach(services, (s) => {
         self.servicesToExclude.push(s);
       });
       return self.servicesToExclude;
@@ -67,10 +73,12 @@ export default {
       modal.result.then(() => {
         self.loaders.adding = true;
         return self.api
-          .addMembers(_(self.addMemberForm.numbers)
-            .filter(number => number && number.length)
-            .map(number => _.assign({ number }, self.addMemberForm.options))
-            .value())
+          .addMembers(
+            map(
+              filter(self.addMemberForm.numbers, number => number && number.length),
+              number => assign({ number }, self.addMemberForm.options),
+            ),
+          )
           .then(() => {
             TucToast.success($translate.instant('telephony_alias_members_add_success'));
             self.resetMemberAddForm();
@@ -87,7 +95,7 @@ export default {
       if (index === 0 && self.addMemberForm.numbers.length === 1) {
         self.addMemberForm.numbers[0] = null;
       } else {
-        _.pullAt(self.addMemberForm.numbers, index);
+        pullAt(self.addMemberForm.numbers, index);
       }
     };
   },

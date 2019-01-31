@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').factory('TelecomTelephonyLineCallsForwardNature', ($translate) => {
   /**
    * Nature of number (fax, voicemail, number)

@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import set from 'lodash/set';
+import sumBy from 'lodash/sumBy';
 import angular from 'angular';
 import moment from 'moment';
 
@@ -12,7 +15,7 @@ export default /* @ngInject */ function ($stateParams, $q, $translate, $filter, 
       serviceName: $stateParams.serviceName,
     }).then(result => result.filter(conso => conso.wayType !== 'incoming' && conso.duration > 0)
       .map((conso) => {
-        _.set(conso, 'durationAsDate', new Date(conso.duration * 1000));
+        set(conso, 'durationAsDate', new Date(conso.duration * 1000));
         return conso;
       }));
   }
@@ -51,12 +54,12 @@ export default /* @ngInject */ function ($stateParams, $q, $translate, $filter, 
       self.consumption.raw = angular.copy(result);
       self.consumption.sorted = angular.copy(result);
       self.applySorting();
-      self.consumption.sum.pricePlan.calls = _.sum(self.consumption.raw, conso => (conso.planType === 'priceplan' ? 1 : 0));
-      self.consumption.sum.pricePlan.durationAsDate = new Date(_.sum(self.consumption.raw, conso => (conso.planType === 'priceplan' ? conso.duration : 0)) * 1000);
-      self.consumption.sum.outPlan.calls = _.sum(self.consumption.raw, conso => (conso.planType === 'outplan' ? 1 : 0));
-      self.consumption.sum.outPlan.durationAsDate = new Date(_.sum(self.consumption.raw, conso => (conso.planType === 'outplan' ? conso.duration : 0)) * 1000);
+      self.consumption.sum.pricePlan.calls = sumBy(self.consumption.raw, conso => (conso.planType === 'priceplan' ? 1 : 0));
+      self.consumption.sum.pricePlan.durationAsDate = new Date(sumBy(self.consumption.raw, conso => (conso.planType === 'priceplan' ? conso.duration : 0)) * 1000);
+      self.consumption.sum.outPlan.calls = sumBy(self.consumption.raw, conso => (conso.planType === 'outplan' ? 1 : 0));
+      self.consumption.sum.outPlan.durationAsDate = new Date(sumBy(self.consumption.raw, conso => (conso.planType === 'outplan' ? conso.duration : 0)) * 1000);
       let priceSuffix = '';
-      self.consumption.sum.outPlan.price = _.sum(self.consumption.raw, (conso) => {
+      self.consumption.sum.outPlan.price = sumBy(self.consumption.raw, (conso) => {
         if (conso.planType === 'outplan' && conso.priceWithoutTax) {
           // since we compute the sum manually we must guess and add the currency symbol
           // @TODO fetch sum from api when available

@@ -1,5 +1,11 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import capitalize from 'lodash/capitalize';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import now from 'lodash/now';
+import random from 'lodash/random';
 import moment from 'moment';
 
 export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DAYS) => {
@@ -43,8 +49,8 @@ export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DA
     this.setOptions(opts);
 
     // other attributes
-    this.conditionId = _.get(opts, this.featureType === 'sip' ? 'id' : 'conditionId') || `tmp_${_.random(_.now())}`;
-    this.state = _.get(opts, 'state') || 'OK';
+    this.conditionId = get(opts, this.featureType === 'sip' ? 'id' : 'conditionId') || `tmp_${random(now())}`;
+    this.state = get(opts, 'state') || 'OK';
   }
 
   /* -----  End of CONSTRUCTOR  ------*/
@@ -58,25 +64,25 @@ export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DA
     let timeFrom;
     let timeTo;
 
-    self.weekDay = _.get(conditionOptions, self.featureType === 'sip' ? 'day' : 'weekDay') || 'monday';
+    self.weekDay = get(conditionOptions, self.featureType === 'sip' ? 'day' : 'weekDay') || 'monday';
 
     if (self.featureType === 'sip') {
-      timeFrom = _.get(conditionOptions, 'hourBegin');
-      timeTo = _.get(conditionOptions, 'hourEnd');
+      timeFrom = get(conditionOptions, 'hourBegin');
+      timeTo = get(conditionOptions, 'hourEnd');
 
       self.timeFrom = timeFrom ? voipTimeCondition.parseSipTime(timeFrom) : '08:30:00';
       self.timeTo = timeTo ? voipTimeCondition.parseSipTime(timeTo, true) : '17:29:59';
       self.status = conditionOptions.status || 'new'; // donno what is this status ???
     } else {
-      timeTo = _.get(conditionOptions, 'timeTo');
+      timeTo = get(conditionOptions, 'timeTo');
 
-      self.timeFrom = _.get(conditionOptions, 'timeFrom') || '08:30:00';
+      self.timeFrom = get(conditionOptions, 'timeFrom') || '08:30:00';
 
       // because in v4 timeTo is something like this : 10:00:59.
       // Format it to something like 09:59:59
-      self.timeTo = timeTo ? voipTimeCondition.parseTime(_.get(conditionOptions, 'timeTo')) : '17:29:59';
+      self.timeTo = timeTo ? voipTimeCondition.parseTime(get(conditionOptions, 'timeTo')) : '17:29:59';
     }
-    self.policy = _.get(conditionOptions, 'policy') || 'available';
+    self.policy = get(conditionOptions, 'policy') || 'available';
 
     return self;
   };
@@ -91,8 +97,8 @@ export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DA
 
   VoipTimeConditionCondition.prototype.getTimeMoment = function getTimeMoment(time) {
     const self = this;
-    const timePath = time ? `time${_.capitalize(time)}` : 'timeFrom';
-    const splittedTime = _.get(self, timePath).split(':');
+    const timePath = time ? `time${capitalize(time)}` : 'timeFrom';
+    const splittedTime = get(self, timePath).split(':');
     return moment()
       .day(VOIP_TIMECONDITION_ORDERED_DAYS.indexOf(self.weekDay) + 1)
       .hour(splittedTime[0])
@@ -124,7 +130,7 @@ export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DA
         voipTimeCondition.getConditionResourceCallActionParams(self),
       ).$promise
       .then((conditionOptions) => {
-        self.conditionId = _.get(conditionOptions, self.featureType === 'sip' ? 'id' : 'conditionId');
+        self.conditionId = get(conditionOptions, self.featureType === 'sip' ? 'id' : 'conditionId');
         self.state = 'OK';
         return self;
       });
@@ -184,12 +190,12 @@ export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DA
     }
 
     if ((cancelToOriginalSave || cancel) && fromObject) {
-      self.weekDay = angular.copy(_.get(fromObject, 'weekDay'));
-      self.timeFrom = angular.copy(_.get(fromObject, 'timeFrom'));
-      self.timeTo = angular.copy(_.get(fromObject, 'timeTo'));
+      self.weekDay = angular.copy(get(fromObject, 'weekDay'));
+      self.timeFrom = angular.copy(get(fromObject, 'timeFrom'));
+      self.timeTo = angular.copy(get(fromObject, 'timeTo'));
 
       if (self.featureType !== 'ovhPabx') {
-        self.policy = angular.copy(_.get(fromObject, 'policy'));
+        self.policy = angular.copy(get(fromObject, 'policy'));
       }
     }
 
@@ -220,7 +226,7 @@ export default /* @ngInject */ (voipTimeCondition, VOIP_TIMECONDITION_ORDERED_DA
     compareToObject = fromOriginal ? self.originalSave : self.saveForEdition;
 
     if (property) {
-      return !_.isEqual(_.get(self, property), _.get(compareToObject, property));
+      return !isEqual(get(self, property), get(compareToObject, property));
     }
     if (self.featureType !== 'ovhPabx') {
       return self.hasChange('weekDay', fromOriginal) || self.hasChange('timeFrom', fromOriginal) || self.hasChange('timeTo', fromOriginal) || self.hasChange('policy', fromOriginal);

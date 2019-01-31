@@ -1,5 +1,9 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import pick from 'lodash/pick';
 
 export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
   tucVoipService, tucVoipLineFeature, OvhApiMe, TucToast, PAGINATION_PER_PAGE, tucTelephonyBulk) {
@@ -46,7 +50,7 @@ export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
       .then((logs) => {
         self.logs = logs;
       }).catch((error) => {
-        TucToast.error([$translate.instant('telephony_line_assist_support_logs_refresh_error'), _.get(error, 'data.message', '')].join(' '));
+        TucToast.error([$translate.instant('telephony_line_assist_support_logs_refresh_error'), get(error, 'data.message', '')].join(' '));
         return $q.reject(error);
       }).finally(() => {
         self.loading.refresh = false;
@@ -105,7 +109,7 @@ export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
     return tucVoipLineFeature.saveFeature(self.service.feature, {
       notifications: self.edition.notifications,
     }).catch((error) => {
-      TucToast.error([$translate.instant('telephony_line_assist_support_logs_save_error'), _.get(error, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_line_assist_support_logs_save_error'), get(error, 'data.message', '')].join(' '));
       return $q.reject(error);
     }).finally(() => {
       self.loading.save = false;
@@ -136,7 +140,7 @@ export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
           logs: self.onLogsFrequencySelectChange(),
         });
       }).catch((error) => {
-        TucToast.error([$translate.instant('telephony_line_assist_support_logs_init_error'), _.get(error, 'data.message', '')].join(' '));
+        TucToast.error([$translate.instant('telephony_line_assist_support_logs_init_error'), get(error, 'data.message', '')].join(' '));
         return $q.reject(error);
       }).finally(() => {
         self.loading.init = false;
@@ -157,7 +161,7 @@ export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
   };
 
   self.filterServices = function filterServices(services) {
-    return _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
+    return filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
   };
 
   self.getBulkParams = function getBulkParams() {
@@ -167,7 +171,7 @@ export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
 
     return {
       notifications: {
-        logs: _.pick(logs, ['frequency', 'sendIfNull', 'email']),
+        logs: pick(logs, ['frequency', 'sendIfNull', 'email']),
       },
     };
   };
@@ -191,6 +195,6 @@ export default /* @ngInject */ function ($q, $translate, $state, $stateParams,
   };
 
   self.onBulkError = function onBulkError(error) {
-    TucToast.error([$translate.instant('telephony_line_assist_support_logs_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    TucToast.error([$translate.instant('telephony_line_assist_support_logs_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 }

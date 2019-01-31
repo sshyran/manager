@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 export default /* @ngInject */ function ($q, $stateParams, $timeout, $uibModalInstance,
   OvhApiTelephony, campaign) {
@@ -34,7 +36,7 @@ export default /* @ngInject */ function ($q, $stateParams, $timeout, $uibModalIn
       return $timeout(self.close, 1500);
     }, error => self.cancel({
       type: 'API',
-      message: _.get(error, 'data.message'),
+      message: get(error, 'data.message'),
     }));
   };
 

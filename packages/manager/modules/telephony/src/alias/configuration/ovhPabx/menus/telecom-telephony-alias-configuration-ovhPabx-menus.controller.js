@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationOvhPabxMenusCtrl', function ($scope, $q, $stateParams, $translate, $timeout, TelephonyMediator, TucToast, tucJsPlumbService, TELPHONY_NUMBER_JSPLUMB_INSTANCE_OPTIONS) {
   const self = this;
 

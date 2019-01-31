@@ -1,4 +1,12 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import map from 'lodash/map';
+import remove from 'lodash/remove';
 import angular from 'angular';
 
 export default /* @ngInject */ (
@@ -114,7 +122,7 @@ export default /* @ngInject */ (
     }
 
     if (attr) {
-      return !_.isEqual(_.get(self.saveForEdition, attr), _.get(self, attr));
+      return !isEqual(get(self.saveForEdition, attr), get(self, attr));
     }
     return self.hasChange('featureType');
   };
@@ -146,8 +154,8 @@ export default /* @ngInject */ (
         serviceName: self.serviceName,
       }).$promise
       .then(dialplanIds => $q
-        .all(_.map(
-          _.chunk(dialplanIds, 50),
+        .all(map(
+          chunk(dialplanIds, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Dialplan().v6()
             .getBatch({
               billingAccount: self.billingAccount,
@@ -155,7 +163,7 @@ export default /* @ngInject */ (
               dialplanId: chunkIds,
             }).$promise
             .then((resources) => {
-              angular.forEach(_.map(resources, 'value'), (dialplanOptions) => {
+              angular.forEach(map(resources, 'value'), (dialplanOptions) => {
                 self.addDialplan(dialplanOptions);
               });
               return self;
@@ -165,7 +173,7 @@ export default /* @ngInject */ (
 
   TelephonyGroupNumberOvhPabx.prototype.addDialplan = function addDialplan(dialplanOptions) {
     const self = this;
-    let dialplan = _.find(self.dialplans, {
+    let dialplan = find(self.dialplans, {
       dialplanId: dialplanOptions.dialplanId,
     });
 
@@ -188,7 +196,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.removeDialplan = function removeDialplan(dialplan) {
     const self = this;
 
-    _.remove(self.dialplans, dialplan);
+    remove(self.dialplans, dialplan);
 
     return self;
   };
@@ -198,7 +206,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.getSound = function getSound(soundId) {
     const self = this;
 
-    return _.find(self.sounds, {
+    return find(self.sounds, {
       soundId,
     });
   };
@@ -212,8 +220,8 @@ export default /* @ngInject */ (
         serviceName: self.serviceName,
       }).$promise
       .then(soundIds => $q
-        .all(_.map(
-          _.chunk(soundIds, 50),
+        .all(map(
+          chunk(soundIds, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Sound().v6()
             .getBatch({
               billingAccount: self.billingAccount,
@@ -221,11 +229,14 @@ export default /* @ngInject */ (
               soundId: chunkIds,
             }).$promise
             .then((resources) => {
-              _.chain(resources).filter(soundOptions => soundOptions.value !== null).map('value').value()
+              map(
+                filter(resources, soundOptions => soundOptions.value !== null),
+                'value',
+              )
                 .forEach((soundOptions) => {
                   // try to find sound with same name and without id
                   // and set new soundId (these sounds are freshly uploaded)
-                  const sameFileFromName = _.find(self.sounds, {
+                  const sameFileFromName = find(self.sounds, {
                     name: soundOptions.name,
                   });
                   if (sameFileFromName && !sameFileFromName.soundId) {
@@ -243,7 +254,7 @@ export default /* @ngInject */ (
     let sound = null;
 
     if (soundOptions.soundId) {
-      sound = _.find(self.sounds, {
+      sound = find(self.sounds, {
         soundId: soundOptions.soundId,
       });
     }
@@ -267,7 +278,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.removeSound = function removeSound(sound) {
     const self = this;
 
-    _.remove(self.sounds, sound);
+    remove(self.sounds, sound);
 
     return self;
   };
@@ -278,7 +289,7 @@ export default /* @ngInject */ (
     const self = this;
     const menuId = menu.constructor.name === 'TelephonyGroupNumberOvhPabxMenu' ? menu.id : menu;
 
-    return _.find(self.menus, {
+    return find(self.menus, {
       menuId,
     });
   };
@@ -292,8 +303,8 @@ export default /* @ngInject */ (
         serviceName: self.serviceName,
       }).$promise
       .then(menuIds => $q
-        .all(_.map(
-          _.chunk(menuIds, 50),
+        .all(map(
+          chunk(menuIds, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Menu().v6()
             .getBatch({
               billingAccount: self.billingAccount,
@@ -301,7 +312,10 @@ export default /* @ngInject */ (
               menuId: chunkIds,
             }).$promise
             .then((resources) => {
-              _.chain(resources).filter(menuOptions => menuOptions.value !== null).map('value').value()
+              map(
+                filter(resources, menuOptions => menuOptions.value !== null),
+                'value',
+              )
                 .forEach((menuOptions) => {
                   self.addMenu(menuOptions);
                 });
@@ -333,7 +347,7 @@ export default /* @ngInject */ (
     }
 
     if (menuOptions.menuId) {
-      menu = _.find(self.menus, {
+      menu = find(self.menus, {
         menuId: menuOptions.menuId,
       });
     }
@@ -357,7 +371,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.removeMenu = function removeMenu(menu) {
     const self = this;
 
-    _.remove(self.menus, menu);
+    remove(self.menus, menu);
 
     return self;
   };
@@ -373,7 +387,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.getQueue = function getQueue(queueId) {
     const self = this;
 
-    return _.find(self.queues, {
+    return find(self.queues, {
       queueId,
     });
   };
@@ -387,21 +401,24 @@ export default /* @ngInject */ (
         serviceName: self.serviceName,
       }).$promise
       .then(queueIds => $q
-        .all(_.map(
-          _.chunk(queueIds, 50),
+        .all(map(
+          chunk(queueIds, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Hunting().Queue().v6()
             .getBatch({
               billingAccount: self.billingAccount,
               serviceName: self.serviceName,
               queueId: chunkIds,
-            }).$promise
+            })
+            .$promise
             .then((resources) => {
-              self.queues = _.chain(resources)
-                .filter(queueOptions => queueOptions.value !== null).map((queueOptionsParam) => {
+              self.queues = map(
+                filter(resources, queueOptions => queueOptions.value !== null),
+                (queueOptionsParam) => {
                   const queueOptions = queueOptionsParam.value;
                   queueOptions.queueId = parseInt(queueOptions.queueId, 10);
                   return queueOptions;
-                }).value();
+                },
+              );
               return self;
             }),
         )));
@@ -412,7 +429,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.getSingleTts = function getSingleTts(ttsId) {
     const self = this;
 
-    return _.find(self.tts, {
+    return find(self.tts, {
       id: ttsId,
     });
   };
@@ -426,8 +443,8 @@ export default /* @ngInject */ (
         serviceName: self.serviceName,
       }).$promise
       .then(ttsIds => $q
-        .all(_.map(
-          _.chunk(ttsIds, 50),
+        .all(map(
+          chunk(ttsIds, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Tts().v6()
             .getBatch({
               billingAccount: self.billingAccount,
@@ -435,7 +452,10 @@ export default /* @ngInject */ (
               id: chunkIds,
             }).$promise
             .then((resources) => {
-              _.chain(resources).filter(ttsOptions => ttsOptions.value !== null).map('value').value()
+              map(
+                filter(resources, ({ value }) => value !== null),
+                'value',
+              )
                 .forEach((ttsOptions) => {
                   self.addTts(ttsOptions);
                 });
@@ -454,7 +474,7 @@ export default /* @ngInject */ (
     }
 
     if (ttsOptions.id) {
-      tts = _.find(self.tts, {
+      tts = find(self.tts, {
         id: ttsOptions.id,
       });
     }
@@ -475,7 +495,7 @@ export default /* @ngInject */ (
   TelephonyGroupNumberOvhPabx.prototype.removeTts = function removeTts(tts) {
     const self = this;
 
-    _.remove(self.tts, {
+    remove(self.tts, {
       id: tts.id,
     });
 

@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import isFunction from 'lodash/isFunction';
+import kebabCase from 'lodash/kebabCase';
+import some from 'lodash/some';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($q, $timeout, $filter,
@@ -30,7 +34,7 @@ export default /* @ngInject */ function ($q, $timeout, $filter,
   };
 
   function isDisabledMenuUsedInEntry(menu) {
-    return _.some(menu.entries, entry => entry.action === 'menuSub' && (entry.actionParam === self.disableMenuId || isDisabledMenuUsedInEntry(self.ovhPabx.getMenu(entry.actionParam))));
+    return some(menu.entries, entry => entry.action === 'menuSub' && (entry.actionParam === self.disableMenuId || isDisabledMenuUsedInEntry(self.ovhPabx.getMenu(entry.actionParam))));
   }
 
   self.isMenuChoiceDisabled = function isMenuChoiceDisabled(menu) {
@@ -61,7 +65,7 @@ export default /* @ngInject */ function ($q, $timeout, $filter,
   };
 
   self.onSelectedMenuChanged = function onSelectedMenuChanged(menu) {
-    if (self.onMenuSelected && _.isFunction(self.onMenuSelected())) {
+    if (self.onMenuSelected && isFunction(self.onMenuSelected())) {
       $timeout(() => {
         self.onMenuSelected()(menu);
       });
@@ -110,7 +114,7 @@ export default /* @ngInject */ function ($q, $timeout, $filter,
     if (!self.radioName) {
       self.radioName = 'menuChoice';
     }
-    self.idPrefix = _.kebabCase(self.radioName);
+    self.idPrefix = kebabCase(self.radioName);
 
     return $q.all({
       translations: getTranslations(),

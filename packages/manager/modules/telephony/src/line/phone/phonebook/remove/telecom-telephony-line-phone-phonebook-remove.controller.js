@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyLinePhonePhonebookRemoveCtrl', function ($q, $stateParams, $timeout, $uibModalInstance, OvhApiTelephony, phonebook) {
   const self = this;
 

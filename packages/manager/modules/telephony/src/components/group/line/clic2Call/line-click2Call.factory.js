@@ -1,3 +1,5 @@
+
+
 import angular from 'angular';
 
 export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLineClick2CallUser) => {

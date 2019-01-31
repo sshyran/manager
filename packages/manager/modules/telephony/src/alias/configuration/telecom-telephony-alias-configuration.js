@@ -1,3 +1,8 @@
+
+
+import capitalize from 'lodash/capitalize';
+import clone from 'lodash/clone';
+
 angular.module('managerApp').config(($stateProvider) => {
   $stateProvider.state('telecom.telephony.alias.configuration', {
     url: '/configuration',
@@ -15,7 +20,7 @@ angular.module('managerApp').config(($stateProvider) => {
         controllerProvider: (alias) => {
           const isNotEmptyFeature = alias.featureType !== 'empty';
           const featureType = alias.featureType === 'ddi' ? 'redirect' : alias.featureType;
-          return isNotEmptyFeature ? `TelecomTelephonyAliasConfiguration${_.capitalize(featureType)}Ctrl` : null;
+          return isNotEmptyFeature ? `TelecomTelephonyAliasConfiguration${capitalize(featureType)}Ctrl` : null;
         },
         controllerAs: '$ctrl',
       },
@@ -24,7 +29,7 @@ angular.module('managerApp').config(($stateProvider) => {
       alias: ($stateParams, tucVoipService) => tucVoipService
         .fetchSingleService($stateParams.billingAccount, $stateParams.serviceName)
         .then((alias) => {
-          const aliasCopy = _.clone(alias);
+          const aliasCopy = clone(alias);
           aliasCopy.featureType = alias.isContactCenterSolution() ? 'contactCenterSolution' : alias.featureType;
           return aliasCopy;
         }),

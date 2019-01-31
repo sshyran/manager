@@ -1,5 +1,15 @@
+
+
+import filter from 'lodash/filter';
+import flatten from 'lodash/flatten';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import set from 'lodash/set';
+import some from 'lodash/some';
+import startsWith from 'lodash/startsWith';
+
 angular.module('managerApp')
-  .controller('TelecomTelephonyLineCallsSimultaneousLinesCtrl', function (
+  .controller('TelecomTelephonyLineCallsSimultaneousLinesCtrl', function TelecomTelephonyLineCallsSimultaneousLinesCtrl(
     $filter, $q, $stateParams, $translate,
     currentLine, OvhApiOrderTelephony, OvhApiTelephony, OvhApiTelephonyService,
     tucTelephonyBulk, TucToast,
@@ -18,11 +28,11 @@ angular.module('managerApp')
     self.orderUrl = null;
     self.showBulkOrderSummary = false;
 
-    self.needSave = function () {
+    self.needSave = function needSave() {
       return self.options.simultaneousLines !== self.saved.simultaneousLines;
     };
 
-    self.doOrder = function () {
+    self.doOrder = function doOrder() {
       self.loading.doOrder = true;
 
       return apiResources.orderSimultaneousLines({
@@ -49,7 +59,7 @@ angular.module('managerApp')
           serviceName: $stateParams.serviceName,
           action: 'removeSimltaneousLines',
         }).$promise
-        .then(offerTasks => $q.all(_.map(
+        .then(offerTasks => $q.all(map(
           offerTasks,
           taskId => OvhApiTelephonyService.OfferTask().v6()
             .get({
@@ -58,7 +68,7 @@ angular.module('managerApp')
               taskId,
             }).$promise
             .then((taskDetail) => {
-              _.set(taskDetail, 'formatedDate', $filter('date')(taskDetail.executionDate, 'fullDate'));
+              set(taskDetail, 'formatedDate', $filter('date')(taskDetail.executionDate, 'fullDate'));
               return taskDetail;
             }).catch(err => $translate('telephony_line_actions_line_calls_simultaneous_line_offer_task_error').then((message) => {
               TucToast.error(message);
@@ -71,7 +81,7 @@ angular.module('managerApp')
         });
     }
 
-    self.doRemoveSimultaneousLines = function () {
+    self.doRemoveSimultaneousLines = function doRemoveSimultaneousLines() {
       self.loading.save = true;
 
       return OvhApiTelephony.Line().v6().removeSimultaneousLine({
@@ -85,7 +95,7 @@ angular.module('managerApp')
         self.saved.simultaneousLines = self.options.simultaneousLines;
         return getOfferTasks();
       }).catch(err => $translate('telephony_line_actions_line_calls_simultaneous_line_write_error').then((message) => {
-        TucToast.error([message, _.get(err, 'data.message')].join(' '));
+        TucToast.error([message, get(err, 'data.message')].join(' '));
         self.cancelRemove();
         self.options.minimumAvailableSimultaneousLines = self.saved.simultaneousLines;
         return $q.reject(err);
@@ -94,12 +104,12 @@ angular.module('managerApp')
       });
     };
 
-    self.cancelRemove = function () {
+    self.cancelRemove = function cancelRemove() {
       self.showDoRemoveButtons = false;
       self.options.simultaneousLines = self.saved.simultaneousLines;
     };
 
-    self.save = function () {
+    self.save = function save() {
       self.prices = null;
       self.contractsAccepted = false;
       self.showDoRemoveButtons = false;
@@ -118,7 +128,7 @@ angular.module('managerApp')
       }
     };
 
-    self.recalculatePrices = function () {
+    self.recalculatePrices = function recalculatePrices() {
       const quantity = self.options.simultaneousLines - self.saved.simultaneousLines;
 
       self.prices = {
@@ -137,7 +147,7 @@ angular.module('managerApp')
         unitPrices = order.prices;
         return order;
       }).catch(err => $translate('telephony_line_actions_line_calls_simultaneous_line_write_error').then((message) => {
-        TucToast.error([message, _.get(err, 'data.message')].join(' '));
+        TucToast.error([message, get(err, 'data.message')].join(' '));
         return $q.reject(err);
       }));
     }
@@ -172,7 +182,7 @@ angular.module('managerApp')
       self.options.simultaneousLines = currentLine.simultaneousLines;
       self.hundredLines = currentLine.simultaneousLines >= 100;
 
-      self.isTrunk = _.some(currentLine.offers, offer => _.startsWith(offer, 'voip.main.offer.trunk'));
+      self.isTrunk = some(currentLine.offers, offer => startsWith(offer, 'voip.main.offer.trunk'));
 
       if (self.isTrunk) {
         apiResources.getSimultaneousLines = OvhApiOrderTelephony.v6().getSimultaneousTrunkLines;
@@ -217,15 +227,15 @@ angular.module('managerApp')
       },
     };
 
-    self.filterServices = function (services) {
-      return _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1 && service.hasValidPublicOffer() && !service.isSipTrunkRates());
+    self.filterServices = function filterServices(services) {
+      return filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1 && service.hasValidPublicOffer() && !service.isSipTrunkRates());
     };
 
-    self.getBulkParams = function () {
+    self.getBulkParams = function getBulkParams() {
       return self.options.simultaneousLines;
     };
 
-    self.onBulkSuccess = function (bulkResult) {
+    self.onBulkSuccess = function onBulkSuccess(bulkResult) {
       // display message of success or error
       tucTelephonyBulk.getTucToastInfos(bulkResult, {
         fullSuccess: $translate.instant('telephony_line_actions_line_calls_simultaneous_bulk_all_success'),
@@ -244,14 +254,23 @@ angular.module('managerApp')
       }
     };
 
-    self.onBulkError = function (error) {
-      TucToast.error([$translate.instant('telephony_line_actions_line_calls_simultaneous_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    self.onBulkError = function onBulkError(error) {
+      TucToast.error([$translate.instant('telephony_line_actions_line_calls_simultaneous_bulk_on_error'), get(error, 'msg.data')].join(' '));
     };
 
-    self.buildOrderSummary = function (orders) {
-      self.bulkOrders = _.chain(orders).map('values').flatten().filter({ action: 'updateSimultaneousChannels' })
-        .map('value')
-        .value();
+    self.buildOrderSummary = function buildOrderSummary(orders) {
+      self.bulkOrders = map(
+        filter(
+          flatten(
+            map(
+              orders,
+              'values',
+            ),
+          ),
+          { action: 'updateSimultaneousChannels' },
+        ),
+        'value',
+      );
 
       self.showBulkOrderSummary = self.bulkOrders.length > 0;
     };

@@ -1,11 +1,13 @@
-import _ from 'lodash';
+
+
+import isArray from 'lodash/isArray';
 
 export default /* @ngInject */ function ($q, OvhApiTelephony, Poller) {
   const self = this;
 
   self.getTaskInStatus = function getTaskInStatus(billingAccount, serviceName, statusParam,
     actionParam, serviceTypeParam) {
-    const status = _.isArray(statusParam) ? statusParam : [statusParam];
+    const status = isArray(statusParam) ? statusParam : [statusParam];
     const promises = [];
     let taskIds = [];
 

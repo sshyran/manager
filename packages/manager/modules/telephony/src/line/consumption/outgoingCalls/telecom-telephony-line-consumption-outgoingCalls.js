@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').config(($stateProvider) => {
   $stateProvider.state('telecom.telephony.line.consumption.outgoingCalls', {
     url: '/outgoingCalls',

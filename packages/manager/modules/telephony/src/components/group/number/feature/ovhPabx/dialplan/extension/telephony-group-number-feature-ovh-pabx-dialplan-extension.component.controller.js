@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import isNumber from 'lodash/isNumber';
+import set from 'lodash/set';
+import some from 'lodash/some';
+import uniqueId from 'lodash/uniqueId';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
@@ -34,7 +40,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
     =============================== */
 
   self.isLoading = function isLoading() {
-    return self.loading.init || (self.extension && (['OK', 'DELETE_PENDING'].indexOf(self.extension.status) === -1 || _.some(self.extension.screenListConditions, screenListCondition => ['CREATING', 'DELETING'].indexOf(screenListCondition.state) !== -1) || _.some(self.extension.timeConditions, timeCondition => ['CREATING', 'DELETING'].indexOf(timeCondition.state) !== -1)));
+    return self.loading.init || (self.extension && (['OK', 'DELETE_PENDING'].indexOf(self.extension.status) === -1 || some(self.extension.screenListConditions, screenListCondition => ['CREATING', 'DELETING'].indexOf(screenListCondition.state) !== -1) || some(self.extension.timeConditions, timeCondition => ['CREATING', 'DELETING'].indexOf(timeCondition.state) !== -1)));
   };
 
   self.startRedraw = function startRedraw() {
@@ -56,7 +62,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
   };
 
   self.getExtensionAttr = function getExtensionAttr(attr) {
-    return _.get(self.extension.inEdition ? self.extension.saveForEdition : self.extension, attr);
+    return get(self.extension.inEdition ? self.extension.saveForEdition : self.extension, attr);
   };
 
   self.extensionHasConditions = function extensionHasConditions() {
@@ -64,12 +70,12 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
   };
 
   self.getRuleAttr = function getRuleAttr(attr, rule) {
-    return _.get(rule.inEdition ? rule.saveForEdition : rule, attr);
+    return get(rule.inEdition ? rule.saveForEdition : rule, attr);
   };
 
   self.getRuleMenu = function getRuleMenu(rule) {
     const ruleActionParam = self.getRuleAttr('actionParam', rule);
-    if (_.isNumber(ruleActionParam)) {
+    if (isNumber(ruleActionParam)) {
       return self.numberCtrl.number.feature.getMenu(ruleActionParam);
     }
     return rule.ivrMenu;
@@ -186,7 +192,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
   self.onExtensionCollapsed = function onExtensionCollapsed(isNegative) {
     self.numberCtrl.jsplumbInstance.customRepaint().then(() => {
       setConnectionVisibility(true);
-      _.set(self.displayHelpers, isNegative ? 'negativeExpanded' : 'expanded', false);
+      set(self.displayHelpers, isNegative ? 'negativeExpanded' : 'expanded', false);
     });
   };
 
@@ -201,7 +207,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
   };
 
   self.onExtensionExpanding = function onExtensionExpanding(isNegative) {
-    _.set(self.displayHelpers, isNegative ? 'negativeExpanded' : 'expanded', true);
+    set(self.displayHelpers, isNegative ? 'negativeExpanded' : 'expanded', true);
   };
 
   /* -----  End of ACTIONS  ------*/
@@ -243,7 +249,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
         $timeout(() => {
           // update extensions rules positions
           angular.forEach(self.extension.rules, (rule, index) => {
-            _.set(rule, 'position', index + 1);
+            set(rule, 'position', index + 1);
           });
 
           // call api to update all positions
@@ -258,7 +264,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
         $timeout(() => {
           // update extensions rules positions
           angular.forEach(self.extension.negativeRules, (rule, index) => {
-            _.set(rule, 'position', index + 1);
+            set(rule, 'position', index + 1);
           });
 
           // call api to update all positions
@@ -269,7 +275,7 @@ export default /* @ngInject */ function ($q, $scope, $timeout, $translate,
 
     self.ovhPabx = self.numberCtrl.number.feature;
     self.dialplan = self.dialplanCtrl.dialplan;
-    self.uuid = _.uniqueId('ovhPabx_diaplan_extension_'.concat(self.extension.extensionId));
+    self.uuid = uniqueId('ovhPabx_diaplan_extension_'.concat(self.extension.extensionId));
 
     if (['DRAFT', 'IN_CREATION'].indexOf(self.extension.status) === -1) {
       initPromise = $q.allSettled([

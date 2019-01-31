@@ -1,4 +1,16 @@
-import _ from 'lodash';
+
+
+import every from 'lodash/every';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import isEmpty from 'lodash/isEmpty';
+import last from 'lodash/last';
+import map from 'lodash/map';
+import orderBy from 'lodash/orderBy';
+import padStart from 'lodash/padStart';
+import set from 'lodash/set';
+import uniq from 'lodash/uniq';
 import moment from 'moment';
 
 export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
@@ -28,16 +40,16 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
 
   self.getSipTime = function getSipTime(time, isEnd) {
     const splittedTime = time.split(':');
-    let hours = _.get(splittedTime, '[0]');
-    let minutes = _.get(splittedTime, '[1]');
+    let hours = get(splittedTime, '[0]');
+    let minutes = get(splittedTime, '[1]');
     if (isEnd) {
       const hoursInt = parseInt(hours, 10);
       const minutesInt = parseInt(minutes, 10);
       if (minutesInt === 59) {
-        hours = _.padLeft(hoursInt + 1, 2, '0');
+        hours = padStart(hoursInt + 1, 2, '0');
         minutes = '00';
       } else {
-        minutes = _.padLeft(minutesInt + 1, 2, '0');
+        minutes = padStart(minutesInt + 1, 2, '0');
       }
     }
 
@@ -52,11 +64,11 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
     if (modulo) {
       const minuteInt = parseInt(minute, 10);
       if (minuteInt === 0) {
-        hour = _.padLeft(hour - 1, 2, '0');
+        hour = padStart(hour - 1, 2, '0');
         minute = '59';
         second = '59';
       } else if (minuteInt % 15 === 0) {
-        minute = _.padLeft(minuteInt - 1, 2, '0');
+        minute = padStart(minuteInt - 1, 2, '0');
         second = '59';
       }
     }
@@ -80,11 +92,11 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
   /* -----  End of HELPERS FOR PARSING SIP HOURS  ------*/
 
   self.getAvailableSlotsCount = function getAvailableSlotsCount(featureType) {
-    return _.get(VOIP_TIME_CONDITION, `slotTypesCount.${featureType}`, 0);
+    return get(VOIP_TIME_CONDITION, `slotTypesCount.${featureType}`, 0);
   };
 
   self.getResource = function getResource(resourceType, featureType) {
-    return _.get(timeConditionResources, `${featureType}.${resourceType}`, {
+    return get(timeConditionResources, `${featureType}.${resourceType}`, {
       $promise: $q.when({}),
     });
   };
@@ -108,7 +120,7 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
     const params = self.getResourceCallParams(conditionObject);
 
     if (conditionId !== null) {
-      _.set(params, conditionObject.featureType === 'sip' ? 'id' : 'conditionId', conditionObject.conditionId || conditionId);
+      set(params, conditionObject.featureType === 'sip' ? 'id' : 'conditionId', conditionObject.conditionId || conditionId);
     }
 
     return params;
@@ -122,16 +134,16 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
     }
 
     // set slot values
-    _.filter(timeCondition.slots, slot => slot.name !== 'available' && !_.isEmpty(slot.number)).forEach((slot) => {
-      _.set(actionParams, `${slot.name}Type`, slot.type);
-      _.set(actionParams, `${slot.name}Number`, slot.number);
+    filter(timeCondition.slots, slot => slot.name !== 'available' && !isEmpty(slot.number)).forEach((slot) => {
+      set(actionParams, `${slot.name}Type`, slot.type);
+      set(actionParams, `${slot.name}Number`, slot.number);
     });
 
     if (timeCondition.featureType === 'sip') {
-      _.set(actionParams, 'status', timeCondition.enable ? 'enabled' : 'disabled');
-      _.set(actionParams, 'timeout', timeCondition.timeout);
+      set(actionParams, 'status', timeCondition.enable ? 'enabled' : 'disabled');
+      set(actionParams, 'timeout', timeCondition.timeout);
     } else {
-      _.set(actionParams, 'enable', timeCondition.enable);
+      set(actionParams, 'enable', timeCondition.enable);
     }
 
     return actionParams;
@@ -141,17 +153,17 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
     const actionParams = {};
 
     // set timeFrom => hourEnd for sip
-    _.set(actionParams, condition.featureType === 'sip' ? 'hourBegin' : 'timeFrom', condition.featureType === 'sip' ? self.getSipTime(condition.timeFrom) : condition.timeFrom);
+    set(actionParams, condition.featureType === 'sip' ? 'hourBegin' : 'timeFrom', condition.featureType === 'sip' ? self.getSipTime(condition.timeFrom) : condition.timeFrom);
 
     // set timeTo => hourBegin for sip
-    _.set(actionParams, condition.featureType === 'sip' ? 'hourEnd' : 'timeTo', condition.featureType === 'sip' ? self.getSipTime(condition.timeTo, true) : condition.timeTo);
+    set(actionParams, condition.featureType === 'sip' ? 'hourEnd' : 'timeTo', condition.featureType === 'sip' ? self.getSipTime(condition.timeTo, true) : condition.timeTo);
 
     // set weekDay => day for sip
-    _.set(actionParams, condition.featureType === 'sip' ? 'day' : 'weekDay', condition.weekDay);
+    set(actionParams, condition.featureType === 'sip' ? 'day' : 'weekDay', condition.weekDay);
 
     // set policy if not ovhPabx
     if (condition.featureType !== 'ovhPabx') {
-      _.set(actionParams, 'policy', condition.policy);
+      set(actionParams, 'policy', condition.policy);
     }
 
     return actionParams;
@@ -164,7 +176,7 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
   self.createGroupCondition = function createGroupCondition(days, groupedConditionSlots) {
     return {
       days,
-      slots: !groupedConditionSlots || _.isEmpty(groupedConditionSlots)
+      slots: !groupedConditionSlots || isEmpty(groupedConditionSlots)
         ? [] : Object.keys(groupedConditionSlots).map((slotKey) => {
           const slotConditions = groupedConditionSlots[slotKey];
           return {
@@ -177,14 +189,14 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
         let groupText;
 
         // get ordered days indexes
-        const daysIndex = _.map(
+        const daysIndex = map(
           this.days,
           day => VOIP_TIMECONDITION_ORDERED_DAYS.indexOf(day),
         ).sort();
 
         // check if indexes follow each others
         if (daysIndex.length > 1) {
-          followingIndex = _.every(daysIndex, (dayIndex, arrayIndex) => {
+          followingIndex = every(daysIndex, (dayIndex, arrayIndex) => {
             if (arrayIndex === 0) {
               return true;
             }
@@ -196,24 +208,27 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
         // first build day display
         if (followingIndex) {
           // first day
-          const firstDayIndex = _.first(daysIndex);
+          const firstDayIndex = head(daysIndex);
           const firstDay = moment().weekday(firstDayIndex).format('dd');
 
           // last day
-          const lastDayIndex = _.last(daysIndex);
+          const lastDayIndex = last(daysIndex);
           const lastDay = moment().weekday(lastDayIndex).format('dd');
           groupText = [firstDay, lastDay].join(' - ');
         } else {
-          groupText = _.map(daysIndex, dayIndex => moment().weekday(dayIndex).format('dd')).join(', ');
+          groupText = map(daysIndex, dayIndex => moment().weekday(dayIndex).format('dd')).join(', ');
         }
 
         // then build hours slots
         groupText += ' : ';
-        const sortedSlots = _.chain(this.slots)
-          .filter(slot => slot.condition)
-          .sortByOrder(slot => slot.condition.getTimeMoment().toDate())
-          .value();
-        groupText += _.map(sortedSlots, slot => [
+        const sortedSlots = orderBy(
+          filter(
+            this.slots,
+            slot => slot.condition,
+          ),
+          slot => slot.condition.getTimeMoment().toDate(),
+        );
+        groupText += map(sortedSlots, slot => [
           $translate.instant('telephony_common_time_condition_slot_from'),
           slot.condition.getTimeMoment('from').format('HH:mm'),
           $translate.instant('telephony_common_time_condition_slot_to'),
@@ -248,7 +263,7 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
 
     // then group the grouped conditions with the same day
     groupedConditions.forEach((group) => {
-      const groupKey = JSON.stringify(_.map(group, 'weekDay').sort());
+      const groupKey = JSON.stringify(map(group, 'weekDay').sort());
       tmpGroups[groupKey] = tmpGroups[groupKey] || [];
       tmpGroups[groupKey] = tmpGroups[groupKey].concat(group);
     });
@@ -258,7 +273,15 @@ export default /* @ngInject */ function ($q, $translate, OvhApiTelephony,
       const tmpGroup = tmpGroups[groupKey];
 
       // create the final groups - a group contains : the days and the hours slots
-      return self.createGroupCondition(_.chain(tmpGroup).map('weekDay').uniq().value(), groupConditionsByTimes(tmpGroup));
+      return self.createGroupCondition(
+        uniq(
+          map(
+            tmpGroup,
+            'weekDay',
+          ),
+        ),
+        groupConditionsByTimes(tmpGroup),
+      );
     });
   };
 

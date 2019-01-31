@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationOvhPabxSoundsCtrl', function ($q, $stateParams, $translate, TelephonyMediator, TucToast) {
   const self = this;
 

@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasAdministrationTerminateCtrl', function ($q, $stateParams, $translate, OvhApiTelephony, TelephonyMediator, TucToast, TucToastError) {
   const self = this;
 

@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyLineClick2CallChangePasswordCtrl', function ($q, $stateParams, $state, $translate, TelephonyGroupLineClick2CallUser, TucToast) {
   const self = this;
 

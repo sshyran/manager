@@ -1,3 +1,5 @@
+
+
 export default /* @ngInject */ function ($q, $translate, telephonyScheduler) {
   const self = this;
 

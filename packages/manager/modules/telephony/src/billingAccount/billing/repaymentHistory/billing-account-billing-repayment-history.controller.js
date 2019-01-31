@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import forEach from 'lodash/forEach';
+import flatten from 'lodash/flatten';
+import map from 'lodash/map';
+import set from 'lodash/set';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingRepaymentHistoryCtrl(
   $q,
@@ -27,17 +33,17 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingRep
         billingAccount: $stateParams.billingAccount,
       }).$promise
       .then(dates => $q
-        .all(_.map(
-          _.chunk(dates, 50),
+        .all(map(
+          chunk(dates, 50),
           chunkDates => OvhApiTelephony.HistoryRepaymentConsumption().v6().getBatch({
             billingAccount: $stateParams.billingAccount,
             date: chunkDates,
           }).$promise,
         ))
         .then((chunkResult) => {
-          const result = _.map(_.flatten(chunkResult), 'value');
-          return _.each(result, (consumption) => {
-            _.set(consumption, 'priceValue', consumption.price ? consumption.price.value : null);
+          const result = map(flatten(chunkResult), 'value');
+          return forEach(result, (consumption) => {
+            set(consumption, 'priceValue', consumption.price ? consumption.price.value : null);
           });
         }))
       .catch((err) => {
@@ -76,7 +82,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingRep
   =============================== */
 
   self.download = function download(consumption) {
-    _.set(consumption, 'downloading', true);
+    set(consumption, 'downloading', true);
 
     return self.fetchFile(consumption).then((info) => {
       $window.location.href = info.url; // eslint-disable-line

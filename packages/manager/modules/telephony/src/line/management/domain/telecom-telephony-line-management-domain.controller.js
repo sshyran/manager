@@ -1,4 +1,23 @@
-angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', function ($q, $stateParams, $translate, TelephonyMediator, OvhApiTelephony, OvhApiTelephonyLineOptions, TucToast, tucTelephonyBulk) {
+
+
+import forEach from 'lodash/forEach';
+import every from 'lodash/every';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import map from 'lodash/map';
+import set from 'lodash/set';
+
+angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', function TelecomTelephonyLineDomainCtrl(
+  $q,
+  $stateParams,
+  $translate,
+  TelephonyMediator,
+  OvhApiTelephony,
+  OvhApiTelephonyLineOptions,
+  TucToast,
+  tucTelephonyBulk,
+) {
   const self = this;
 
   self.line = null;
@@ -22,10 +41,10 @@ angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', functi
     =            HELPERS            =
     =============================== */
 
-  self.hasClientDomainChange = function () {
-    return !_.every(
+  self.hasClientDomainChange = function hasClientDomainChange() {
+    return !every(
       self.availableSipDomains.client,
-      domain => _.isEqual(domain.prevValue, domain.currentDomain),
+      domain => isEqual(domain.prevValue, domain.currentDomain),
     );
   };
 
@@ -37,17 +56,17 @@ angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', functi
 
   /* ----------  LINE SIP DOMAIN ACTIONS  ----------*/
 
-  self.startLineDomainEdit = function () {
+  self.startLineDomainEdit = function startLineDomainEdit() {
     self.line.startEdition();
     self.model.lineSipEdit = true;
   };
 
-  self.cancelLineDomainEdit = function () {
+  self.cancelLineDomainEdit = function cancelLineDomainEdit() {
     self.line.stopEdition(true);
     self.model.lineSipEdit = false;
   };
 
-  self.validateLineDomain = function () {
+  self.validateLineDomain = function validateLineDomain() {
     self.loading.saveLine = true;
 
     return self.line.saveOption('domain', self.line.options.domain).then(() => {
@@ -64,34 +83,39 @@ angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', functi
 
   /* ----------  CLIENT SIP DOMAIN ACTIONS  ----------*/
 
-  self.cancelClientDomainEdit = function () {
-    _.each(self.availableSipDomains.client, (domain) => {
-      _.set(domain, 'currentDomain', domain.prevValue);
+  self.cancelClientDomainEdit = function cancelClientDomainEdit() {
+    forEach(self.availableSipDomains.client, (domain) => {
+      set(domain, 'currentDomain', domain.prevValue);
     });
     self.model.clientSipEdit = false;
   };
 
-  self.validateClientDomain = function () {
+  self.validateClientDomain = function validateClientDomain() {
     const requestPromises = [];
     let tmpPromise = null;
 
     self.loading.saveClient = true;
 
-    _.chain(self.availableSipDomains.client)
-      .filter(domain => !_.isEqual(domain.prevValue, domain.currentDomain)).each((domain) => {
+    forEach(
+      filter(
+        self.availableSipDomains.client,
+        domain => !isEqual(domain.prevValue, domain.currentDomain),
+      ),
+      (domain) => {
         tmpPromise = OvhApiTelephony.v6().setDefaultSipDomain({}, {
           country: domain.country,
           domain: domain.currentDomain,
           type: 'sip',
         }).$promise.then(() => {
-          _.set(domain, 'prevValue', domain.currentDomain);
+          set(domain, 'prevValue', domain.currentDomain);
         }, (error) => {
           TucToast.error([$translate.instant('telephony_line_management_sip_domain_load_error'), (error.data && error.data.message) || ''].join(' '));
           return $q.reject(error);
         });
 
         requestPromises.push(tmpPromise);
-      }).value();
+      },
+    );
 
     return $q.allSettled(requestPromises).finally(() => {
       self.loading.saveClient = false;
@@ -119,8 +143,8 @@ angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', functi
         }).$promise,
       }).then((responses) => {
         self.availableSipDomains.line = responses.lineDomains;
-        self.availableSipDomains.client = _.map(responses.clientDomains, (domain) => {
-          _.set(domain, 'prevValue', domain.currentDomain);
+        self.availableSipDomains.client = map(responses.clientDomains, (domain) => {
+          set(domain, 'prevValue', domain.currentDomain);
           return domain;
         });
       });
@@ -152,17 +176,17 @@ angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', functi
     },
   };
 
-  self.filterServices = function (services) {
-    return _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
+  self.filterServices = function filterServices(services) {
+    return filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
   };
 
-  self.getBulkParams = function () {
+  self.getBulkParams = function getBulkParams() {
     return {
       domain: self.line.options.domain,
     };
   };
 
-  self.onBulkSuccess = function (bulkResult) {
+  self.onBulkSuccess = function onBulkSuccess(bulkResult) {
     // display message of success or error
     tucTelephonyBulk.getTucToastInfos(bulkResult, {
       fullSuccess: $translate.instant('telephony_line_management_sip_domain_bulk_all_success'),
@@ -183,8 +207,8 @@ angular.module('managerApp').controller('TelecomTelephonyLineDomainCtrl', functi
     init();
   };
 
-  self.onBulkError = function (error) {
-    TucToast.error([$translate.instant('telephony_line_management_sip_domain_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+  self.onBulkError = function onBulkError(error) {
+    TucToast.error([$translate.instant('telephony_line_management_sip_domain_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 
   /* -----  End of BULK  ------ */

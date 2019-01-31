@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasPortabilityCtrl', function ($translate) {
   const self = this;
 

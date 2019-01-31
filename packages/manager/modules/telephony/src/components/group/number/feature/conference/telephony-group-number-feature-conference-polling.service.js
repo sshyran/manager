@@ -1,3 +1,5 @@
+
+
 export default /* @ngInject */ function ($q, $timeout) {
   const self = this;
   let pollingDeferred = null;

@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').constant('TRUNK_PACK_DETAILS', {
   chart: {
     type: 'bar',

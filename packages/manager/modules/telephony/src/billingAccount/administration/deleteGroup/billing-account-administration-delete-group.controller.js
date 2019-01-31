@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import head from 'lodash/head';
+import map from 'lodash/map';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministrationDeleteGroup(
   $stateParams,
@@ -15,7 +19,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
       .query({
         billingAccount,
       }).$promise
-      .then(offerTaskIds => $q.all(_.map(offerTaskIds, id => OvhApiTelephony.OfferTask().v6().get({
+      .then(offerTaskIds => $q.all(map(offerTaskIds, id => OvhApiTelephony.OfferTask().v6().get({
         billingAccount,
         taskId: id,
       }).$promise)));
@@ -23,7 +27,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
 
   function fetchTerminationTask() {
     return getOfferTaskList($stateParams.billingAccount).then((offerTaskList) => {
-      self.task = _.head(_.filter(offerTaskList, { action: 'termination', status: 'todo', type: 'offer' }));
+      self.task = head(filter(offerTaskList, { action: 'termination', status: 'todo', type: 'offer' }));
       return self.task;
     });
   }

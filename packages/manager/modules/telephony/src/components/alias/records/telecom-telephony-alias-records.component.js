@@ -1,5 +1,10 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import filter from 'lodash/filter';
+import head from 'lodash/head';
+import pick from 'lodash/pick';
 
 import template from './telecom-telephony-alias-records.html';
 
@@ -31,7 +36,7 @@ export default /* @ngInject */ {
       self.queues.isLoading = true;
       return self.api.fetchQueues().then((queues) => {
         self.queues.raw = queues;
-        self.queues.selected = _.first(self.queues.raw);
+        self.queues.selected = head(self.queues.raw);
         self.queueForm = angular.copy(self.queues.selected);
       }).finally(() => {
         self.queues.isLoading = false;
@@ -53,7 +58,7 @@ export default /* @ngInject */ {
     };
 
     self.getSelection = function getSelection() {
-      return _.filter(
+      return filter(
         self.records.raw,
         record => self.records.selected && self.records.selected[record.id],
       );
@@ -77,7 +82,7 @@ export default /* @ngInject */ {
       const attrs = ['record', 'askForRecordDisabling', 'recordDisablingLanguage', 'recordDisablingDigit'];
       self.queues.isUpdating = true;
       return self.api.updateQueue(self.queueForm).then(() => {
-        _.assign(self.queues.selected, _.pick(self.queueForm, attrs));
+        assign(self.queues.selected, pick(self.queueForm, attrs));
       }).catch(err => new TucToastError(err)).finally(() => {
         self.queues.isUpdating = false;
       });

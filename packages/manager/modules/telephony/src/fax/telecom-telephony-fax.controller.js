@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyFaxCtrl', function ($q, $stateParams, $translate, atInternet, TelecomMediator, TelephonyMediator, SidebarMenu, TucToast) {
   const self = this;
 

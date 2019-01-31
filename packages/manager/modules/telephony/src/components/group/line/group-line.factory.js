@@ -1,5 +1,19 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import endsWith from 'lodash/endsWith';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import indexOf from 'lodash/indexOf';
+import isNull from 'lodash/isNull';
+import isUndefined from 'lodash/isUndefined';
+import map from 'lodash/map';
+import remove from 'lodash/remove';
+import set from 'lodash/set';
+import some from 'lodash/some';
+import startsWith from 'lodash/startsWith';
+import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 
 export default /* @ngInject */ (
@@ -54,7 +68,7 @@ export default /* @ngInject */ (
 
     // managing notifications object
     this.notifications = options.notifications;
-    if (_.isNull(_.get(this.notifications, 'logs'))) {
+    if (isNull(get(this.notifications, 'logs'))) {
       this.notifications.logs = {
         email: null,
         frequency: 'Never',
@@ -75,7 +89,7 @@ export default /* @ngInject */ (
     this.availableCodecs = null;
 
     // helper
-    this.isPlugNFax = _.some(this.offers, offer => angular.isString(offer) && (offer.indexOf('fax') >= 0 || _.some(VoipLineOldOffers.oldOffers.sipNFax, old => offer.indexOf(old) > -1)));
+    this.isPlugNFax = some(this.offers, offer => angular.isString(offer) && (offer.indexOf('fax') >= 0 || some(VoipLineOldOffers.oldOffers.sipNFax, old => offer.indexOf(old) > -1)));
   }
 
   /* -----  End of CONSTRUCTOR  ------*/
@@ -99,7 +113,7 @@ export default /* @ngInject */ (
   };
 
   TelephonyGroupLine.prototype.getOfferTypes = function getOfferTypes() {
-    return _.map(this.offers, (offer) => {
+    return map(this.offers, (offer) => {
       const cleaned = offer
         .replace(/^voip\.main\.offer\./, '')
         .split('.');
@@ -109,7 +123,7 @@ export default /* @ngInject */ (
 
   TelephonyGroupLine.prototype.isOffer = function isOffer(name) {
     const offerPrefix = `voip.main.offer.${name}`;
-    return _.some(this.offers, offer => _.startsWith(offer, offerPrefix));
+    return some(this.offers, offer => startsWith(offer, offerPrefix));
   };
 
   TelephonyGroupLine.prototype.isIndividual = function isIndividual() {
@@ -121,7 +135,7 @@ export default /* @ngInject */ (
   };
 
   TelephonyGroupLine.prototype.isVoicefax = function isVoicefax() {
-    return _.get(this, 'getPublicOffer.name') === 'voicefax' || this.isOffer('voicefax');
+    return get(this, 'getPublicOffer.name') === 'voicefax' || this.isOffer('voicefax');
   };
 
   TelephonyGroupLine.prototype.isPriceplan = function isPriceplan() {
@@ -129,7 +143,7 @@ export default /* @ngInject */ (
   };
 
   TelephonyGroupLine.prototype.isTrunk = function isTrunk() {
-    return _.get(this, 'getPublicOffer.name') === 'trunk' || this.isOffer('trunk');
+    return get(this, 'getPublicOffer.name') === 'trunk' || this.isOffer('trunk');
   };
 
   /* ----------  API CALLS  ----------*/
@@ -149,12 +163,12 @@ export default /* @ngInject */ (
   TelephonyGroupLine.prototype.supportsPhonebook = function supportsPhonebook() {
     const self = this;
 
-    if (_.isUndefined(self.hasSupportsPhonebook)) {
+    if (isUndefined(self.hasSupportsPhonebook)) {
       return OvhApiTelephony.Line().Phone().v6().supportsPhonebook({
         billingAccount: self.billingAccount,
         serviceName: self.serviceName,
       }).$promise.then((support) => {
-        self.hasSupportsPhonebook = _.get(support, 'data', null);
+        self.hasSupportsPhonebook = get(support, 'data', null);
         return support;
       }, () => {
         self.hasSupportsPhonebook = false;
@@ -167,7 +181,7 @@ export default /* @ngInject */ (
   TelephonyGroupLine.prototype.getPhone = function getPhone() {
     const self = this;
 
-    if (!self.phone && _.isUndefined(self.hasPhone)) {
+    if (!self.phone && isUndefined(self.hasPhone)) {
       return OvhApiTelephony.Line().Phone().v6().get({
         billingAccount: self.billingAccount,
         serviceName: self.serviceName,
@@ -211,14 +225,14 @@ export default /* @ngInject */ (
         billingAccount: self.billingAccount,
         serviceName: self.serviceName,
       }).$promise
-      .then(taskIds => $q.all(_.map(taskIds, id => OvhApiTelephony.Service().OfferTask().v6().get({
+      .then(taskIds => $q.all(map(taskIds, id => OvhApiTelephony.Service().OfferTask().v6().get({
         billingAccount: self.billingAccount,
         serviceName: self.serviceName,
         taskId: id,
-      }).$promise))).then(tasks => _.filter(tasks, task => task.status === 'todo' || task.status === 'doing' || task.status === 'pause').length > 0);
+      }).$promise))).then(tasks => filter(tasks, task => task.status === 'todo' || task.status === 'doing' || task.status === 'pause').length > 0);
   };
 
-  TelephonyGroupLine.prototype.getTerminating = function () {
+  TelephonyGroupLine.prototype.getTerminating = function getTerminating() {
     const self = this;
 
     return OvhApiTelephony.Service().OfferTask().v6().query({
@@ -235,7 +249,7 @@ export default /* @ngInject */ (
           status: 'todo',
           taskId: tasks[0],
         }).$promise.then((taskDetails) => {
-          _.set(taskDetails, 'executionDate', $filter('date')(taskDetails.executionDate, 'shortDate'));
+          set(taskDetails, 'executionDate', $filter('date')(taskDetails.executionDate, 'shortDate'));
           return taskDetails;
         });
       }
@@ -244,7 +258,7 @@ export default /* @ngInject */ (
   };
 
   // Get convert line to alias task
-  TelephonyGroupLine.prototype.getConvertionTask = function () {
+  TelephonyGroupLine.prototype.getConvertionTask = function getConvertionTask() {
     const self = this;
 
     return OvhApiTelephony.Service().OfferTask().v6().query({
@@ -267,7 +281,7 @@ export default /* @ngInject */ (
   };
 
   /* Terminate/Resiliate Service */
-  TelephonyGroupLine.prototype.terminate = function (options) {
+  TelephonyGroupLine.prototype.terminate = function terminate(options) {
     const self = this;
     const params = {
       reason: options.id,
@@ -283,7 +297,7 @@ export default /* @ngInject */ (
   };
 
   /* Cancel an Termination service */
-  TelephonyGroupLine.prototype.cancelTermination = function () {
+  TelephonyGroupLine.prototype.cancelTermination = function cancelTermination() {
     const self = this;
 
     return OvhApiTelephony.Line().v6().cancelTermination({
@@ -292,15 +306,15 @@ export default /* @ngInject */ (
     }).$promise;
   };
 
-  TelephonyGroupLine.prototype.isIncludedInXdslPack = function () {
+  TelephonyGroupLine.prototype.isIncludedInXdslPack = function isIncludedInXdslPack() {
     const self = this;
 
-    return OvhApiPackXdslVoipLine.v7().services().aggregate('packName').execute().$promise.then(lines => _.some(lines, { key: self.serviceName }));
+    return OvhApiPackXdslVoipLine.v7().services().aggregate('packName').execute().$promise.then(lines => some(lines, { key: self.serviceName }));
   };
 
   /* ----------  OPTIONS  ----------*/
 
-  TelephonyGroupLine.prototype.getOptions = function () {
+  TelephonyGroupLine.prototype.getOptions = function getOptions() {
     const self = this;
 
     if (!self.options) {
@@ -326,7 +340,7 @@ export default /* @ngInject */ (
     return $q.when(self.options);
   };
 
-  TelephonyGroupLine.prototype.saveOption = function (optionName, optionValue) {
+  TelephonyGroupLine.prototype.saveOption = function saveOption(optionName, optionValue) {
     const self = this;
     const lineOptions = {};
 
@@ -342,25 +356,28 @@ export default /* @ngInject */ (
 
   /* ----------  CODECS  ----------*/
 
-  TelephonyGroupLine.prototype.getAvailableCodecs = function () {
+  TelephonyGroupLine.prototype.getAvailableCodecs = function getAvailableCodecs() {
     const self = this;
 
     return OvhApiTelephony.Line().Options().v6().availableCodecs({
       billingAccount: self.billingAccount,
       serviceName: self.serviceName,
     }).$promise.then((codecsList) => {
-      self.availableCodecs = _.chain(codecsList).map((codec) => {
-        if (!_.endsWith(codec, '_a')) {
-          return {
-            value: codec,
-            automatic: _.indexOf(codecsList, `${codec}_a`) > -1,
-          };
-        }
-        return null;
-      }).sortBy(codec => (codec && codec.value.length) || -1).value();
+      self.availableCodecs = sortBy(
+        map(codecsList, (codec) => {
+          if (!endsWith(codec, '_a')) {
+            return {
+              value: codec,
+              automatic: indexOf(codecsList, `${codec}_a`) > -1,
+            };
+          }
+          return null;
+        }),
+        codec => (codec && codec.value.length) || -1,
+      );
 
       // remove null items (codecs that finish with _a)
-      _.remove(self.availableCodecs, codec => _.isNull(codec));
+      remove(self.availableCodecs, codec => isNull(codec));
 
       return self.availableCodecs;
     });
@@ -368,7 +385,7 @@ export default /* @ngInject */ (
 
   /* ----------  IPS  ----------*/
 
-  TelephonyGroupLine.prototype.getIps = function () {
+  TelephonyGroupLine.prototype.getIps = function getIps() {
     const self = this;
 
     return OvhApiTelephony.Line().v6().ips({
@@ -382,7 +399,7 @@ export default /* @ngInject */ (
 
   /* ----------  LAST REGISTRATIONS  ----------*/
 
-  TelephonyGroupLine.prototype.getLastRegistrations = function () {
+  TelephonyGroupLine.prototype.getLastRegistrations = function getLastRegistrations() {
     const self = this;
 
     return OvhApiTelephony.Line().v6().lastRegistrations({
@@ -402,7 +419,7 @@ export default /* @ngInject */ (
    *
    *  @return {Promise} That return an Object representing the current offer informations.
    */
-  TelephonyGroupLine.prototype.getCurrentOfferInformations = function () {
+  TelephonyGroupLine.prototype.getCurrentOfferInformations = function getCurrentOfferInformations() {
     const self = this;
 
     return OvhApiTelephony.Line().v6().offer({
@@ -423,13 +440,13 @@ export default /* @ngInject */ (
    *
    *  @return {Promise} That return an Array of Object representing offers.
    */
-  TelephonyGroupLine.prototype.getAvailableOffers = function () {
+  TelephonyGroupLine.prototype.getAvailableOffers = function getAvailableOffers() {
     const self = this;
 
     return OvhApiTelephony.Service().v6().offerChanges({
       billingAccount: self.billingAccount,
       serviceName: self.serviceName,
-    }).$promise.then(offers => _.map(offers, offer => new TelephonyGroupLineOffer(offer)));
+    }).$promise.then(offers => map(offers, offer => new TelephonyGroupLineOffer(offer)));
   };
 
   /**
@@ -444,7 +461,7 @@ export default /* @ngInject */ (
    *
    *  @return {Promise} That return the current instance of line.
    */
-  TelephonyGroupLine.prototype.changeOffer = function (newOffer) {
+  TelephonyGroupLine.prototype.changeOffer = function changeOffer(newOffer) {
     const self = this;
 
     return OvhApiTelephony.Service().v6().changeOffer({
@@ -464,14 +481,14 @@ export default /* @ngInject */ (
    *
    *  @return {Promise} That return an object representing the new offer.
    */
-  TelephonyGroupLine.prototype.getOfferChange = function () {
+  TelephonyGroupLine.prototype.getOfferChange = function getOfferChange() {
     const self = this;
 
     return OvhApiTelephony.Service().v6().offerChange({
       billingAccount: self.billingAccount,
       serviceName: self.serviceName,
     }).$promise.then(offer => self.getAvailableOffers().then((availableOffers) => {
-      self.pendingOfferChange = _.find(availableOffers, {
+      self.pendingOfferChange = find(availableOffers, {
         name: offer.offer,
       }) || null; // if null is returned, it means there is a problem with API... :-D
 
@@ -490,7 +507,7 @@ export default /* @ngInject */ (
    *
    *  @return {Promise} That return current instance of GroupLine.
    */
-  TelephonyGroupLine.prototype.cancelOfferChange = function () {
+  TelephonyGroupLine.prototype.cancelOfferChange = function cancelOfferChange() {
     const self = this;
 
     return OvhApiTelephony.Service().v6().cancelOfferChange({
@@ -504,7 +521,7 @@ export default /* @ngInject */ (
 
   /* ----------  SIP DOMAIN  ----------*/
 
-  TelephonyGroupLine.prototype.getAvailableSipDomains = function () {
+  TelephonyGroupLine.prototype.getAvailableSipDomains = function getAvailableSipDomains() {
     const self = this;
 
     return OvhApiTelephony.Line().v6().sipDomains({
@@ -515,7 +532,7 @@ export default /* @ngInject */ (
 
   /* ----------  SCHEDULER  ----------*/
 
-  TelephonyGroupLine.prototype.getScheduler = function () {
+  TelephonyGroupLine.prototype.getScheduler = function getScheduler() {
     const self = this;
 
     if (!self.scheduler) {
@@ -530,7 +547,7 @@ export default /* @ngInject */ (
 
   /* ----------  TIME CONDITION  ----------*/
 
-  TelephonyGroupLine.prototype.getTimeCondition = function () {
+  TelephonyGroupLine.prototype.getTimeCondition = function getTimeCondition() {
     const self = this;
 
     if (!self.timeCondition) {
@@ -546,7 +563,7 @@ export default /* @ngInject */ (
 
   /* ----------  EDITION  ----------*/
 
-  TelephonyGroupLine.prototype.startEdition = function () {
+  TelephonyGroupLine.prototype.startEdition = function startEdition() {
     const self = this;
 
     self.inEdition = true;
@@ -560,7 +577,7 @@ export default /* @ngInject */ (
     return self;
   };
 
-  TelephonyGroupLine.prototype.stopEdition = function (cancel) {
+  TelephonyGroupLine.prototype.stopEdition = function stopEdition(cancel) {
     const self = this;
 
     if (self.saveForEdition && cancel) {
@@ -575,10 +592,10 @@ export default /* @ngInject */ (
     return self;
   };
 
-  TelephonyGroupLine.prototype.hasChange = function (path) {
+  TelephonyGroupLine.prototype.hasChange = function hasChange(path) {
     const self = this;
 
-    return _.get(self.saveForEdition, path) !== _.get(self, path);
+    return get(self.saveForEdition, path) !== get(self, path);
   };
 
   /* -----  End of PROTOTYPE METHODS  ------*/

@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import assign from 'lodash/assign';
+import pick from 'lodash/pick';
 
 /**
  *  This factory manages the conference feature of a number.
@@ -65,7 +68,7 @@ export default /* @ngInject */ (OvhApiTelephony) => {
         'floor', 'hear', 'callerName', 'arrivalDateTime',
       ];
 
-      _.assign(self, _.pick(participantOptions, optionsAttributes));
+      assign(self, pick(participantOptions, optionsAttributes));
 
       return self;
     };

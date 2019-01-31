@@ -1,4 +1,9 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import map from 'lodash/map';
+import pick from 'lodash/pick';
+import set from 'lodash/set';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($filter, $q, $stateParams, $timeout, $translate,
@@ -17,7 +22,7 @@ export default /* @ngInject */ function ($filter, $q, $stateParams, $timeout, $t
     return OvhApiMe.Fax().CustomDomains().v6()
       .query().$promise
       .then(customDomainsIds => $q
-        .all(_.map(
+        .all(map(
           customDomainsIds,
           id => OvhApiMe.Fax().CustomDomains().v6()
             .get({
@@ -44,13 +49,13 @@ export default /* @ngInject */ function ($filter, $q, $stateParams, $timeout, $t
 
   self.addCustomDomains = function addCustomDomains(form) {
     self.addCustomDomainsForm.isAdding = true;
-    return OvhApiMe.Fax().CustomDomains().v6().create({}, _.pick(self.addCustomDomainsForm, 'domain')).$promise.then(() => {
+    return OvhApiMe.Fax().CustomDomains().v6().create({}, pick(self.addCustomDomainsForm, 'domain')).$promise.then(() => {
       form.$setPristine();
       self.addCustomDomainsForm.domain = null;
       TucToast.success($translate.instant('telephony_service_fax_custom_domains_configuration_form_add_success'));
       return self.refresh();
     }).catch((err) => {
-      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_configuration_form_add_error'), _.get(err, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_configuration_form_add_error'), get(err, 'data.message', '')].join(' '));
     }).finally(() => {
       self.addCustomDomainsForm.isAdding = false;
     });
@@ -62,19 +67,19 @@ export default /* @ngInject */ function ($filter, $q, $stateParams, $timeout, $t
   };
 
   self.removeCustomDomains = function removeCustomDomains(domain) {
-    _.set(domain, 'isDeleting', true);
+    set(domain, 'isDeleting', true);
     return $q.all([
       OvhApiMe.Fax().CustomDomains().v6().remove({
-        id: _.get(domain, 'id'),
+        id: get(domain, 'id'),
       }).$promise,
       $timeout(angular.noop, 500),
     ]).then(() => {
       TucToast.success($translate.instant('telephony_service_fax_custom_domains_configuration_form_remove_success'));
       return self.refresh();
     }).catch((err) => {
-      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_configuration_form_remove_error'), _.get(err, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_configuration_form_remove_error'), get(err, 'data.message', '')].join(' '));
     }).finally(() => {
-      _.set(domain, 'isDeleting', false);
+      set(domain, 'isDeleting', false);
     });
   };
 
@@ -88,7 +93,7 @@ export default /* @ngInject */ function ($filter, $q, $stateParams, $timeout, $t
       self.customDomains.raw = result.customDomains;
       self.sortCustomDomains();
     }).catch((err) => {
-      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_error_loading'), _.get(err, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_error_loading'), get(err, 'data.message', '')].join(' '));
     }).finally(() => {
       self.customDomains.isLoading = false;
     });
@@ -123,7 +128,7 @@ export default /* @ngInject */ function ($filter, $q, $stateParams, $timeout, $t
       self.fax = group.getFax($stateParams.serviceName);
       return self.refresh();
     }).catch((err) => {
-      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_error_loading'), _.get(err, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_service_fax_custom_domains_error_loading'), get(err, 'data.message', '')].join(' '));
     }).finally(() => {
       self.loading.init = false;
     });

@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasChangeTypeConfirmCtrl', class TelecomTelephonyAliasChangeTypeConfirmCtrl {
   constructor($uibModalInstance, currentFeatureType) {
     this.$uibModalInstance = $uibModalInstance;

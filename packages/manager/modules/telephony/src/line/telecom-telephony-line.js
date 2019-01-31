@@ -1,3 +1,7 @@
+
+
+import merge from 'lodash/merge';
+
 angular.module('managerApp').config(($stateProvider) => {
   $stateProvider.state('telecom.telephony.line', {
     url: '/line/:serviceName',
@@ -29,7 +33,7 @@ angular.module('managerApp').config(($stateProvider) => {
         }).$promise.then(line => OvhApiTelephony.Line().v6().simultaneousChannelsDetails({
           billingAccount: $stateParams.billingAccount,
           serviceName: $stateParams.serviceName,
-        }).$promise.then(details => details).catch(() => null).then(details => _.merge(line, {
+        }).$promise.then(details => details).catch(() => null).then(details => merge(line, {
           simultaneousLinesDetails: details || null,
         }))).catch(() => ({}));
       },

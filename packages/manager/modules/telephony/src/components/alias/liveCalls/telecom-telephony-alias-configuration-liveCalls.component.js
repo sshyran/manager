@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import forEach from 'lodash/forEach';
+import filter from 'lodash/filter';
+import head from 'lodash/head';
+import map from 'lodash/map';
+import set from 'lodash/set';
 import template from './telecom-telephony-alias-configuration-liveCalls.html';
 
 import eavesdropCtrl from './eavesdrop/telecom-telephony-alias-configuration-liveCalls-eavesdrop.controller';
@@ -58,7 +64,7 @@ export default {
       return self.apiEndpoint.Hunting().Queue().v6().query({
         billingAccount: $stateParams.billingAccount,
         serviceName: $stateParams.serviceName,
-      }).$promise.then(ids => _.first(ids));
+      }).$promise.then(ids => head(ids));
     };
 
     self.refreshStats = function refreshStats(queueId) {
@@ -100,7 +106,7 @@ export default {
           queueId,
         }).$promise
         .then(callsIds => $q
-          .all(_.map(
+          .all(map(
             (callsIds || []).reverse(),
             callId => self.apiEndpoint.Hunting().Queue().LiveCalls().v6()
               .get({
@@ -122,7 +128,7 @@ export default {
           queueId,
         }).$promise
         .then(agentIds => $q
-          .all(_.map(
+          .all(map(
             agentIds,
             agentId => self.apiEndpoint.Hunting().Queue().Agent().v6()
               .getLiveStatus({
@@ -131,7 +137,7 @@ export default {
                 queueId,
                 agentId,
               }).$promise.then((agentStatus) => {
-                _.set(agentStatus, 'agentId', agentId);
+                set(agentStatus, 'agentId', agentId);
                 return agentStatus;
               }),
           )));
@@ -151,17 +157,17 @@ export default {
     };
 
     self.getOngoingCalls = function getOngoingCalls() {
-      return _.filter(self.calls, call => call && call.state === 'Answered' && call.answered && !call.end);
+      return filter(self.calls, call => call && call.state === 'Answered' && call.answered && !call.end);
     };
 
     self.getPendingCalls = function getPendingCalls() {
-      return _.filter(self.calls, call => call && call.state === 'Waiting' && !call.answered && !call.end);
+      return filter(self.calls, call => call && call.state === 'Waiting' && !call.answered && !call.end);
     };
 
     self.getMaxWaitTime = function getMaxWaitTime() {
       let max = 0;
       let value = 0;
-      _.each(self.getPendingCalls(), (call) => {
+      forEach(self.getPendingCalls(), (call) => {
         const elapsed = moment(call.begin).unix();
         if (elapsed > max) {
           max = elapsed;
@@ -172,11 +178,11 @@ export default {
     };
 
     self.getOnCallAgentsCount = function getOnCallAgentsCount() {
-      return _.filter(self.agentsStatus, agent => agent.status === 'inAQueueCall' || agent.status === 'receiving').length;
+      return filter(self.agentsStatus, agent => agent.status === 'inAQueueCall' || agent.status === 'receiving').length;
     };
 
     self.getWaitingAgentsCount = function getWaitingAgentsCount() {
-      return _.filter(self.agentsStatus, agent => agent.status === 'waiting').length;
+      return filter(self.agentsStatus, agent => agent.status === 'waiting').length;
     };
 
     self.interceptCall = function interceptCall(call) {

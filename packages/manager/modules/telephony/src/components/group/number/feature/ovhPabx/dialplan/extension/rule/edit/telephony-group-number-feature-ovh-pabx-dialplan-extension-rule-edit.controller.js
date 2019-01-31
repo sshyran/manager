@@ -1,4 +1,11 @@
-import _ from 'lodash';
+
+
+import find from 'lodash/find';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import snakeCase from 'lodash/snakeCase';
+import sortBy from 'lodash/sortBy';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($scope, $q, $filter, $translate,
@@ -41,7 +48,7 @@ export default /* @ngInject */ function ($scope, $q, $filter, $translate,
   };
 
   self.isFormValid = function isFormValid() {
-    const ttsForm = _.get(self.extensionRuleForm, '$ctrl.ttsCreateForm');
+    const ttsForm = get(self.extensionRuleForm, '$ctrl.ttsCreateForm');
     if (ttsForm) {
       return ttsForm.$dirty ? self.extensionRuleForm.$valid : true;
     }
@@ -77,7 +84,7 @@ export default /* @ngInject */ function ($scope, $q, $filter, $translate,
      *  @todo refactor with service choice popover
      */
   self.getServiceGroupName = function getServiceGroupName(service) {
-    return self.getServiceDisplayedName(_.find(TelephonyMediator.groups, {
+    return self.getServiceDisplayedName(find(TelephonyMediator.groups, {
       billingAccount: service.billingAccount,
     }), true);
   };
@@ -206,7 +213,7 @@ export default /* @ngInject */ function ($scope, $q, $filter, $translate,
       self.parentCtrl.numberCtrl.jsplumbInstance.customRepaint();
     }).catch((error) => {
       const errorTranslationKey = self.rule.status === 'DRAFT' ? 'telephony_number_feature_ovh_pabx_step_rule_create_error' : 'telephony_number_feature_ovh_pabx_step_rule_edit_error';
-      TucToast.error([$translate.instant(errorTranslationKey), _.get(error, 'data.message') || ''].join(' '));
+      TucToast.error([$translate.instant(errorTranslationKey), get(error, 'data.message') || ''].join(' '));
       return $q.reject(error);
     });
   };
@@ -248,7 +255,7 @@ export default /* @ngInject */ function ($scope, $q, $filter, $translate,
 
     // get available actions
     return TelephonyMediator.getApiModelEnum('telephony.OvhPabxDialplanExtensionRuleActionEnum').then((enumValues) => {
-      self.availableActions = _.chain(enumValues).filter((enumVal) => {
+      let availableActions = filter(enumValues, (enumVal) => {
         if (self.ovhPabx.featureType === 'cloudIvr') {
           return enumVal !== 'hunting' && enumVal !== 'tts';
         } if (!self.ovhPabx.isCcs) {
@@ -257,18 +264,23 @@ export default /* @ngInject */ function ($scope, $q, $filter, $translate,
           return enumVal !== 'ivr';
         }
         return true;
-      }).map(enumVal => ({
+      });
+
+      availableActions = map(availableActions, enumVal => ({
         value: enumVal,
-        label: $translate.instant(`telephony_number_feature_ovh_pabx_step_rule_${_.snakeCase(enumVal)}`),
-        explain: $translate.instant(`telephony_number_feature_ovh_pabx_step_rule_${_.snakeCase(enumVal)}_explain`),
-      })).value();
+        label: $translate.instant(`telephony_number_feature_ovh_pabx_step_rule_${snakeCase(enumVal)}`),
+        explain: $translate.instant(`telephony_number_feature_ovh_pabx_step_rule_${snakeCase(enumVal)}_explain`),
+      }));
+
+      self.availableActions = availableActions;
 
       // sort and filter groups and reject groups that don't have any service
       // used for voicemail selection
-      self.groups = _.chain(TelephonyMediator.groups)
-        .filter(group => group.getAllServices().length > 0)
-        .sortBy(group => group.getDisplayedName())
-        .value();
+
+      let groups = filter(TelephonyMediator.groups, group => group.getAllServices().length > 0);
+      groups = sortBy(groups, group => group.getDisplayedName());
+
+      self.groups = groups;
     }).finally(() => {
       self.loading.init = false;
     });

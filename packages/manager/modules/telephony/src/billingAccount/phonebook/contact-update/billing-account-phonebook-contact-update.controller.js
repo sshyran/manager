@@ -1,5 +1,10 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import pick from 'lodash/pick';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookContactUpdateCtrl(
   $q,
@@ -18,12 +23,12 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
     =============================== */
 
   self.isValidNumber = function isValidNumber(value) {
-    return !_.isEmpty(value) ? TelephonyMediator.IsValidNumber(value) : true;
+    return !isEmpty(value) ? TelephonyMediator.IsValidNumber(value) : true;
   };
 
   self.hasChanged = function hasChanged() {
     const fields = ['name', 'surname', 'group', 'homePhone', 'homeMobile', 'workPhone', 'workMobile'];
-    return !_.isEqual(_.pick(self.phonecontactForm, fields), _.pick(data.contact, fields));
+    return !isEqual(pick(self.phonecontactForm, fields), pick(data.contact, fields));
   };
 
   /* -----  End of HELPERS  ------*/
@@ -95,7 +100,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
       isAdding: false,
       hasBeenAdded: false,
     };
-    _.assign(self.phonecontactForm, self.contact);
+    assign(self.phonecontactForm, self.contact);
   }
 
   /* -----  End of INITIALIZATION  ------*/

@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import head from 'lodash/head';
+import map from 'lodash/map';
 
 export default /* @ngInject */ function (
   $q,
@@ -47,11 +51,11 @@ export default /* @ngInject */ function (
       .query({
         billingAccount: group.billingAccount,
       }).$promise
-      .then(offerTaskIds => $q.all(_.map(offerTaskIds, id => OvhApiTelephony.OfferTask().v6().get({
+      .then(offerTaskIds => $q.all(map(offerTaskIds, id => OvhApiTelephony.OfferTask().v6().get({
         billingAccount: group.billingAccount,
         taskId: id,
       }).$promise)).then((tasks) => {
-        self.terminationTask = _.head(_.filter(tasks, { action: 'termination', status: 'todo', type: 'offer' }));
+        self.terminationTask = head(filter(tasks, { action: 'termination', status: 'todo', type: 'offer' }));
       }));
   }
 

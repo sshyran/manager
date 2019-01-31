@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import keys from 'lodash/keys';
 
 export default /* @ngInject */ ($q, OvhApiTelephony) => {
   const mandatoriesPhoneFunctionOptions = [
@@ -56,7 +58,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
     .setPhoneFunctionInfos = function setPhoneFunctionInfos(phoneFunctionOptions) {
       const self = this;
 
-      angular.forEach(_.keys(phoneFunctionOptions), (phoneFunctionOptionsKey) => {
+      angular.forEach(keys(phoneFunctionOptions), (phoneFunctionOptionsKey) => {
         if (phoneFunctionOptionsKey.indexOf('$') !== 0) {
           self[phoneFunctionOptionsKey] = phoneFunctionOptions[phoneFunctionOptionsKey];
         }

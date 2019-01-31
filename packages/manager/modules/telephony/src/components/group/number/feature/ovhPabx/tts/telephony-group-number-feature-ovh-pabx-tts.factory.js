@@ -1,5 +1,10 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import now from 'lodash/now';
+import random from 'lodash/random';
 
 export default /* @ngInject */ ($q, OvhApiTelephony) => {
   /*= ==================================
@@ -27,7 +32,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
     this.serviceName = ttsOptions.serviceName;
 
     // other attributes
-    this.id = ttsOptions.id || _.random(_.now());
+    this.id = ttsOptions.id || random(now());
     this.voice = null;
     this.text = null;
 
@@ -48,8 +53,8 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
   TelephonyGroupNumberOvhPabxTts.prototype.setOptions = function setOptions(ttsOptions) {
     const self = this;
 
-    self.voice = _.get(ttsOptions, 'voice', 'Helene');
-    self.text = _.get(ttsOptions, 'text', '');
+    self.voice = get(ttsOptions, 'voice', 'Helene');
+    self.text = get(ttsOptions, 'text', '');
 
     return self;
   };
@@ -129,7 +134,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
     }
 
     if (attr) {
-      return !_.isEqual(_.get(self.saveForEdition, attr), _.get(self, attr));
+      return !isEqual(get(self.saveForEdition, attr), get(self, attr));
     }
     return self.hasChange('voice') || self.hasChange('text');
   };

@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import find from 'lodash/find';
 import moment from 'moment';
 
 export default /* @ngInject */ function ($filter, telephonyScheduler) {
@@ -117,7 +120,7 @@ export default /* @ngInject */ function ($filter, telephonyScheduler) {
   };
 
   function getFirstAvailableCategory() {
-    return _.find(self.categories, category => !self.scheduler.isEventInExistingRange({
+    return find(self.categories, category => !self.scheduler.isEventInExistingRange({
       categories: category,
       dateStart: self.event.dateStart,
       dateEnd: self.event.dateEnd,
@@ -226,7 +229,7 @@ export default /* @ngInject */ function ($filter, telephonyScheduler) {
     self.timeSlots = createTimeSlots();
 
     return telephonyScheduler.getAvailableCategories().then((categories) => {
-      self.categories = _.filter(
+      self.categories = filter(
         categories,
         category => (self.timeCondition ? self.convertCategoryToSlot(category) : true),
       );

@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import indexOf from 'lodash/indexOf';
 
 export default /* @ngInject */ function ($q, $translate, TelephonyMediator, TucToast) {
   const self = this;
@@ -31,7 +34,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator, TucT
   };
 
   self.getRuleAttribute = function getRuleAttribute(attr) {
-    return _.get(self.rule.inEdition ? self.rule.saveForEdition : self.rule, attr);
+    return get(self.rule.inEdition ? self.rule.saveForEdition : self.rule, attr);
   };
 
   self.getVoicemailInfos = function getVoicemailInfos() {
@@ -43,7 +46,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator, TucT
   };
 
   self.getRealRulePosition = function getRealRulePosition() {
-    return _.indexOf(self.rule.negativeAction
+    return indexOf(self.rule.negativeAction
       ? self.extension.negativeRules : self.extension.rules, self.rule) + 1;
   };
 
@@ -71,7 +74,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator, TucT
       // display information about rule count
       self.extensionCtrl.checkForDisplayHelpers();
     }, (error) => {
-      TucToast.error([$translate.instant('telephony_number_feature_ovh_pabx_step_rule_action_delete_error'), _.get(error, 'data.message') || ''].join(' '));
+      TucToast.error([$translate.instant('telephony_number_feature_ovh_pabx_step_rule_action_delete_error'), get(error, 'data.message') || ''].join(' '));
       return $q.reject(error);
     });
   };

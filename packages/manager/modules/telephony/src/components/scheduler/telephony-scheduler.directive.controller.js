@@ -1,5 +1,11 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isString from 'lodash/isString';
+import map from 'lodash/map';
 import moment from 'moment';
 
 export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $locale, $location,
@@ -53,9 +59,19 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
   };
 
   self.applyFilters = function applyFilters(events) {
-    return _.chain(events).filter(event => event.status !== 'TODELETE' && (self.model.filters.categories ? self.model.filters.categories.indexOf(event.categories) === -1 : true)).map(event => angular.extend(event.toFullCalendarEvent(), {
-      className: event.categories,
-    })).value();
+    return map(
+      filter(
+        events,
+        event => event.status !== 'TODELETE'
+          && (self.model.filters.categories
+            ? self.model.filters.categories.indexOf(event.categories) === -1
+            : true
+          ),
+      ),
+      event => angular.extend(event.toFullCalendarEvent(), {
+        className: event.categories,
+      }),
+    );
   };
 
   self.getCalendarTitle = function getCalendarTitle() {
@@ -67,7 +83,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
   };
 
   self.hasEventInEdition = function hasEventInEdition() {
-    return !!_.find(self.scheduler.events, {
+    return !!find(self.scheduler.events, {
       inEdition: true,
     });
   };
@@ -129,7 +145,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
         // stop edition and restart with saved value
         self.timeCondition.stopEdition(false, true).startEdition();
       }).catch((error) => {
-        TucToast.error([$translate.instant('telephony_scheduler_save_error'), _.get(error, 'data.message', '')].join(' '));
+        TucToast.error([$translate.instant('telephony_scheduler_save_error'), get(error, 'data.message', '')].join(' '));
         return $q.reject(error);
       });
     }
@@ -215,7 +231,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
         }
       });
     }, (error) => {
-      if (error && !_.isString(error)) {
+      if (error && !isString(error)) {
         TucToast.error([$translate.instant('telephony_scheduler_import_error'), (error.data && error.data.message) || ''].join(' '));
       }
       return $q.reject(error);
@@ -245,7 +261,7 @@ export default /* @ngInject */ function TelephonySchedulerCtrl($anchorScroll, $l
     });
 
     exportModal.result.catch((error) => {
-      if (error && !_.isString(error)) {
+      if (error && !isString(error)) {
         TucToast.error([$translate.instant('telephony_scheduler_export_error'), (error.data && error.data.message) || ''].join(' '));
       }
       return $q.reject(error);

@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import endsWith from 'lodash/endsWith';
+import last from 'lodash/last';
+import some from 'lodash/some';
 
 export default /* @ngInject */ function ($q, $translate, TucToast) {
   const self = this;
@@ -9,7 +13,7 @@ export default /* @ngInject */ function ($q, $translate, TucToast) {
 
   function getFileNameToWav(fileName) {
     const splittedFileName = fileName.split('.');
-    const extension = _.last(splittedFileName);
+    const extension = last(splittedFileName);
     if (extension === 'wav') {
       return fileName;
     }
@@ -26,7 +30,7 @@ export default /* @ngInject */ function ($q, $translate, TucToast) {
     const validExtensions = ['ogg', 'mp3', 'wav', 'wma'];
     const fileName = self.file ? self.file.name : '';
     const fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-    const isValidFormat = _.some(validExtensions, ext => _.endsWith(fileName.toLowerCase(), `.${ext}`));
+    const isValidFormat = some(validExtensions, ext => endsWith(fileName.toLowerCase(), `.${ext}`));
     const nameRegex = new RegExp(/^[\w\s]{1,26}$/, 'g');
 
     // check for errors
@@ -43,7 +47,7 @@ export default /* @ngInject */ function ($q, $translate, TucToast) {
       self.$errors.size = true;
       return false;
     }
-    self.$errors.exists = _.some(self.ovhPabx.sounds, {
+    self.$errors.exists = some(self.ovhPabx.sounds, {
       name: getFileNameToWav(fileName),
     });
     return !self.$errors.exists;

@@ -1,4 +1,9 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import flatten from 'lodash/flatten';
+import get from 'lodash/get';
+import map from 'lodash/map';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($scope, $stateParams, $q, $timeout, $filter, $translate,
@@ -6,11 +11,11 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $timeout, $fi
   const self = this;
 
   function fetchLines() {
-    return OvhApiTelephony.Line().Aapi().get().$promise.then(result => _.filter(_.flatten(_.pluck(result, 'lines')), { serviceType: 'line' }));
+    return OvhApiTelephony.Line().Aapi().get().$promise.then(result => filter(flatten(map(result, 'lines')), { serviceType: 'line' }));
   }
 
   function fetchFax() {
-    return OvhApiTelephony.Fax().Aapi().getServices().$promise.then(result => _.filter(result, { type: 'FAX' }));
+    return OvhApiTelephony.Fax().Aapi().getServices().$promise.then(result => filter(result, { type: 'FAX' }));
   }
 
   function fetchOptions() {
@@ -98,7 +103,7 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $timeout, $fi
   };
 
   self.filterServices = function filterServices(services) {
-    return _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
+    return filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
   };
 
   self.onBulkSuccess = function onBulkSuccess(bulkResult) {
@@ -122,6 +127,6 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $timeout, $fi
   };
 
   self.onBulkError = function onBulkError(error) {
-    TucToast.error([$translate.instant('telephony_line_answer_default_voicemail_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    TucToast.error([$translate.instant('telephony_line_answer_default_voicemail_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 }

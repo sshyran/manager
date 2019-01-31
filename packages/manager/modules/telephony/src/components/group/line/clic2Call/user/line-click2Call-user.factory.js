@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import keys from 'lodash/keys';
 
 export default /* @ngInject */ ($q, OvhApiTelephony) => {
   const mandatoriesPhoneOptions = [
@@ -46,7 +48,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
 
   TelephonyGroupLineClick2CallUser.prototype.setInfos = function setInfos(options) {
     const self = this;
-    angular.forEach(_.keys(options), (optionKey) => {
+    angular.forEach(keys(options), (optionKey) => {
       self[optionKey] = options[optionKey];
     });
 

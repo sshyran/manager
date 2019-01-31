@@ -1,4 +1,9 @@
-import _ from 'lodash';
+
+
+import head from 'lodash/head';
+import intersection from 'lodash/intersection';
+import isArray from 'lodash/isArray';
+import isEmpty from 'lodash/isEmpty';
 
 /**
  *  Need to have client/app/telecom/telephony/line translations files to be loaded
@@ -39,10 +44,10 @@ export default /* @ngInject */ ($translate) => {
     const self = this;
     let intersect;
 
-    if (!_.isEmpty(self.name)) {
-      return _.first(self.name.split('.'));
-    } if (_.isEmpty(self.name) && self.details && _.isArray(self.details)) {
-      intersect = _.intersection(self.details[0].split('.'), availableOfferTypes);
+    if (!isEmpty(self.name)) {
+      return head(self.name.split('.'));
+    } if (isEmpty(self.name) && self.details && isArray(self.details)) {
+      intersect = intersection(self.details[0].split('.'), availableOfferTypes);
       return intersect.length ? intersect[0] : undefined;
     }
     return undefined;

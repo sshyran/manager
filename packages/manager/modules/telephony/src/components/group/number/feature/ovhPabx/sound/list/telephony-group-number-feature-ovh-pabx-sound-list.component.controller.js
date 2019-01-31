@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import head from 'lodash/head';
+import isFunction from 'lodash/isFunction';
 
 export default /* @ngInject */ function ($timeout, $translate, $translatePartialLoader) {
   const self = this;
@@ -17,7 +20,7 @@ export default /* @ngInject */ function ($timeout, $translate, $translatePartial
 
   self.onSelectedSoundChanged = function onSelectedSoundChanged(sound) {
     $timeout(() => {
-      if (self.onSoundSelected && _.isFunction(self.onSoundSelected())) {
+      if (self.onSoundSelected && isFunction(self.onSoundSelected())) {
         self.onSoundSelected()(sound);
       }
     });
@@ -62,7 +65,7 @@ export default /* @ngInject */ function ($timeout, $translate, $translatePartial
     }
 
     if (self.ovhPabx.sounds && self.ovhPabx.sounds.length === 1) {
-      self.selectedSound = _.first(self.ovhPabx.sounds).soundId;
+      self.selectedSound = head(self.ovhPabx.sounds).soundId;
     }
 
     return getTranslations().finally(() => {

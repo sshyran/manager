@@ -1,5 +1,6 @@
 
-import _ from 'lodash';
+
+import get from 'lodash/get';
 import template from './billing-account-orderAlias-coordinate-address.html';
 
 export default {
@@ -26,7 +27,7 @@ export default {
           ovhCompany: 'ovh',
           ovhSubsidiary: 'FR',
         }).$promise.then((rules) => {
-          const zipCodeRegexp = _.get(rules, 'zip.regularExpression');
+          const zipCodeRegexp = get(rules, 'zip.regularExpression');
           if (zipCodeRegexp) {
             self.validator.isZipcode = value => new RegExp(zipCodeRegexp).test(value);
           }

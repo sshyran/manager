@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import set from 'lodash/set';
+import sumBy from 'lodash/sumBy';
 import angular from 'angular';
 import moment from 'moment';
 
@@ -12,12 +15,12 @@ export default /* @ngInject */ function ($stateParams, $q, $translate, $filter, 
       serviceName: $stateParams.serviceName,
     }).then(result => result.filter(conso => conso.wayType !== 'outgoing')
       .map((conso) => {
-        _.set(conso, 'durationAsDate', new Date(conso.duration * 1000));
+        set(conso, 'durationAsDate', new Date(conso.duration * 1000));
         if (conso.wayType === 'incoming' && conso.duration === 0) {
-          _.set(conso, 'wayType', 'missing');
+          set(conso, 'wayType', 'missing');
         }
         if (/anonymous/.test(conso.calling)) {
-          _.set(conso, 'calling', $translate.instant('telephony_service_consumption_anonymous'));
+          set(conso, 'calling', $translate.instant('telephony_service_consumption_anonymous'));
         }
         return conso;
       }));
@@ -49,7 +52,7 @@ export default /* @ngInject */ function ($stateParams, $q, $translate, $filter, 
     fetchIncomingConsumption().then((result) => {
       self.consumption.raw = angular.copy(result);
       self.consumption.sorted = angular.copy(result);
-      self.consumption.durationSum = new Date(_.sum(self.consumption.raw,
+      self.consumption.durationSum = new Date(sumBy(self.consumption.raw,
         conso => conso.duration) * 1000);
     }, err => new TucToastError(err));
   }

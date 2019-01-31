@@ -1,4 +1,13 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import map from 'lodash/map';
+import remove from 'lodash/remove';
+import sortBy from 'lodash/sortBy';
 import angular from 'angular';
 
 export default /* @ngInject */ ($q, OvhApiTelephony,
@@ -107,7 +116,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
     }
 
     if (attr) {
-      return !_.isEqual(_.get(self.saveForEdition, attr), _.get(self, attr));
+      return !isEqual(get(self.saveForEdition, attr), get(self, attr));
     }
     return self.hasChange('name') || self.hasChange('showCallerNumber') || self.hasChange('transferTimeout') || self.hasChange('anonymousRejection');
   };
@@ -164,7 +173,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
     });
   };
 
-  TelephonyGroupNumberOvhPabxDialplan.prototype.remove = function remove() {
+  TelephonyGroupNumberOvhPabxDialplan.prototype.remove = function () {
     const self = this;
 
     self.status = 'DELETING';
@@ -191,8 +200,8 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
         dialplanId: self.dialplanId,
       }).$promise
       .then(extensionIds => $q
-        .all(_.map(
-          _.chunk(extensionIds, 50),
+        .all(map(
+          chunk(extensionIds, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Dialplan().Extension().v6()
             .getBatch({
               billingAccount: self.billingAccount,
@@ -200,9 +209,14 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
               dialplanId: self.dialplanId,
               extensionId: chunkIds,
             }).$promise.then((resources) => {
-              angular.forEach(_.chain(resources).map('value').sortBy('position').value(), (extenstionOptions) => {
-                self.addExtension(extenstionOptions);
-              });
+              angular.forEach(
+                sortBy(
+                  map(resources, 'value'),
+                  'position',
+                ), (extenstionOptions) => {
+                  self.addExtension(extenstionOptions);
+                },
+              );
             }),
         ))
         .then(() => self));
@@ -219,7 +233,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
       }
 
       if (extensionOptions.extensionId) {
-        extension = _.find(self.extensions, {
+        extension = find(self.extensions, {
           extensionId: extensionOptions.extensionId,
         });
       }
@@ -245,7 +259,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
     .prototype.removeExtension = function removeExtension(extension) {
       const self = this;
 
-      _.remove(self.extensions, extension);
+      remove(self.extensions, extension);
 
       return self;
     };
@@ -255,7 +269,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
       const self = this;
       const updatePositionPromises = [];
       const extensionsToUpdate = from
-        ? _.filter(self.extensions, extension => extension.position > from) : self.extensions;
+        ? filter(self.extensions, extension => extension.position > from) : self.extensions;
 
       angular.forEach(extensionsToUpdate, (extension) => {
         updatePositionPromises.push(extension.move(from

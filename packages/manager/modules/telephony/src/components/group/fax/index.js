@@ -1,3 +1,5 @@
+
+
 import angular from 'angular';
 import groupFaxFactory from './telephony-group-fax.factory';
 

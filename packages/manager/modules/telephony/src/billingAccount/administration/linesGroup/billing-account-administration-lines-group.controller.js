@@ -1,4 +1,14 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import compact from 'lodash/compact';
+import find from 'lodash/find';
+import filter from 'lodash/filter';
+import flatten from 'lodash/flatten';
+import map from 'lodash/map';
+import set from 'lodash/set';
+import size from 'lodash/size';
+import values from 'lodash/values';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministrationLinesGroup(
   $stateParams,
@@ -27,11 +37,11 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
 
     const getNumberCount = OvhApiTelephony.Number().v6().query({
       billingAccount: $stateParams.billingAccount,
-    }).$promise.then(_.size);
+    }).$promise.then(size);
 
     const getLineCount = OvhApiTelephony.Line().v6().query({
       billingAccount: $stateParams.billingAccount,
-    }).$promise.then(_.size);
+    }).$promise.then(size);
 
     return $q.all({
       billingAccounts: OvhApiTelephony.v6().query().$promise,
@@ -71,10 +81,10 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
       .query({
         billingAccount: ba.billingAccount,
       }).$promise
-      .then(ids => $q.all(_.map(_.chunk(ids, 50), chunkIds => OvhApiTelephony.Line().v6().getBatch({
+      .then(ids => $q.all(map(chunk(ids, 50), chunkIds => OvhApiTelephony.Line().v6().getBatch({
         billingAccount: ba.billingAccount,
         serviceName: chunkIds,
-      }).$promise)).then(chunkResult => _.map(_.flatten(chunkResult), 'value')));
+      }).$promise)).then(chunkResult => map(flatten(chunkResult), 'value')));
 
     // get batch alias details
     const aliases = OvhApiTelephony.Number().v6()
@@ -82,26 +92,26 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
         billingAccount: ba.billingAccount,
       }).$promise
       .then(ids => $q
-        .all(_.map(
-          _.chunk(ids, 50),
+        .all(map(
+          chunk(ids, 50),
           chunkIds => OvhApiTelephony.Number().v6().getBatch({
             billingAccount: ba.billingAccount,
             serviceName: chunkIds,
           }).$promise,
         ))
-        .then(chunkResult => _.map(_.flatten(chunkResult), 'value')));
+        .then(chunkResult => map(flatten(chunkResult), 'value')));
 
     return $q.all({
       lines,
       aliases,
     }).then((result) => {
-      _.set(result, 'lines', _.compact(result.lines));
+      set(result, 'lines', compact(result.lines));
 
       // handle pool of aliases
       const pools = [];
-      _.set(result, 'aliases', _.filter(result.aliases, (alias) => {
+      set(result, 'aliases', filter(result.aliases, (alias) => {
         if (alias.partOfPool) {
-          let pool = _.find(pools, { id: alias.partOfPool });
+          let pool = find(pools, { id: alias.partOfPool });
           if (!pool) {
             pool = {
               id: alias.partOfPool,
@@ -121,14 +131,14 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
   };
 
   self.getServicesToAttachList = function getServicesToAttachList() {
-    return _.values(_.filter(self.servicesToAttach, val => !!val));
+    return values(filter(self.servicesToAttach, val => !!val));
   };
 
   self.attachSelectedServices = function attachSelectedServices() {
     const errorList = [];
     self.isAttaching = true;
 
-    return $q.all(_.map(self.getServicesToAttachList(), service => OvhApiTelephony.Service().v6()
+    return $q.all(map(self.getServicesToAttachList(), service => OvhApiTelephony.Service().v6()
       .changeOfBillingAccount({
         billingAccount: self.billingAccounts.selected.billingAccount,
         serviceName: service.serviceName,

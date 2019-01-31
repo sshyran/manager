@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 export default /* @ngInject */ function ($q, $translate, tucValidator, TucToast) {
   const self = this;
@@ -34,7 +37,7 @@ export default /* @ngInject */ function ($q, $translate, tucValidator, TucToast)
   }
 
   function getProtocol(url) {
-    return _.get(url.match(protocolRegexp), '[0]') || 'http://';
+    return get(url.match(protocolRegexp), '[0]') || 'http://';
   }
 
   self.isValidURL = function isValidURL(value) {
@@ -60,14 +63,14 @@ export default /* @ngInject */ function ($q, $translate, tucValidator, TucToast)
 
   self.urlModel = function urlModel(newUrl) {
     if (arguments.length) {
-      return (self.numberCtrl.number.feature.url = !_.isEmpty(newUrl) ? self.model.urlProtocol + newUrl : ''); // eslint-disable-line
+      return (self.numberCtrl.number.feature.url = !isEmpty(newUrl) ? self.model.urlProtocol + newUrl : ''); // eslint-disable-line
     }
     return self.numberCtrl.number.feature.url.replace(protocolRegexp, '');
   };
 
   self.urlRecordModel = function urlRecordModel(newUrl) {
     if (arguments.length) {
-      return (self.numberCtrl.number.feature.urlRecord = !_.isEmpty(newUrl) ? self.model.urlRecordProtocol + newUrl : ''); // eslint-disable-line
+      return (self.numberCtrl.number.feature.urlRecord = !isEmpty(newUrl) ? self.model.urlRecordProtocol + newUrl : ''); // eslint-disable-line
     }
     return self.numberCtrl.number.feature.urlRecord.replace(protocolRegexp, '');
   };
@@ -84,7 +87,7 @@ export default /* @ngInject */ function ($q, $translate, tucValidator, TucToast)
   self.updateUrlProtocol = function updateUrlProtocol() {
     const urlValue = self.numberCtrl.number.feature.url.replace(protocolRegexp, '');
     self.sviConfigForm.url.$setDirty(true);
-    self.numberCtrl.number.feature.url = !_.isEmpty(urlValue) ? self.model.urlProtocol + urlValue : '';
+    self.numberCtrl.number.feature.url = !isEmpty(urlValue) ? self.model.urlProtocol + urlValue : '';
   };
 
   /**
@@ -93,7 +96,7 @@ export default /* @ngInject */ function ($q, $translate, tucValidator, TucToast)
   self.updateUrlRecordProtocol = function updateUrlRecordProtocol() {
     const urlValue = self.numberCtrl.number.feature.urlRecord.replace(protocolRegexp, '');
     self.sviConfigForm.urlRecord.$setDirty(true);
-    self.numberCtrl.number.feature.urlRecord = !_.isEmpty(urlValue) ? self.model.urlRecordProtocol + urlValue : '';
+    self.numberCtrl.number.feature.urlRecord = !isEmpty(urlValue) ? self.model.urlRecordProtocol + urlValue : '';
   };
 
   /**

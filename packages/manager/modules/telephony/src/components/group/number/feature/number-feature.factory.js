@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import keys from 'lodash/keys';
 import angular from 'angular';
 
 export default /* @ngInject */ ($q) => {
@@ -54,7 +56,7 @@ export default /* @ngInject */ ($q) => {
   TelephonyGroupNumberFeature.prototype.setInfos = function setInfos(featureOptions) {
     const self = this;
 
-    angular.forEach(_.keys(featureOptions), (featureOptionKey) => {
+    angular.forEach(keys(featureOptions), (featureOptionKey) => {
       self[featureOptionKey] = featureOptions[featureOptionKey];
     });
 
@@ -80,7 +82,7 @@ export default /* @ngInject */ ($q) => {
     const self = this;
 
     if (self.saveForEdition && cancel) {
-      angular.forEach(_.keys(self.saveForEdition), (editionKey) => {
+      angular.forEach(keys(self.saveForEdition), (editionKey) => {
         self[editionKey] = angular.copy(self.saveForEdition[editionKey]);
       });
     }
@@ -102,7 +104,7 @@ export default /* @ngInject */ ($q) => {
     if (attr) {
       return self[attr] !== self.saveForEdition[attr];
     }
-    angular.forEach(_.keys(self.saveForEdition), (attrKey) => {
+    angular.forEach(keys(self.saveForEdition), (attrKey) => {
       if (!hasChange) {
         hasChange = self.hasChange(attrKey);
       }

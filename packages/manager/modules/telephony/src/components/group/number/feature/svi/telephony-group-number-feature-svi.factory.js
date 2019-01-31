@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
 import angular from 'angular';
 
 /**
@@ -109,7 +112,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
     }
 
     if (attr) {
-      return !_.isEqual(_.get(self.saveForEdition, attr), _.get(self, attr));
+      return !isEqual(get(self.saveForEdition, attr), get(self, attr));
     }
     return self.hasChange('featureType') || self.hasChange('url') || self.hasChange('urlRecord');
   };

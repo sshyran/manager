@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import forEach from 'lodash/forEach';
+import flatten from 'lodash/flatten';
+import map from 'lodash/map';
+import set from 'lodash/set';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingBillCtrl(
   $stateParams,
@@ -16,17 +22,17 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingBil
         billingAccount: $stateParams.billingAccount,
       }).$promise
       .then(ids => $q
-        .all(_.map(
-          _.chunk(ids, 50),
+        .all(map(
+          chunk(ids, 50),
           chunkIds => OvhApiTelephony.HistoryConsumption().v6().getBatch({
             billingAccount: $stateParams.billingAccount,
             date: chunkIds,
           }).$promise,
         ))
         .then((chunkResult) => {
-          const result = _.map(_.flatten(chunkResult), 'value');
-          return _.each(result, (consumption) => {
-            _.set(consumption, 'priceValue', consumption.price ? consumption.price.value : null);
+          const result = map(flatten(chunkResult), 'value');
+          return forEach(result, (consumption) => {
+            set(consumption, 'priceValue', consumption.price ? consumption.price.value : null);
           });
         }));
   }
@@ -67,11 +73,11 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingBil
   };
 
   self.download = function download(consumption, type) {
-    _.set(consumption, 'downloading', true);
+    set(consumption, 'downloading', true);
     self.fetchFile(consumption, type).then((info) => {
       $window.location.href = info.url; // eslint-disable-line
     }, err => new TucToastError(err)).finally(() => {
-      _.set(consumption, 'downloading', false);
+      set(consumption, 'downloading', false);
     });
   };
 }

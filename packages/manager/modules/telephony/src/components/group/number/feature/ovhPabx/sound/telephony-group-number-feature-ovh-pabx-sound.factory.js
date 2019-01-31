@@ -1,3 +1,5 @@
+
+
 export default /* @ngInject */ ($q, $timeout, OvhApiMe, OvhApiTelephony, tucVoipServiceTask) => {
   /*= ==================================
     =            CONSTRUCTOR            =

@@ -1,4 +1,11 @@
-import _ from 'lodash';
+
+
+import assignWith from 'lodash/assignWith';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import pick from 'lodash/pick';
+import pull from 'lodash/pull';
 
 export default /* @ngInject */ function ($q, $stateParams, $translate, $timeout,
   OvhApiTelephony, TucToast, TucToastError, tucTelephonyBulk) {
@@ -29,7 +36,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $timeout,
     OvhApiTelephony.Fax().v6().resetCache();
     OvhApiTelephony.Fax().v6().resetQueryCache();
     return fetchSettings()
-      .then(settings => _.assign(self.settings, _.pick(settings, ['faxQuality', 'faxMaxCall', 'faxTagLine', 'fromName', 'fromEmail', 'mailFormat', 'redirectionEmail']), (objectValue, sourceValue) => (_.isArray(sourceValue) ? sourceValue : sourceValue.toString())));
+      .then(settings => assignWith(self.settings, pick(settings, ['faxQuality', 'faxMaxCall', 'faxTagLine', 'fromName', 'fromEmail', 'mailFormat', 'redirectionEmail']), (objectValue, sourceValue) => (isArray(sourceValue) ? sourceValue : sourceValue.toString())));
   }
 
   /* -----  End of HELPERS  ------ */
@@ -50,7 +57,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $timeout,
   };
 
   self.removeRedirectionEmail = function removeRedirectionEmail(email) {
-    _.pull(self.settings.redirectionEmail, email);
+    pull(self.settings.redirectionEmail, email);
   };
 
   self.updateAllSettings = function updateAllSettings() {
@@ -126,7 +133,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $timeout,
   };
 
   self.filterServices = function filterServices(services) {
-    return _.filter(services, service => ['fax', 'voicefax'].indexOf(service.featureType) > -1);
+    return filter(services, service => ['fax', 'voicefax'].indexOf(service.featureType) > -1);
   };
 
   self.getBulkParams = function getBulkParams() {
@@ -152,7 +159,7 @@ export default /* @ngInject */ function ($q, $stateParams, $translate, $timeout,
   };
 
   self.onBulkError = function onBulkError(error) {
-    TucToast.error([$translate.instant('telephony_service_fax_settings_update_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    TucToast.error([$translate.instant('telephony_service_fax_settings_update_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 
   /* -----  End of BULK  ------ */

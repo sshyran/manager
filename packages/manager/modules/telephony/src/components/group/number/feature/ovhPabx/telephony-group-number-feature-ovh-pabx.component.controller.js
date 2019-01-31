@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
 
 export default /* @ngInject */ function ($q, $translate, TelephonyMediator, TucToast) {
   const self = this;
@@ -22,7 +24,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator, TucT
 
   self.refreshDisplayedDialplan = function refreshDisplayedDialplan() {
     // for the moment it will only have one dialplan per ovhPabx. So we take the first.
-    self.dialplan = _.get(self.numberCtrl.number.feature.dialplans, '[0]');
+    self.dialplan = get(self.numberCtrl.number.feature.dialplans, '[0]');
   };
 
   /* -----  End of HELPERS  ------*/

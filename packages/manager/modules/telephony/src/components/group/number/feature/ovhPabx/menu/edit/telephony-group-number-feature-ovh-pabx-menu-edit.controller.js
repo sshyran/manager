@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import set from 'lodash/set';
 
 export default /* @ngInject */ function ($scope) {
   const self = this;
@@ -33,7 +36,7 @@ export default /* @ngInject */ function ($scope) {
   self.getSoundInfos = function getSoundInfos(soundType) {
     const isTts = ['greetSoundTts', 'invalidSoundTts'].indexOf(soundType) > -1;
 
-    return !isTts ? _.get(self.menuCtrl.ovhPabx.getSound(_.get(self.menu, soundType)), 'name') : _.get(self.menuCtrl.ovhPabx.getSingleTts(_.get(self.menu, soundType)), 'text');
+    return !isTts ? get(self.menuCtrl.ovhPabx.getSound(get(self.menu, soundType)), 'name') : get(self.menuCtrl.ovhPabx.getSingleTts(get(self.menu, soundType)), 'text');
   };
 
   self.soundListModel = function soundListModel(soundId) {
@@ -46,7 +49,7 @@ export default /* @ngInject */ function ($scope) {
     }
 
     // getter
-    return _.get(self.menu, self.menuCtrl.popoverStatus.rightPage);
+    return get(self.menu, self.menuCtrl.popoverStatus.rightPage);
   };
 
   /* ----------  FORM VALIDATION  ----------*/
@@ -71,7 +74,7 @@ export default /* @ngInject */ function ($scope) {
   };
 
   self.isFormValid = function isFormValid() {
-    const ttsForm = _.get(self.menuOptionsForm, '$ctrl.ttsCreateForm');
+    const ttsForm = get(self.menuOptionsForm, '$ctrl.ttsCreateForm');
     if (ttsForm) {
       return ttsForm.$dirty ? self.menuOptionsForm.$valid : true;
     }
@@ -199,7 +202,7 @@ export default /* @ngInject */ function ($scope) {
   };
 
   self.onTtsCreationSuccess = function onTtsCreationSuccess(tts) {
-    _.set(self.menuCtrl.menu, self.menuCtrl.popoverStatus.rightPage, tts.id);
+    set(self.menuCtrl.menu, self.menuCtrl.popoverStatus.rightPage, tts.id);
     self.state.collapse = false;
     self.menuCtrl.popoverStatus.move = false;
   };

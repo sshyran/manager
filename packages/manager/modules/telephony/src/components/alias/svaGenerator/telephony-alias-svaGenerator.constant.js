@@ -1,3 +1,5 @@
+
+
 const SVA_GENERATOR_CONFIG = {
 
   taxCoefficient: 1.2,

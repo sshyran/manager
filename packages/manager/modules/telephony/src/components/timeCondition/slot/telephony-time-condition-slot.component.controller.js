@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
 
 export default class voipTimeConditionSlotCtrl {
   /* @ngInject */
@@ -8,9 +10,9 @@ export default class voipTimeConditionSlotCtrl {
 
   getSlotDetail(property) {
     if (this.slot.inEdition && this.slot.saveForEdition) {
-      return _.get(this.slot.saveForEdition, property, '');
+      return get(this.slot.saveForEdition, property, '');
     }
 
-    return _.get(this.slot, property, '');
+    return get(this.slot, property, '');
   }
 }

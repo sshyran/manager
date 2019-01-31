@@ -1,5 +1,9 @@
-import _ from 'lodash';
+
 import angular from 'angular';
+
+import filter from 'lodash/filter';
+import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 
 export default /* @ngInject */ function ($scope, $timeout, $filter, $q, TelephonyMediator) {
   const self = this;
@@ -55,7 +59,7 @@ export default /* @ngInject */ function ($scope, $timeout, $filter, $q, Telephon
   };
 
   self.isSlotValid = function isSlotValid() {
-    return !_.isEmpty(self.slot.number);
+    return !isEmpty(self.slot.number);
   };
 
   /* -----  End of HELPERS  ------*/
@@ -153,10 +157,10 @@ export default /* @ngInject */ function ($scope, $timeout, $filter, $q, Telephon
       }
 
       // sort and filter groups and reject groups that don't have any service
-      self.groups = _.chain(TelephonyMediator.groups)
-        .filter(group => group.getAllServices().length > 0)
-        .sortBy(group => group.getDisplayedName())
-        .value();
+      self.groups = sortBy(
+        filter(TelephonyMediator.groups, group => group.getAllServices().length > 0),
+        group => group.getDisplayedName(),
+      );
     }).finally(() => {
       self.loading.init = false;
     });

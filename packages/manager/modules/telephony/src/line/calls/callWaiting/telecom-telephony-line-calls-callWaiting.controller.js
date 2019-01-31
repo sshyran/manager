@@ -1,3 +1,9 @@
+
+
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import pick from 'lodash/pick';
+
 angular.module('managerApp').controller('TelecomTelephonyLineCallsCallWaitingCtrl', function ($q, $stateParams, $translate, TucToast, TucToastError, OvhApiTelephony, TelephonyMediator, tucTelephonyBulk) {
   const self = this;
 
@@ -74,7 +80,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsCallWaitingCtr
         serviceName: $stateParams.serviceName,
       }).$promise)
       .then((options) => {
-        self.options = _.pick(options, ['callWaiting', 'intercom']);
+        self.options = pick(options, ['callWaiting', 'intercom']);
         self.options.intercomSwitch = (self.options.intercom !== 'no');
 
         setIntercomGetter(self.options);
@@ -110,7 +116,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsCallWaitingCtr
   };
 
   self.filterServices = function (services) {
-    return _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
+    return filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
   };
 
   self.getBulkParams = function () {
@@ -142,7 +148,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsCallWaitingCtr
   };
 
   self.onBulkError = function (error) {
-    TucToast.error([$translate.instant('telephony_line_actions_line_calls_cw_intercom_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    TucToast.error([$translate.instant('telephony_line_actions_line_calls_cw_intercom_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 
   /* -----  End of BULK  ------ */

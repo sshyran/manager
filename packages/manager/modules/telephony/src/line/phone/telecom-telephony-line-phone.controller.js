@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyLinePhoneCtrl', function ($q, $stateParams, $translate, TelephonyMediator) {
   const self = this;
 

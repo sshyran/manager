@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationSchedulerOldPabxCtrl', function ($q, $translate, $stateParams, TelephonyMediator, TucToast) {
   const self = this;
 

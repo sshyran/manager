@@ -1,5 +1,15 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import findIndex from 'lodash/findIndex';
+import flatten from 'lodash/flatten';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import map from 'lodash/map';
+import startsWith from 'lodash/startsWith';
+import valuesIn from 'lodash/valuesIn';
 import moment from 'moment';
 
 export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, TelephonyGroupNumber,
@@ -95,7 +105,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
   TelephonyGroup.prototype.initLines = function initLines(lineOptions) {
     const self = this;
 
-    if (_.isArray(lineOptions)) {
+    if (isArray(lineOptions)) {
       angular.forEach(lineOptions, (lineOption) => {
         self.addLine(lineOption);
       });
@@ -119,7 +129,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
   TelephonyGroup.prototype.getLine = function getLine(lineServiceName) {
     const self = this;
 
-    return _.find(self.lines, {
+    return find(self.lines, {
       serviceName: lineServiceName,
     });
   };
@@ -129,7 +139,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
   TelephonyGroup.prototype.initNumbers = function initNumbers(numberOptions) {
     const self = this;
 
-    if (_.isArray(numberOptions)) {
+    if (isArray(numberOptions)) {
       angular.forEach(numberOptions, (numberOpts) => {
         self.addNumber(numberOpts);
       });
@@ -153,7 +163,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
   TelephonyGroup.prototype.getNumber = function getNumber(numberServiceName) {
     const self = this;
 
-    return _.find(self.numbers, {
+    return find(self.numbers, {
       serviceName: numberServiceName,
     });
   };
@@ -174,7 +184,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
 
       if (self.getNumber(number.serviceName)) {
         self.numbers
-          .splice(_.findIndex(self.numbers, n => n.serviceName === number.serviceName), 1, number);
+          .splice(findIndex(self.numbers, n => n.serviceName === number.serviceName), 1, number);
       } else {
         self.addNumber(number);
       }
@@ -191,22 +201,46 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
     return OvhApiTelephony.Service().RepaymentConsumption().Aapi().repayment({
       billingAccount: self.billingAccount,
     }).$promise.then((consumptions) => {
-      const calledFeesPrefix = _.chain(TELEPHONY_REPAYMENT_CONSUMPTION)
-        .get('calledFeesPrefix').valuesIn().flatten()
-        .value();
-      const groupRepaymentsPrefix = _.chain(TELEPHONY_REPAYMENT_CONSUMPTION)
-        .get('groupRepaymentsPrefix').valuesIn().flatten()
-        .value();
+      const calledFeesPrefix = flatten(
+        valuesIn(
+          get(
+            TELEPHONY_REPAYMENT_CONSUMPTION,
+            'calledFeesPrefix',
+          ),
+        ),
+      );
+      const groupRepaymentsPrefix = flatten(
+        valuesIn(
+          get(
+            TELEPHONY_REPAYMENT_CONSUMPTION,
+            'groupRepaymentsPrefix',
+          ),
+        ),
+      );
 
-      self.calledFees = _.chain(calledFeesPrefix)
-        .map(prefix => _.filter(consumptions, consumption => _.startsWith(consumption.dialed, prefix) && consumption.price !== 0 && moment(consumption.creationDatetime).isAfter(moment().subtract(60, 'days').format()))).flatten().value();
+      self.calledFees = flatten(
+        map(
+          calledFeesPrefix,
+          prefix => filter(
+            consumptions,
+            consumption => startsWith(consumption.dialed, prefix)
+              && consumption.price !== 0
+              && moment(consumption.creationDatetime).isAfter(moment().subtract(60, 'days').format()),
+          ),
+        ),
+      );
 
       self.groupRepayments = {
         all: consumptions,
-        raw: _.chain(groupRepaymentsPrefix)
-          .map(prefix => _.filter(consumptions,
-            consumption => _.startsWith(consumption.dialed, prefix) && consumption.price !== 0))
-          .flatten().value(),
+        raw: flatten(
+          map(
+            groupRepaymentsPrefix,
+            prefix => filter(
+              consumptions,
+              consumption => startsWith(consumption.dialed, prefix) && consumption.price !== 0,
+            ),
+          ),
+        ),
       };
 
       return self;
@@ -218,7 +252,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
   TelephonyGroup.prototype.initFax = function initFax(faxOptionsList) {
     const self = this;
 
-    if (_.isArray(faxOptionsList)) {
+    if (isArray(faxOptionsList)) {
       angular.forEach(faxOptionsList, (faxOptions) => {
         self.addFax(faxOptions);
       });
@@ -242,7 +276,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupLine, Telepho
   TelephonyGroup.prototype.getFax = function getFax(faxServiceName) {
     const self = this;
 
-    return _.find(self.fax, {
+    return find(self.fax, {
       serviceName: faxServiceName,
     });
   };

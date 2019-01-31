@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import map from 'lodash/map';
 
 export default /* @ngInject */ function (
   $q,
@@ -38,7 +40,7 @@ export default /* @ngInject */ function (
       self.creditThreshold = data.billingAccount.creditThreshold;
       self.currentOutplan = data.billingAccount.currentOutplan;
       self.allowedOutplan = data.billingAccount.allowedOutplan;
-      self.credits = _.map(data.credits, credit => ({
+      self.credits = map(data.credits, credit => ({
         label: `${credit.text} ${$translate.instant('telephony_group_billing_credit_threshold_without_tax')}`,
         value: credit,
         disable: credit.value === self.creditThreshold.value,

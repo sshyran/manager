@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import sumBy from 'lodash/sumBy';
 
 export default /* @ngInject */ function GroupConsumptionPieChartCtrl() {
   const self = this;
@@ -12,6 +14,6 @@ export default /* @ngInject */ function GroupConsumptionPieChartCtrl() {
   };
 
   this.getTotal = function getTotal() {
-    return _.sum(self.dataset, set => set.count);
+    return sumBy(self.dataset, set => set.count);
   };
 }

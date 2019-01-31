@@ -1,4 +1,12 @@
-import _ from 'lodash';
+
+
+import assign from 'lodash/assign';
+import endsWith from 'lodash/endsWith';
+import head from 'lodash/head';
+import pick from 'lodash/pick';
+import remove from 'lodash/remove';
+import set from 'lodash/set';
+import some from 'lodash/some';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $timeout,
@@ -32,12 +40,12 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
           greeting: OvhApiTelephony.Voicemail().Greetings().v6().get({
             billingAccount: $stateParams.billingAccount,
             serviceName: $stateParams.serviceName,
-            id: _.first(result),
+            id: head(result),
           }).$promise,
           download: OvhApiTelephony.Voicemail().Greetings().v6().download({
             billingAccount: $stateParams.billingAccount,
             serviceName: $stateParams.serviceName,
-            id: _.first(result),
+            id: head(result),
           }).$promise.catch(() => {
             // sometimes api fails to retrieve a download URL,
             // since it's not blocking we don't want to reject an error
@@ -46,8 +54,8 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
           }),
         }).then((data) => {
           const res = {};
-          _.assign(res, _.pick(data.greeting, ['dir', 'id']));
-          _.assign(res, _.pick(data.download, ['filename', 'url']));
+          assign(res, pick(data.greeting, ['dir', 'id']));
+          assign(res, pick(data.download, ['filename', 'url']));
           return res;
         });
       }
@@ -60,8 +68,8 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
     OvhApiTelephony.Voicemail().v6().resetQueryCache();
     return fetchSettings().then((settings) => {
       self.settings = settings;
-      _.assign(self.recordingForm, _.pick(settings, ['doNotRecord']));
-      _.assign(self.notificationForm, _.pick(settings, ['audioFormat', 'keepMessage', 'fromName', 'fromEmail']));
+      assign(self.recordingForm, pick(settings, ['doNotRecord']));
+      assign(self.notificationForm, pick(settings, ['audioFormat', 'keepMessage', 'fromName', 'fromEmail']));
     });
   }
 
@@ -70,7 +78,7 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
     OvhApiTelephony.Voicemail().Greetings().v6().resetQueryCache();
     return fetchGreetings().then((greetings) => {
       self.greetings = greetings;
-      _.assign(self.recordingForm, _.pick(greetings, ['filename', 'url', 'dir']));
+      assign(self.recordingForm, pick(greetings, ['filename', 'url', 'dir']));
     });
   }
 
@@ -79,7 +87,7 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
   }
 
   function pickEditableSettings(settings) {
-    return _.pick(settings, ['audioFormat', 'doNotRecord', 'forcePassword', 'fromEmail',
+    return pick(settings, ['audioFormat', 'doNotRecord', 'forcePassword', 'fromEmail',
       'fromName', 'keepMessage', 'redirectionEmails']);
   }
 
@@ -149,7 +157,7 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
   self.checkValidAudioExtention = function checkValidAudioExtention(file) {
     const validExtensions = ['aiff', 'au', 'flac', 'ogg', 'mp3', 'wav', 'wma'];
     const fileName = file ? file.name : '';
-    const found = _.some(validExtensions, ext => _.endsWith(fileName.toLowerCase(), ext));
+    const found = some(validExtensions, ext => endsWith(fileName.toLowerCase(), ext));
     if (!found) {
       TucToastError($translate.instant('telephony_line_answer_voicemail_options_recording_file_invalid'));
     }
@@ -159,7 +167,7 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
   self.updateRecording = function updateRecording() {
     // update changes
     const settings = pickEditableSettings(self.settings);
-    _.assign(settings, _.pick(self.recordingForm, ['doNotRecord']));
+    assign(settings, pick(self.recordingForm, ['doNotRecord']));
 
     const update = function update() {
       const promises = {
@@ -238,7 +246,7 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
   self.updateSettings = function updateSettings() {
     // update changes
     const settings = pickEditableSettings(self.settings);
-    _.assign(settings, _.pick(self.notificationForm, ['audioFormat', 'keepMessage', 'fromName', 'fromEmail']));
+    assign(settings, pick(self.notificationForm, ['audioFormat', 'keepMessage', 'fromName', 'fromEmail']));
 
     self.notificationForm.isUpdating = true;
     self.cancelAddEmail();
@@ -266,13 +274,13 @@ export default /* @ngInject */ function ($scope, $stateParams, $q, $translate, $
   self.removeEmail = function removeEmail(redirection) {
     // update changes
     const settings = pickEditableSettings(self.settings);
-    _.remove(settings.redirectionEmails, {
+    remove(settings.redirectionEmails, {
       email: redirection.email,
       type: redirection.type,
     });
 
     self.emailForm.isRemoving = true;
-    _.set(redirection, 'removing', true);
+    set(redirection, 'removing', true);
 
     const update = OvhApiTelephony.Voicemail().v6().setSettings({
       billingAccount: $stateParams.billingAccount,

@@ -1,3 +1,5 @@
+
+
 import angular from 'angular';
 
 import bankHolidaysCtrl from './bankHolidays/telephony-scheduler-bank-holidays.controller';
@@ -13,8 +15,8 @@ const moduleName = 'ovhManagerTelephonySchedulerActions';
 
 angular.module(moduleName, [])
   .run(($templateCache) => {
-    $templateCache.run('telephony/scheduler/actions/import/telephony-scheduler-import.html', importTpl);
-    $templateCache.run('telephony/scheduler/actions/export/telephony-scheduler-export.html', exportTpl);
+    $templateCache.put('telephony/scheduler/actions/import/telephony-scheduler-import.html', importTpl);
+    $templateCache.put('telephony/scheduler/actions/export/telephony-scheduler-export.html', exportTpl);
     $templateCache.put('telephony/scheduler/actions/bankHolidays/telephony-scheduler-bank-holidays.html', bankHolidaysTpl);
     $templateCache.put('telephony/scheduler/actions/deleteAll/telephony-scheduler-delete-all.html', deleteAllTpl);
   })

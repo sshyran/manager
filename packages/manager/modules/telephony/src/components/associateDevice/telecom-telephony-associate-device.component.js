@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import assign from 'lodash/assign';
+import find from 'lodash/find';
+import head from 'lodash/head';
+import map from 'lodash/map';
+import set from 'lodash/set';
 
 import template from './telecom-telephony-associate-device.html';
 
@@ -35,21 +41,21 @@ export default {
           billingAccount: self.billingAccount,
           serviceName: self.serviceName,
         }).$promise
-        .then(phones => $q.all(_.map(phones, (phone) => {
-          const line = _.first(phone.associatedLines).serviceName;
+        .then(phones => $q.all(map(phones, (phone) => {
+          const line = head(phone.associatedLines).serviceName;
           return OvhApiTelephony.Line().Phone().v6()
             .get({
               billingAccount: self.billingAccount,
               serviceName: line,
             }).$promise
-            .then(details => _.assign(phone, details))
+            .then(details => assign(phone, details))
             .then(thePhone => OvhApiTelephony.Line().v6()
               .ips({
                 billingAccount: self.billingAccount,
                 serviceName: line,
               }).$promise.then((ips) => {
                 if (ips.length) {
-                  _.set(thePhone, 'ip', _.first(ips).ip);
+                  set(thePhone, 'ip', head(ips).ip);
                 }
                 return thePhone;
               }));
@@ -57,7 +63,7 @@ export default {
     };
 
     self.findPhoneByMac = function findPhoneByMac(mac) {
-      return _.find(self.phones, { macAddress: mac });
+      return find(self.phones, { macAddress: mac });
     };
 
     self.attachDevice = function attachDevice() {

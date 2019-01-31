@@ -1,5 +1,13 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import forEach from 'lodash/forEach';
+import find from 'lodash/find';
+import pick from 'lodash/pick';
+import remove from 'lodash/remove';
+import set from 'lodash/set';
+import sortBy from 'lodash/sortBy';
 
 import template from './telecom-telephony-alias-members.html';
 
@@ -38,7 +46,7 @@ export default {
     };
 
     self.api.addMembersToList = function addMembersToList(toAdd) {
-      _.each(toAdd.reverse(), (member) => {
+      forEach(toAdd.reverse(), (member) => {
         self.members.unshift(member);
       });
       self.api.reorderMembers(self.members).then((orderedMembers) => {
@@ -66,10 +74,10 @@ export default {
       if (member.description === undefined) {
         self.api.fetchMemberDescription(member)
           .then((result) => {
-            _.set(member, 'description', result);
+            set(member, 'description', result);
           })
           .catch(() => {
-            _.set(member, 'description', '');
+            set(member, 'description', '');
           });
       }
     };
@@ -81,9 +89,9 @@ export default {
       // we do it by hand first so the ui is refreshed immediately
       const fromPos = fromMember.position;
       const toPos = toMember.position;
-      _.set(fromMember, 'position', toPos);
-      _.set(toMember, 'position', fromPos);
-      self.members = _.sortBy(self.members, 'position');
+      set(fromMember, 'position', toPos);
+      set(toMember, 'position', fromPos);
+      self.members = sortBy(self.members, 'position');
 
       self.sortableMembersOpts.disabled = true;
       return self.api
@@ -94,9 +102,9 @@ export default {
         })
         .catch((err) => {
           // revert changes
-          _.set(fromMember, 'position', fromPos);
-          _.set(toMember, 'position', toPos);
-          self.members = _.sortBy(self.members, 'position');
+          set(fromMember, 'position', fromPos);
+          set(toMember, 'position', toPos);
+          self.members = sortBy(self.members, 'position');
           return new TucToastError(err);
         })
         .finally(() => {
@@ -131,8 +139,8 @@ export default {
       const attrs = ['status', 'timeout', 'wrapUpTime', 'simultaneousLines'];
       return self.api.updateMember(self.memberInEdition).then(() => {
         TucToast.success($translate.instant('telephony_alias_members_change_success'));
-        const toUpdate = _.find(self.members, { agentId: self.memberInEdition.agentId });
-        _.assign(toUpdate, _.pick(self.memberInEdition, attrs));
+        const toUpdate = find(self.members, { agentId: self.memberInEdition.agentId });
+        assign(toUpdate, pick(self.memberInEdition, attrs));
         self.cancelMemberEdition();
       }).catch(err => new TucToastError(err)).finally(() => {
         self.loaders.editing = false;
@@ -144,7 +152,7 @@ export default {
       self.api.deleteMember(self.memberToDelete).then(() => {
         self.memberToDelete = null;
         TucToast.success($translate.instant('telephony_alias_members_delete_success'));
-        _.remove(self.members, m => m.agentId === toDelete.agentId);
+        remove(self.members, m => m.agentId === toDelete.agentId);
         return self.api.reorderMembers(self.members);
       }).then((orderedMembers) => {
         self.members = orderedMembers;

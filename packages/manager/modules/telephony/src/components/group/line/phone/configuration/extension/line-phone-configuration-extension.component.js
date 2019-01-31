@@ -1,5 +1,11 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import chunk from 'lodash/chunk';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import sortBy from 'lodash/sortBy';
+import take from 'lodash/take';
 
 import template from './line-phone-configuration-extension.html';
 
@@ -51,9 +57,13 @@ export default {
      *  @return {Array} Sorted list of configs grouped by modules
      */
     function groupConfigs(configs) {
-      return _.chain(configs).filter(config => config.name !== 'ExtensionKeyModule').sortBy(config => parseInt(config.name.match(/\d+/g)[0], 10)).chunk(self.configGroup.keysPerPage)
-        .chunk(self.configGroup.pagesPerModule)
-        .value();
+      let confs = filter(configs, config => config.name !== 'ExtensionKeyModule');
+
+      confs = sortBy(confs, config => parseInt(config.name.match(/\d+/g)[0], 10));
+      confs = chunk(confs, self.configGroup.keysPerPage);
+      confs = chunk(confs, self.configGroup.pagesPerModule);
+
+      return confs;
     }
 
     function createDynamicConfigs(moduleNumberToAdd, existingModulesCount) {
@@ -100,7 +110,7 @@ export default {
         self.modules = existingModules.concat(groupConfigs(self.configGroup.dynamicConfigs));
       } else {
         self.configGroup.dynamicConfigs = null;
-        self.modules = _.take(existingModules, self.extensionKeyModuleConfig.value);
+        self.modules = take(existingModules, self.extensionKeyModuleConfig.value);
       }
 
       if (self.model.moduleIndex >= self.modules.length) {
@@ -125,7 +135,7 @@ export default {
     });
 
     self.$onInit = function $onInit() {
-      self.extensionKeyModuleConfig = _.find(self.configGroup.configs, {
+      self.extensionKeyModuleConfig = find(self.configGroup.configs, {
         name: 'ExtensionKeyModule',
       });
 

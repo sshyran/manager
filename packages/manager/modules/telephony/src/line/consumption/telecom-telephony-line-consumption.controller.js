@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyLineConsumptionCtrl', function ($translate) {
   const self = this;
 

@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import assign from 'lodash/assign';
+import endsWith from 'lodash/endsWith';
+import map from 'lodash/map';
+import pick from 'lodash/pick';
+import some from 'lodash/some';
 import angular from 'angular';
 import moment from 'moment';
 
@@ -50,7 +56,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator,
   function getConferenceEnums() {
     return TelephonyMediator.getApiModelEnum('telephony.ConferenceLanguageEnum').then((availableLanguages) => {
       // populate language list
-      self.availableLanguages = _.map(availableLanguages, languageKey => ({
+      self.availableLanguages = map(availableLanguages, languageKey => ({
         value: languageKey,
         label: $translate.instant(`language_${languageKey}_${languageKey !== 'en' ? languageKey.toUpperCase() : 'GB'}`),
       }));
@@ -145,7 +151,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator,
     self.popoverOpen = !self.popoverOpen;
     if (self.popoverOpen) {
       self.numberCtrl.number.feature.startEdition();
-      _.assign(self, _.pick(self.numberCtrl.number.feature, settingsAttributes));
+      assign(self, pick(self.numberCtrl.number.feature, settingsAttributes));
     } else {
       self.numberCtrl.number.feature.stopEdition(true);
       self.status.move = null;
@@ -173,7 +179,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator,
   self.onSoundFileChoosed = function onSoundFileChoosed(file) {
     const validExtensions = ['wav', 'mp3', 'ogg'];
     const fileName = file ? file.name : '';
-    const found = _.some(validExtensions, ext => _.endsWith(fileName.toLowerCase(), ext));
+    const found = some(validExtensions, ext => endsWith(fileName.toLowerCase(), ext));
 
     if (!found) {
       return new TucToastError($translate.instant('telephony_number_feature_conference_announcement_file_invalid'));
@@ -231,7 +237,7 @@ export default /* @ngInject */ function ($q, $translate, TelephonyMediator,
       self.numberCtrl.number.feature.getWebAccess(),
       getConferenceEnums(),
     ]).then(() => {
-      _.assign(self, _.pick(self.numberCtrl.number.feature, settingsAttributes));
+      assign(self, pick(self.numberCtrl.number.feature, settingsAttributes));
       telephonyGroupNumberConferencePolling
         .initPolling(self.numberCtrl.number.feature).then(angular.noop, (error) => {
           if (error) {

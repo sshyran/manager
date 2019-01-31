@@ -1,3 +1,11 @@
+
+
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import set from 'lodash/set';
+
 angular.module('managerApp').controller('TelecomTelephonyLinePhoneProgammableKeysCtrl', function ($translate, TelephonyMediator, $stateParams, $uibModal, TucToast, OvhApiTelephony, tucTelephonyBulk, tucVoipLinePhoneFunction) {
   const self = this;
 
@@ -94,7 +102,7 @@ angular.module('managerApp').controller('TelecomTelephonyLinePhoneProgammableKey
   };
 
   self.buildBulkActions = function () {
-    return _.map(self.functionKeys.raw, key => ({
+    return map(self.functionKeys.raw, key => ({
       name: 'functionKey',
       route: '/telephony/{billingAccount}/line/{serviceName}/phone/functionKey/{keyNum}'.replace('{keyNum}', key.keyNum),
       method: 'PUT',
@@ -106,13 +114,13 @@ angular.module('managerApp').controller('TelecomTelephonyLinePhoneProgammableKey
   };
 
   self.filterServices = function (services) {
-    const filteredServices = _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
+    const filteredServices = filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
 
     return tucVoipLinePhoneFunction
       .fetchAll()
-      .then(voipLinePhoneFunctions => _.filter(
+      .then(voipLinePhoneFunctions => filter(
         filteredServices,
-        service => _.find(voipLinePhoneFunctions, {
+        service => find(voipLinePhoneFunctions, {
           serviceName: service.serviceName,
           billingAccount: service.billingAccount,
         }),
@@ -121,9 +129,9 @@ angular.module('managerApp').controller('TelecomTelephonyLinePhoneProgammableKey
 
   self.onBulkSuccess = function (bulkResult) {
     if (bulkResult.error.length) {
-      _.set(bulkResult, 'error', _.map(bulkResult.error, (error) => {
-        const errorDetails = _.get(error, 'errors[0]');
-        _.set(error, 'errors[0].error', errorDetails.statusCode === 501
+      set(bulkResult, 'error', map(bulkResult.error, (error) => {
+        const errorDetails = get(error, 'errors[0]');
+        set(error, 'errors[0].error', errorDetails.statusCode === 501
           ? $translate.instant('telephony_line_phone_programmableKeys_bulk_error_details') : errorDetails.error);
 
         return error;
@@ -149,7 +157,7 @@ angular.module('managerApp').controller('TelecomTelephonyLinePhoneProgammableKey
   };
 
   self.onBulkError = function (error) {
-    TucToast.error([$translate.instant('telephony_line_phone_programmableKeys_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    TucToast.error([$translate.instant('telephony_line_phone_programmableKeys_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 
   /* -----  End of BULK  ------ */

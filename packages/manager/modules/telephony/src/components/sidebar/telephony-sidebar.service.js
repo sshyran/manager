@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import filter from 'lodash/filter';
 
 export default /* @nInject */ function ($translate, SidebarMenu, tucTelecomVoip, tucVoipService) {
   const self = this;
@@ -64,7 +66,7 @@ export default /* @nInject */ function ($translate, SidebarMenu, tucTelecomVoip,
           .constructor.sortServicesByDisplayedName(billingAccount.getLines());
 
         // display lines except plugAndFax and fax
-        const sortedSipLines = _.filter(sortedLines, line => ['plugAndFax', 'fax', 'voicefax'].indexOf(line.featureType) === -1);
+        const sortedSipLines = filter(sortedLines, line => ['plugAndFax', 'fax', 'voicefax'].indexOf(line.featureType) === -1);
 
         // add line subsections to billingAccount subsection
         const sipTrunkPrefix = $translate.instant('telecom_sidebar_section_telephony_trunk');

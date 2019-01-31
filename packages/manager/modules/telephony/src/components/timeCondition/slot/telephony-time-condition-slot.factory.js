@@ -1,5 +1,8 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
 
 export default () => {
   /*= ==================================
@@ -100,7 +103,7 @@ export default () => {
     compareToObject = fromOriginal ? self.originalSave : self.saveForEdition;
 
     if (property) {
-      return !_.isEqual(_.get(self, property), _.get(compareToObject, property));
+      return !isEqual(get(self, property), get(compareToObject, property));
     }
     return self.hasChange('status', fromOriginal) || self.hasChange('number', fromOriginal) || self.hasChange('type', fromOriginal);
   };

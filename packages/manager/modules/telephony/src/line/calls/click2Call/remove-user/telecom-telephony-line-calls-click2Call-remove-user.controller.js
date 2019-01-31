@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyLineClick2CallRemoveUserCtrl', function ($uibModalInstance, $q, $timeout, TelephonyGroupLineClick2CallUser, line, user) {
   const self = this;
 

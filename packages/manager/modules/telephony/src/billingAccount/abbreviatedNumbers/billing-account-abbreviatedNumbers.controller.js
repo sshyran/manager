@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import pick from 'lodash/pick';
 
 export default class TelecomTelephonyAbbreviatedNumbersCtrl {
   /* @ngInject */
@@ -30,7 +32,7 @@ export default class TelecomTelephonyAbbreviatedNumbersCtrl {
       billingAccount: this.$stateParams.billingAccount,
       serviceName: this.$stateParams.serviceName,
       abbreviatedNumber: abbreviatedNumber.abbreviatedNumber,
-    }, _.pick(abbreviatedNumber, ['destinationNumber', 'name', 'surname'])).$promise;
+    }, pick(abbreviatedNumber, ['destinationNumber', 'name', 'surname'])).$promise;
   }
 
   load() {

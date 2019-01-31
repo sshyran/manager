@@ -1,4 +1,9 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import every from 'lodash/every';
+import filter from 'lodash/filter';
+import startsWith from 'lodash/startsWith';
 import template from './line-phone-configuration-user-interface.html';
 
 export default {
@@ -35,7 +40,7 @@ export default {
           ====================================== */
 
     self.$onInit = function $onInit() {
-      const keys = _.filter(self.configGroup.configs, config => _.startsWith(config.name, 'KeyLabel')).sort((configA, configB) => {
+      const keys = filter(self.configGroup.configs, config => startsWith(config.name, 'KeyLabel')).sort((configA, configB) => {
         const matchA = parseInt(configA.name.match(/\d+/g)[0], 10);
         const matchB = parseInt(configB.name.match(/\d+/g)[0], 10);
 
@@ -46,15 +51,15 @@ export default {
         }
         return 0;
       });
-      self.screenPages = _.chunk(keys, self.configGroup.keysPerScreen);
+      self.screenPages = chunk(keys, self.configGroup.keysPerScreen);
 
       // build fake config group if some
       if (keys.length < self.configGroup.configs.length) {
         self.fakeConfigGroup = {
           name: [self.configGroup.name, 'fake'].join('-'),
-          configs: _.filter(self.configGroup.configs, config => !_.startsWith(config.name, 'KeyLabel')),
+          configs: filter(self.configGroup.configs, config => !startsWith(config.name, 'KeyLabel')),
         };
-        self.fakeConfigGroup.isExpertOnly = _.every(self.fakeConfigGroup.configs, {
+        self.fakeConfigGroup.isExpertOnly = every(self.fakeConfigGroup.configs, {
           level: 'expert',
         });
       }

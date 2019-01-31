@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import isUndefined from 'lodash/isUndefined';
+import now from 'lodash/now';
+import random from 'lodash/random';
 import angular from 'angular';
 
 export default /* @ngInject */ ($q, OvhApiTelephony) => {
@@ -37,7 +43,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
     this.extensionId = ruleOptions.extensionId;
 
     // other attributes
-    this.ruleId = ruleOptions.ruleId || _.random(_.now());
+    this.ruleId = ruleOptions.ruleId || random(now());
     this.actionParam = null;
     this.action = null;
     this.negativeAction = null;
@@ -69,7 +75,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
       }
 
       self.action = ruleOptions.action || 'setCallerName';
-      self.negativeAction = !_.isUndefined(ruleOptions.negativeAction)
+      self.negativeAction = !isUndefined(ruleOptions.negativeAction)
         ? ruleOptions.negativeAction : false;
       self.position = ruleOptions.position || null;
       self.status = ruleOptions.status || 'OK';
@@ -248,7 +254,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony) => {
     }
 
     if (attr) {
-      return !_.isEqual(_.get(self.saveForEdition, attr), _.get(self, attr));
+      return !isEqual(get(self.saveForEdition, attr), get(self, attr));
     }
     return self.hasChange('action') || self.hasChange('actionParam');
   };

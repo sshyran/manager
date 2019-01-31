@@ -1,4 +1,13 @@
-import _ from 'lodash';
+
+
+import assignIn from 'lodash/assignIn';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import flatten from 'lodash/flatten';
+import isArray from 'lodash/isArray';
+import map from 'lodash/map';
+import pull from 'lodash/pull';
+import set from 'lodash/set';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAliasService(
   $q,
@@ -21,8 +30,8 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
    * @return {String}         Display list
    */
   function generateInternationalClarification(country) {
-    const firstForeigns = _.pull(Object.keys(TELEPHONY_NUMBER_OFFER.prefix), country).slice(0, 3);
-    return `${_.map(firstForeigns, theCountry => TELEPHONY_NUMBER_OFFER.prefix[theCountry]).join(',&nbsp;')},&nbsp;...`;
+    const firstForeigns = pull(Object.keys(TELEPHONY_NUMBER_OFFER.prefix), country).slice(0, 3);
+    return `${map(firstForeigns, theCountry => TELEPHONY_NUMBER_OFFER.prefix[theCountry]).join(',&nbsp;')},&nbsp;...`;
   }
 
   /**
@@ -33,8 +42,8 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
     return OvhApiMe.v6()
       .get().$promise
       .then((user) => {
-        _.set(user, 'country', user.country.toLowerCase());
-        _.set(user, 'legalform', !user.companyNationalIdentificationNumber ? 'individual' : 'corporation');
+        set(user, 'country', user.country.toLowerCase());
+        set(user, 'legalform', !user.companyNationalIdentificationNumber ? 'individual' : 'corporation');
         return user;
       })
       .catch(err => $q.reject(err));
@@ -50,17 +59,17 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
    */
   this.getOfferDetails = function getOfferDetails(billingAccount, country, idsParam, filter) {
     TELEPHONY_NUMBER_OFFER.detail.international.clarification = `(${generateInternationalClarification(country)})`; // eslint-disable-line
-    const ids = _.isArray(idsParam) ? idsParam : [idsParam];
+    const ids = isArray(idsParam) ? idsParam : [idsParam];
     return OvhApiTelephony.Number().Aapi().prices({
       billingAccount,
       country,
     }).$promise.then(
 
       // No error from 2API
-      offers => _.flatten(ids.map((id) => {
-        const prices = _.filter(
+      offers => flatten(ids.map((id) => {
+        const prices = filter(
           offers,
-          _.extend(
+          assignIn(
             {
               type: id,
             },
@@ -68,10 +77,10 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
           ),
         );
 
-        return _.map(prices, (price) => {
-          _.set(price, 'withoutTax.text', noBreakingSpace(price.withoutTax.text));
-          _.set(price, 'withTax.text', noBreakingSpace(price.withTax.text));
-          return _.extend(price, TELEPHONY_NUMBER_OFFER.detail[id]);
+        return map(prices, (price) => {
+          set(price, 'withoutTax.text', noBreakingSpace(price.withoutTax.text));
+          set(price, 'withTax.text', noBreakingSpace(price.withTax.text));
+          return assignIn(price, TELEPHONY_NUMBER_OFFER.detail[id]);
         });
       })),
 
@@ -107,8 +116,8 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
       range,
     }).$promise.then(
       numbers => ({
-        premium: _.map(_.filter(numbers, { isPremium: true }), 'number'),
-        common: _.map(_.filter(numbers, { isPremium: false }), 'number'),
+        premium: map(filter(numbers, { isPremium: true }), 'number'),
+        common: map(filter(numbers, { isPremium: false }), 'number'),
       }),
       (err) => {
         $q.reject(err);
@@ -128,7 +137,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
       country,
       type,
     ).then((pricesParam) => {
-      const prices = _.map(
+      const prices = map(
         pricesParam,
         price => ({
           title: ['telephony_order_number_type', price.range, 'label'].join('_'),
@@ -138,8 +147,8 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountOrderAlias
         }),
       );
       return {
-        common: _.find(prices, { range: 'common' }),
-        specific: _.find(prices, { range: 'specific' }),
+        common: find(prices, { range: 'common' }),
+        specific: find(prices, { range: 'specific' }),
       };
     });
   };

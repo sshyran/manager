@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import set from 'lodash/set';
+import some from 'lodash/some';
 import angular from 'angular';
 
 export default /* @ngInject */ function ($q, $timeout, $translate,
@@ -32,7 +36,7 @@ export default /* @ngInject */ function ($q, $timeout, $translate,
   };
 
   self.hasInCreationExtension = function hasInCreationExtension() {
-    return _.some(self.dialplan.extensions, {
+    return some(self.dialplan.extensions, {
       status: 'IN_CREATION',
     });
   };
@@ -181,7 +185,7 @@ export default /* @ngInject */ function ($q, $timeout, $translate,
         $timeout(() => {
           // update extensions positions
           angular.forEach(self.dialplan.extensions, (extension, index) => {
-            _.set(extension, 'position', index + 1);
+            set(extension, 'position', index + 1);
           });
 
           // call api to update all positions
@@ -202,7 +206,7 @@ export default /* @ngInject */ function ($q, $timeout, $translate,
     }).finally(() => {
       self.loading.init = false;
     }).catch((error) => {
-      TucToast.error([$translate.instant('telephony_number_feature_ovh_pabx_load_error'), _.get(error, 'data.message') || ''].join(' '));
+      TucToast.error([$translate.instant('telephony_number_feature_ovh_pabx_load_error'), get(error, 'data.message') || ''].join(' '));
       return $q.reject(error);
     });
   };

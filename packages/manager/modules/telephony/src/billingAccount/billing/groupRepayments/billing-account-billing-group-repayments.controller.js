@@ -1,4 +1,17 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import floor from 'lodash/floor';
+import get from 'lodash/get';
+import groupBy from 'lodash/groupBy';
+import keysIn from 'lodash/keysIn';
+import map from 'lodash/map';
+import round from 'lodash/round';
+import size from 'lodash/size';
+import sort from 'lodash/sort';
+import sum from 'lodash/sum';
+import sumBy from 'lodash/sumBy';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingGroupRepaymentsCtrl(
   $q,
@@ -45,48 +58,47 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingGro
     return TelephonyMediator
       .getGroup($stateParams.billingAccount)
       .then(group => group.getRepaymentConsumption().then((repaymentConsumptions) => {
-        self.consumptions.all = _.get(repaymentConsumptions, 'groupRepayments.all');
-        self.consumptions.raw = _.get(repaymentConsumptions, 'groupRepayments.raw');
+        self.consumptions.all = get(repaymentConsumptions, 'groupRepayments.all');
+        self.consumptions.raw = get(repaymentConsumptions, 'groupRepayments.raw');
 
         // total
-        self.consumptions.total.duration = _.sum(self.consumptions.raw, 'duration');
-        self.consumptions.total.price = _.chain(self.consumptions.raw).sum('price').floor(2).value();
-        self.consumptions.total.call = _.chain(self.consumptions.all).size().value();
+        self.consumptions.total.duration = sumBy(self.consumptions.raw, 'duration');
+        self.consumptions.total.price = floor(sumBy(self.consumptions.raw, 'price'), 2);
+        self.consumptions.total.call = size(self.consumptions.all);
 
         // repayable
-        const repayable = _.chain(self.consumptions.all).filter('repayable');
-        self.consumptions.repayable.price = repayable.map('price').sum().floor(2).value();
-        self.consumptions.repayable.call = repayable.size().value();
-        self.consumptions.hasAmountAvailable = _.find(self.consumptions.raw, 'repayable');
+        const repayable = filter(self.consumptions.all, 'repayable');
+        self.consumptions.repayable.price = floor(sum(map(repayable, 'price')), 2);
+        self.consumptions.repayable.call = size(repayable);
+        self.consumptions.hasAmountAvailable = find(self.consumptions.raw, 'repayable');
 
         // deferred
-        self.consumptions.deferred.price = _.floor(
+        self.consumptions.deferred.price = floor(
           self.consumptions.total.price - self.consumptions.repayable.price,
           2,
         );
         self.consumptions.deferred.call = self.consumptions.total.call
           - self.consumptions.repayable.call;
 
-        const dialedNumbers = _.chain(self.consumptions.raw).groupBy('dialed').keysIn().value();
-        self.consumptions.groupedByDialedNumber = _.map(dialedNumbers, (dialed) => {
-          const consumptions = _.filter(self.consumptions.raw, { dialed });
-          const totalPrice = _.chain(consumptions).sum('price').round(2).value();
-          const operators = _.chain(consumptions).groupBy('operator').keysIn().sort()
-            .value();
-          const details = _.map(operators, (operator) => {
-            const operatorConsumptions = _.filter(consumptions, { operator });
-            const totalOperatorPrice = _.chain(operatorConsumptions).sum('price').round(2).value();
+        const dialedNumbers = keysIn(groupBy(self.consumptions.raw, 'dialed'));
+        self.consumptions.groupedByDialedNumber = map(dialedNumbers, (dialed) => {
+          const consumptions = filter(self.consumptions.raw, { dialed });
+          const totalPrice = round(sumBy(consumptions, 'price'), 2);
+          const operators = sort(keysIn(groupBy(consumptions, 'operator')));
+          const details = map(operators, (operator) => {
+            const operatorConsumptions = filter(consumptions, { operator });
+            const totalOperatorPrice = round(sumBy(operatorConsumptions, 'price'), 2);
             return {
               operator,
-              totalOperatorConsumption: _.size(operatorConsumptions),
-              totalOperatorDuration: _.sum(operatorConsumptions, 'duration'),
+              totalOperatorConsumption: size(operatorConsumptions),
+              totalOperatorDuration: sumBy(operatorConsumptions, 'duration'),
               totalOperatorPrice,
             };
           });
           return {
             dialed,
-            totalConsumption: _.size(consumptions),
-            totalDuration: _.sum(consumptions, 'duration'),
+            totalConsumption: size(consumptions),
+            totalDuration: sumBy(consumptions, 'duration'),
             totalPrice,
             details,
           };
@@ -117,7 +129,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingGro
       TucToast.success($translate.instant('telephony_group_billing_group_repayments_ask_new_repayment_success'));
       init();
     }).catch((error) => {
-      TucToast.error([$translate.instant('telephony_group_billing_group_repayments_ask_new_repayment_error'), _.get(error, 'data.message')].join(' '));
+      TucToast.error([$translate.instant('telephony_group_billing_group_repayments_ask_new_repayment_error'), get(error, 'data.message')].join(' '));
       init();
       return $q.reject(error);
     }).finally(() => {

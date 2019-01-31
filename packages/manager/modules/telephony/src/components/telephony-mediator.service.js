@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import keys from 'lodash/keys';
 
 export default /* @ngInject */ function ($q, $stateParams, OvhApiTelephony,
   TelephonyVoipService, TELEPHONY_REDIRECT_URLS, TELEPHONY_REDIRECT_V4_HASH) {
@@ -29,7 +32,7 @@ export default /* @ngInject */ function ($q, $stateParams, OvhApiTelephony,
     ============================================ */
 
   self.getV6ToV4RedirectionUrl = function getV6ToV4RedirectionUrl(constantPath) {
-    let url = TELEPHONY_REDIRECT_URLS.telephonyV4 + _.get(TELEPHONY_REDIRECT_V4_HASH, constantPath);
+    let url = TELEPHONY_REDIRECT_URLS.telephonyV4 + get(TELEPHONY_REDIRECT_V4_HASH, constantPath);
 
     if ($stateParams.serviceName) {
       url = url.replace('{lineNumber}', $stateParams.serviceName);
@@ -74,8 +77,8 @@ export default /* @ngInject */ function ($q, $stateParams, OvhApiTelephony,
     let tmpService = null;
 
     for (const billingAccount in self.groups) { // eslint-disable-line
-      if (_.get(self.groups, billingAccount)) {
-        tmpGroup = _.get(self.groups, billingAccount);
+      if (get(self.groups, billingAccount)) {
+        tmpGroup = get(self.groups, billingAccount);
         tmpService = tmpGroup.getService(serviceName);
         if (tmpService) {
           return tmpService;
@@ -134,7 +137,7 @@ export default /* @ngInject */ function ($q, $stateParams, OvhApiTelephony,
   /* ----------  COUNT  ----------*/
 
   self.getCount = function getCount(force) {
-    return self.getAll(force).then(groups => _.keys(groups).length);
+    return self.getAll(force).then(groups => keys(groups).length);
   };
 
   /* -----  End of SIDEBAR HELPERS  ------*/

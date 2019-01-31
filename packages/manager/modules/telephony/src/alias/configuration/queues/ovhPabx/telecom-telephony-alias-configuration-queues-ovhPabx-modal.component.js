@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('telecomTelephonyAliasConfigurationQueuesOvhPabxCtrlModal', class telecomTelephonyAliasConfigurationQueuesOvhPabxCtrlModal {
   constructor($uibModalInstance) {
     this.$uibModalInstance = $uibModalInstance;

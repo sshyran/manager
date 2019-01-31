@@ -1,3 +1,5 @@
+
+
 export default /* @ngInject */ function ($q, $scope, $translate, TucToast) {
   const self = this;
 

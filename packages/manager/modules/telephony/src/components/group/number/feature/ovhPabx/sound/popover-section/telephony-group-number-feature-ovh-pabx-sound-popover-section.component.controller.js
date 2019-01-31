@@ -1,3 +1,5 @@
+
+
 export default /* @ngInject */ function ($translate, $translatePartialLoader) {
   const self = this;
 

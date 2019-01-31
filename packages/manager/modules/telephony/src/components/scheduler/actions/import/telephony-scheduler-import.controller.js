@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import endsWith from 'lodash/endsWith';
+import isNull from 'lodash/isNull';
+import some from 'lodash/some';
 
 export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData, OvhApiMe) {
   const self = this;
@@ -27,14 +31,14 @@ export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData,
   }
 
   self.checkIcsFileType = function checkIcsFileType(file) {
-    if (_.isNull(file)) {
+    if (isNull(file)) {
       self.isFileExtentionInvalid = false;
     } else {
       const validExtensions = ['ics', 'ical'];
       const fileName = file ? file.name : '';
-      self.isFileExtentionInvalid = !_.some(
+      self.isFileExtentionInvalid = !some(
         validExtensions,
-        ext => _.endsWith(fileName.toLowerCase(), ext),
+        ext => endsWith(fileName.toLowerCase(), ext),
       );
     }
     return self.isFileExtentionInvalid;

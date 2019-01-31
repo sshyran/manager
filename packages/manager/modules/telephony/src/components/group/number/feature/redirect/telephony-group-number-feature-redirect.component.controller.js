@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import keys from 'lodash/keys';
 
 export default /* @ngInject */ function ($q, $translate,
   TelephonyMediator, tucVoipServiceTask, TucToast) {
@@ -44,7 +48,7 @@ export default /* @ngInject */ function ($q, $translate,
   }
 
   function getNumberList() {
-    return self.numberCtrl.number.feature.featureType === 'ddi' ? [] : _.filter(self.group.numbers, number => number.serviceName !== self.numberCtrl.number.serviceName);
+    return self.numberCtrl.number.feature.featureType === 'ddi' ? [] : filter(self.group.numbers, number => number.serviceName !== self.numberCtrl.number.serviceName);
   }
 
   function refreshAvailableServices() {
@@ -58,7 +62,7 @@ export default /* @ngInject */ function ($q, $translate,
     // manage selected service
     selectedService = getDestinationService();
     if (selectedService
-      && !_.find(self.availableServices, { serviceName: selectedService.serviceName })) {
+      && !find(self.availableServices, { serviceName: selectedService.serviceName })) {
       self.availableServices.push(selectedService);
     }
 
@@ -159,7 +163,7 @@ export default /* @ngInject */ function ($q, $translate,
           + self.group.fax.length;
 
         // set display helpers
-        self.displayHelpers.hasOtherGroups = _.keys(TelephonyMediator.groups).length > 1;
+        self.displayHelpers.hasOtherGroups = keys(TelephonyMediator.groups).length > 1;
         self.displayHelpers.availableTypes = self.numberCtrl.number.feature.featureType === 'ddi' ? ['trunk', 'sip', 'plugAndFax'] : undefined;
         if (self.displayHelpers.hasOtherGroups
           && self.displayHelpers.currentGroupServiceCount <= 4) {

@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').constant('TELEPHONY_ALIAS_CONSUMPTION', {
   chart: {
     type: 'line',

@@ -1,5 +1,10 @@
-import _ from 'lodash';
 import angular from 'angular';
+
+import chunk from 'lodash/chunk';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import snakeCase from 'lodash/snakeCase';
 
 export default /* @ ngInject */ function ($scope, $q, $timeout, $translate,
   TelephonyMediator, TucToast) {
@@ -23,7 +28,7 @@ export default /* @ ngInject */ function ($scope, $q, $timeout, $translate,
     =============================== */
 
   function getAvailableDtmfKeys() {
-    return _.chunk(self.menuEntryCtrl.menuCtrl.menu.getAllDtmfEntryKeys(), 3);
+    return chunk(self.menuEntryCtrl.menuCtrl.menu.getAllDtmfEntryKeys(), 3);
   }
 
   function manageEntryRemove() {
@@ -121,7 +126,7 @@ export default /* @ ngInject */ function ($scope, $q, $timeout, $translate,
     }).catch((error) => {
       // manage error display
       const errorTranslationKey = self.menuEntryCtrl.menuEntry.status === 'DRAFT' ? 'telephony_number_feature_ovh_pabx_menu_entry_create_error' : 'telephony_number_feature_ovh_pabx_menu_entry_edit_error';
-      TucToast.error([$translate.instant(errorTranslationKey), _.get(error, 'data.message') || ''].join(' '));
+      TucToast.error([$translate.instant(errorTranslationKey), get(error, 'data.message') || ''].join(' '));
 
       // remove entry from menu if entry had to be created
       if (self.menuEntryCtrl.menuEntry.status === 'DRAFT') {
@@ -154,16 +159,20 @@ export default /* @ ngInject */ function ($scope, $q, $timeout, $translate,
 
   function getAvailableActions() {
     return TelephonyMediator.getApiModelEnum('telephony.OvhPabxIvrMenuEntryActionEnum').then((enumValues) => {
-      self.availableActions = _.chain(enumValues).filter((enumVal) => {
+      const availableActions = filter(enumValues, (enumVal) => {
         if (self.menuEntryCtrl.menuCtrl.ovhPabx.featureType === 'cloudIvr') {
           return enumVal !== 'callcenter';
         }
         return true;
-      }).map(enumVal => ({
+      });
+
+      map(availableActions, enumVal => ({
         value: enumVal,
-        label: $translate.instant(`telephony_number_feature_ovh_pabx_menu_entry_action_${_.snakeCase(enumVal)}`),
-        explain: $translate.instant(`telephony_number_feature_ovh_pabx_menu_entry_action_${_.snakeCase(enumVal)}_explain`),
-      })).value();
+        label: $translate.instant(`telephony_number_feature_ovh_pabx_menu_entry_action_${snakeCase(enumVal)}`),
+        explain: $translate.instant(`telephony_number_feature_ovh_pabx_menu_entry_action_${snakeCase(enumVal)}_explain`),
+      }));
+
+      self.availableActions = availableActions;
     });
   }
 

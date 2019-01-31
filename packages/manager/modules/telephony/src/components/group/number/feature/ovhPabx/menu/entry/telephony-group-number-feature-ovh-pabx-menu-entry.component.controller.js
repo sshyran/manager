@@ -1,4 +1,7 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
+import uniqueId from 'lodash/uniqueId';
 
 export default /* @ngInject */ function ($q) {
   const self = this;
@@ -32,9 +35,9 @@ export default /* @ngInject */ function ($q) {
 
   self.getEntryAttribute = function getEntryAttribute(attr) {
     if (self.menuEntry.status === 'MENUSUB_PENDING') {
-      return _.get(self.menuEntry, attr);
+      return get(self.menuEntry, attr);
     }
-    return _.get(self.menuEntry.inEdition ? self.menuEntry.saveForEdition : self.menuEntry, attr);
+    return get(self.menuEntry.inEdition ? self.menuEntry.saveForEdition : self.menuEntry, attr);
   };
 
   self.getConnectionEndpointUuid = function getConnectionEndpointUuid() {
@@ -102,7 +105,7 @@ export default /* @ngInject */ function ($q) {
 
     // set ovh pabx
     self.ovhPabx = self.parentCtrl.ovhPabx;
-    self.uuid = _.uniqueId('ovhPabx_menu_entry_'.concat(self.menuEntry.entryId)); // set controller unique id
+    self.uuid = uniqueId('ovhPabx_menu_entry_'.concat(self.menuEntry.entryId)); // set controller unique id
     // check if popover needs to be opened
     self.popoverStatus.isOpen = self.menuEntry.status === 'DRAFT' && self.parentCtrl.popoverStatus.isParentClicked;
 

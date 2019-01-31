@@ -1,5 +1,9 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import endsWith from 'lodash/endsWith';
+import get from 'lodash/get';
+import some from 'lodash/some';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookContactImportCtrl(
   $q,
@@ -21,7 +25,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
   self.checkValidTextExtention = function checkValidTextExtention(file) {
     const validExtensions = ['csv', 'xls', 'xlsx'];
     const fileName = file ? file.name : '';
-    const found = _.some(validExtensions, ext => _.endsWith(fileName.toLowerCase(), ext));
+    const found = some(validExtensions, ext => endsWith(fileName.toLowerCase(), ext));
     if (!found) {
       TucToastError($translate.instant('telephony_phonebook_contact_action_import_file_invalid'));
     }
@@ -51,7 +55,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountPhonebookC
       self.phonecontactForm.isImporting = false;
       self.phonecontactForm.hasBeenImported = true;
       return $timeout(self.close({
-        taskId: _.get(result.import, 'taskId'),
+        taskId: get(result.import, 'taskId'),
       }), 1000);
     }).catch(err => self.cancel({
       type: 'API',

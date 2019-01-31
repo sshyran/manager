@@ -1,5 +1,14 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import defaultsDeep from 'lodash/defaultsDeep';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import map from 'lodash/map';
+import set from 'lodash/set';
+import some from 'lodash/some';
 import moment from 'moment';
 
 import calendarController from './telephony-time-condition-calendar.directive.controller';
@@ -24,11 +33,11 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
     function compileFcEvent(event, element) {
       if (event.scope) {
         event.scope.$destroy();
-        _.set(event, 'scope', null);
+        set(event, 'scope', null);
       }
 
-      _.set(event, 'scope', iScope.$new());
-      _.set(event, 'scope.isPopoverOpen', false);
+      set(event, 'scope', iScope.$new());
+      set(event, 'scope.isPopoverOpen', false);
       element.attr({
         'data-responsive-popover': "'telephony/timeCondition/condition/edit/telephony-time-condition-condition-edit.html'",
         'data-popover-trigger': 'outsideClick',
@@ -55,15 +64,15 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
 
     function manageEventEdit(event) {
       // set current edited condition
-      _.set(event, 'scope.isPopoverOpen', true);
-      _.set(controller, 'conditionInEdition', controller.timeCondition.getCondition(event.id).startEdition());
-      _.set(controller, 'fcEventInEdition', event);
+      set(event, 'scope.isPopoverOpen', true);
+      set(controller, 'conditionInEdition', controller.timeCondition.getCondition(event.id).startEdition());
+      set(controller, 'fcEventInEdition', event);
     }
 
     function setEventsEditable(editableState) {
       // disable edition of all events
       uiCalendarConfig.calendars.conditionsCalendar.fullCalendar('clientEvents').forEach((event) => {
-        _.set(event, 'editable', editableState);
+        set(event, 'editable', editableState);
       });
 
       // as event editable doesn't enable/disable events resize add/remove a custom class
@@ -76,15 +85,15 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
     }
 
     function getOpenedEvent() {
-      return _.find(uiCalendarConfig.calendars.conditionsCalendar.fullCalendar('clientEvents'), fcEvent => _.get(fcEvent, 'scope.isPopoverOpen') === true);
+      return find(uiCalendarConfig.calendars.conditionsCalendar.fullCalendar('clientEvents'), fcEvent => get(fcEvent, 'scope.isPopoverOpen') === true);
     }
 
     /* -----  End of HELPERS  ------*/
 
     // set calendar options
-    _.set(controller, 'options', _.defaultsDeep(controller.options || {}, {
+    set(controller, 'options', defaultsDeep(controller.options || {}, {
       height: 'auto',
-      locale: localStorage && localStorage.getItem('univers-selected-language') ? _.first(localStorage.getItem('univers-selected-language').split('_')) : 'fr',
+      locale: localStorage && localStorage.getItem('univers-selected-language') ? head(localStorage.getItem('univers-selected-language').split('_')) : 'fr',
       editable: true,
       allDaySlot: false,
       allDayDefault: false,
@@ -109,9 +118,17 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
         end: '24:00',
       },
       events(start, end, timeZone, callback) {
-        return callback(_.chain(controller.timeCondition.conditions).filter(condition => condition.state !== 'TO_DELETE').map(condition => angular.extend(condition.toFullCalendarEvent(), {
-          className: condition.policy || 'available',
-        })).value());
+        return callback(
+          map(
+            filter(
+              controller.timeCondition.conditions,
+              condition => condition.state !== 'TO_DELETE',
+            ),
+            condition => angular.extend(condition.toFullCalendarEvent(), {
+              className: condition.policy || 'available',
+            }),
+          ),
+        );
       },
       eventClick(event) {
         manageEventEdit(event);
@@ -137,11 +154,11 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
       },
       eventAfterAllRender(fcView) {
         let fcEvent;
-        const draftCondition = _.find(controller.timeCondition.conditions, {
+        const draftCondition = find(controller.timeCondition.conditions, {
           state: 'DRAFT',
         });
         if (draftCondition) {
-          fcEvent = _.find(fcView.calendar.clientEvents(), {
+          fcEvent = find(fcView.calendar.clientEvents(), {
             id: draftCondition.conditionId,
           });
           if (fcEvent) {
@@ -154,12 +171,12 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
       select(start, end) {
         // check if there is an opened event. If so unselect and return
         let openedEvent = getOpenedEvent();
-        const openedCondition = _.find(controller.timeCondition.conditions, {
+        const openedCondition = find(controller.timeCondition.conditions, {
           inEdition: true,
         });
 
         if (openedCondition) {
-          openedEvent = _.find(uiCalendarConfig.calendars.conditionsCalendar.fullCalendar('clientEvents'), {
+          openedEvent = find(uiCalendarConfig.calendars.conditionsCalendar.fullCalendar('clientEvents'), {
             id: openedCondition.conditionId,
           });
           if (openedEvent && openedEvent.scope) {
@@ -208,7 +225,7 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
       },
     }));
 
-    _.set(controller, 'onPopoverInit', () => {
+    set(controller, 'onPopoverInit', () => {
       setEventsEditable(false);
     });
 
@@ -252,8 +269,8 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
         .forEach(timeCondition => currentController.timeCondition.conditions.push(timeCondition));
     }
 
-    _.set(controller, 'onPopoverValidate', (fcEvent, daysToRepeat, currentController) => {
-      _.set(fcEvent, 'scope.isPopoverOpen', false);
+    set(controller, 'onPopoverValidate', (fcEvent, daysToRepeat, currentController) => {
+      set(fcEvent, 'scope.isPopoverOpen', false);
 
       if (daysToRepeat.length > 0) {
         repeatToDays(fcEvent, daysToRepeat, currentController);
@@ -261,11 +278,11 @@ export default /* @ngInject */ ($compile, $timeout, TucToast,
       uiCalendarConfig.calendars.conditionsCalendar.fullCalendar('refetchEvents');
     });
 
-    _.set(controller, 'onPopoverDestroy', (fcEvent) => {
-      _.set(fcEvent, 'editable', true);
-      _.set(fcEvent, 'scope.isPopoverOpen', false);
+    set(controller, 'onPopoverDestroy', (fcEvent) => {
+      set(fcEvent, 'editable', true);
+      set(fcEvent, 'scope.isPopoverOpen', false);
 
-      const isConditionInEdition = _.some(controller.timeCondition.conditions, {
+      const isConditionInEdition = some(controller.timeCondition.conditions, {
         inEdition: true,
       });
 

@@ -1,5 +1,11 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import indexOf from 'lodash/indexOf';
+import map from 'lodash/map';
+import uniq from 'lodash/uniq';
 
 export default /* @ngInject */ function ($scope, $q, $translate, $filter, TelephonyMediator) {
   const self = this;
@@ -43,7 +49,7 @@ export default /* @ngInject */ function ($scope, $q, $translate, $filter, Teleph
 
   self.availableFilter = (service) => {
     if (self.availableTypes) {
-      return _.indexOf(self.availableTypes, self.getServiceType(service)) >= 0;
+      return indexOf(self.availableTypes, self.getServiceType(service)) >= 0;
     }
     return true;
   };
@@ -84,12 +90,17 @@ export default /* @ngInject */ function ($scope, $q, $translate, $filter, Teleph
       translations: $translate.refresh(),
       services: TelephonyMediator.getAll(),
     }).then((result) => {
-      self.groupList = _.chain(result.services)
-        .pluck('billingAccount')
-        .uniq()
-        .filter(id => _.indexOf(self.hiddenGroups, id) < 0)
-        .map(id => _.find(TelephonyMediator.groups, { billingAccount: id }))
-        .value();
+      let groupList = map(result.services, 'billingAccount');
+      groupList = uniq(groupList);
+      groupList = filter(groupList, id => indexOf(self.hiddenGroups, id) < 0);
+      groupList = map(
+        groupList,
+        billingAccount => find(TelephonyMediator.groups, {
+          billingAccount,
+        }),
+      );
+
+      self.groupList = groupList;
     }).finally(() => {
       self.loading.init = false;
     });

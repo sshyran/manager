@@ -1,3 +1,19 @@
+
+
+import assign from 'lodash/assign';
+import chunk from 'lodash/chunk';
+import forEach from 'lodash/forEach';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import flatten from 'lodash/flatten';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import map from 'lodash/map';
+import pick from 'lodash/pick';
+import remove from 'lodash/remove';
+import set from 'lodash/set';
+import sortBy from 'lodash/sortBy';
+
 angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueuesOvhPabxCtrl', function ($stateParams, $q, $translate, $timeout, $uibModal, OvhApiTelephony, TucToast, TucToastError) {
   const self = this;
 
@@ -14,14 +30,14 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
       self.agents = result.agents;
       self.sounds = result.sounds;
       if (self.queues.length) {
-        _.first(self.queues).isOpen = true;
+        head(self.queues).isOpen = true;
       }
     }).catch(err => new TucToastError(err));
   }
 
   self.fetchEnums = function () {
     return OvhApiTelephony.v6().schema().$promise.then(result => ({
-      strategy: _.get(result, ['models', 'telephony.OvhPabxHuntingQueueStrategyEnum', 'enum']),
+      strategy: get(result, ['models', 'telephony.OvhPabxHuntingQueueStrategyEnum', 'enum']),
     }));
   };
 
@@ -31,21 +47,21 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
         billingAccount: $stateParams.billingAccount,
         serviceName: $stateParams.serviceName,
       }).$promise
-      .then(ids => $q.all(_.map(ids, id => OvhApiTelephony.OvhPabx().Hunting().Queue().v6()
+      .then(ids => $q.all(map(ids, id => OvhApiTelephony.OvhPabx().Hunting().Queue().v6()
         .get({
           billingAccount: $stateParams.billingAccount,
           serviceName: $stateParams.serviceName,
           queueId: id,
         }).$promise.then((queue) => {
           if (queue.actionOnOverflowParam) {
-            _.set(queue, 'actionOnOverflowParam', parseInt(queue.actionOnOverflowParam, 10));
+            set(queue, 'actionOnOverflowParam', parseInt(queue.actionOnOverflowParam, 10));
           }
           return self.bindQueueAgentsApi(queue);
         }))));
   };
 
   self.bindQueueAgentsApi = function (queue) {
-    _.set(queue, 'agentsApi', {
+    set(queue, 'agentsApi', {
       getMemberList: angular.noop, // api provided by component
       addMembersToList: angular.noop, // api provided by component
       fetchMembers() {
@@ -70,7 +86,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
     return OvhApiTelephony.OvhPabx().Sound().v6().query({
       billingAccount: $stateParams.billingAccount,
       serviceName: $stateParams.serviceName,
-    }).$promise.then(ids => $q.all(_.map(ids, id => OvhApiTelephony.OvhPabx().Sound().v6().get({
+    }).$promise.then(ids => $q.all(map(ids, id => OvhApiTelephony.OvhPabx().Sound().v6().get({
       billingAccount: $stateParams.billingAccount,
       serviceName: $stateParams.serviceName,
       soundId: id,
@@ -78,7 +94,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
   };
 
   self.findSoundById = function (soundId) {
-    return _.find(self.sounds, { soundId: parseInt(`${soundId}`, 10) });
+    return find(self.sounds, { soundId: parseInt(`${soundId}`, 10) });
   };
 
   self.fetchAgents = function () {
@@ -88,8 +104,8 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
         serviceName: $stateParams.serviceName,
       }).$promise
       .then(ids => $q
-        .all(_.map(
-          _.chunk(ids, 50),
+        .all(map(
+          chunk(ids, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Hunting().Agent().v6()
             .getBatch({
               billingAccount: $stateParams.billingAccount,
@@ -97,7 +113,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
               agentId: chunkIds,
             }).$promise,
         ))
-        .then(chunkResult => _.pluck(_.flatten(chunkResult), 'value')));
+        .then(chunkResult => map(flatten(chunkResult), 'value')));
   };
 
   self.fetchAgentsOfQueue = function (queue) {
@@ -109,15 +125,15 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
         queueId: queue.queueId,
       }).$promise
       .then(ids => $q
-        .all(_.map(
-          _.chunk(ids, 50),
+        .all(map(
+          chunk(ids, 50),
           chunkIds => OvhApiTelephony.OvhPabx().Hunting().Agent().v6()
             .getBatch({
               billingAccount: $stateParams.billingAccount,
               serviceName: $stateParams.serviceName,
               agentId: chunkIds,
             }).$promise,
-        )).then(chunkResult => _.pluck(_.flatten(chunkResult), 'value')));
+        )).then(chunkResult => map(flatten(chunkResult), 'value')));
   };
 
   self.fetchAgentDescription = function (agent) {
@@ -128,13 +144,13 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
   };
 
   self.reorderAgentsOfQueue = function (queue, agents) {
-    const ids = _.pluck(agents, 'agentId');
+    const ids = map(agents, 'agentId');
     OvhApiTelephony.OvhPabx().Hunting().Queue().Agent()
       .v6()
       .resetAllCache();
     return $q
-      .all(_.map(
-        _.chunk(ids, 50),
+      .all(map(
+        chunk(ids, 50),
         chunkIds => OvhApiTelephony.OvhPabx().Hunting().Queue().Agent()
           .v6()
           .getBatch({
@@ -144,14 +160,14 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
             agentId: chunkIds,
           }).$promise,
       ))
-      .then(chunkResult => _.pluck(_.flatten(chunkResult), 'value')).then((orders) => {
-        _.each(orders, (order) => {
-          const agent = _.find(agents, { agentId: order.agentId });
+      .then(chunkResult => map(flatten(chunkResult), 'value')).then((orders) => {
+        forEach(orders, (order) => {
+          const agent = find(agents, { agentId: order.agentId });
           if (agent) {
             agent.position = order.position;
           }
         });
-        return _.sortBy(agents, 'position');
+        return sortBy(agents, 'position');
       });
   };
 
@@ -175,7 +191,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
         billingAccount: $stateParams.billingAccount,
         serviceName: $stateParams.serviceName,
         agentId: agent.agentId,
-      }, _.pick(agent, attrs)).$promise;
+      }, pick(agent, attrs)).$promise;
   };
 
   self.deleteAgentFromQueue = function (queue, toDelete) {
@@ -215,7 +231,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
         serviceName: $stateParams.serviceName,
         queueId: queue.queueId,
       }).$promise.then(() => {
-        _.remove(self.queues, { queueId: queue.queueId });
+        remove(self.queues, { queueId: queue.queueId });
         TucToast.success($translate.instant('telephony_alias_configuration_queues_queue_delete_success'));
       }).catch(err => new TucToastError(err)).finally(() => {
         self.isDeleting = false;
@@ -224,7 +240,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
 
   self.getAgentsQueueToAdd = function (queue) {
     const queueAgents = queue.agentsApi.getMemberList();
-    return _.filter(self.agents, agent => !_.find(queueAgents, { agentId: agent.agentId }));
+    return filter(self.agents, agent => !find(queueAgents, { agentId: agent.agentId }));
   };
 
   self.addAgentToQueue = function (queue) {
@@ -235,7 +251,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
       controllerAs: '$ctrl',
     });
     modal.result.then(() => {
-      _.set(queue, 'isAdding', true);
+      set(queue, 'isAdding', true);
       return OvhApiTelephony.OvhPabx().Hunting().Agent().v6()
         .addToQueue({
           billingAccount: $stateParams.billingAccount,
@@ -245,19 +261,19 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
           queueId: queue.queueId,
           position: 0,
         }).$promise.then(() => {
-          const added = _.find(self.agents, { agentId: queue.agentToAdd });
+          const added = find(self.agents, { agentId: queue.agentToAdd });
           queue.agentsApi.addMembersToList([added]);
-          _.set(queue, 'agentToAdd', null);
-          _.set(queue, 'addAgent', false);
+          set(queue, 'agentToAdd', null);
+          set(queue, 'addAgent', false);
           TucToast.success($translate.instant('telephony_alias_configuration_queues_agent_add_success'));
         }).catch(err => new TucToastError(err)).finally(() => {
-          _.set(queue, 'isAdding', false);
+          set(queue, 'isAdding', false);
         });
     });
   };
 
   self.startQueueEdition = function (queue) {
-    _.set(queue, 'inEdition', _.pick(queue, [
+    set(queue, 'inEdition', pick(queue, [
       'description',
       'strategy',
       'followCallForwards',
@@ -278,11 +294,11 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
       'soundOnHold',
       'actionOnOverflowParam',
     ];
-    return !angular.equals(_.pick(queue, attrs), _.pick(queue.inEdition, attrs));
+    return !angular.equals(pick(queue, attrs), pick(queue.inEdition, attrs));
   };
 
   self.updateQueue = function (queue) {
-    _.set(queue, 'isUpdating', true);
+    set(queue, 'isUpdating', true);
     return OvhApiTelephony.OvhPabx().Hunting().Queue().v6()
       .change({
         billingAccount: $stateParams.billingAccount,
@@ -298,11 +314,11 @@ angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationQueue
         actionOnOverflow: queue.inEdition.actionOnOverflowParam ? 'playback' : null,
         actionOnOverflowParam: queue.inEdition.actionOnOverflowParam || null,
       }).$promise.then(() => {
-        _.assign(queue, queue.inEdition);
-        _.set(queue, 'inEdition', null);
+        assign(queue, queue.inEdition);
+        set(queue, 'inEdition', null);
         TucToast.success($translate.instant('telephony_alias_configuration_queues_queue_update_success'));
       }).catch(err => new TucToastError(err)).finally(() => {
-        _.set(queue, 'isUpdating', true);
+        set(queue, 'isUpdating', true);
       });
   };
 

@@ -1,5 +1,10 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import isEqual from 'lodash/isEqual';
+import keys from 'lodash/keys';
+import map from 'lodash/map';
 
 export default /* @ngInject */ ($q, OvhApiTelephony,
   TelephonyGroupLinePhoneFunction, TelephonyGroupLinePhoneConfiguration) => {
@@ -64,7 +69,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
   TelephonyGroupLinePhone.prototype.setPhoneInfos = function setPhoneInfos(phoneOptions) {
     const self = this;
 
-    angular.forEach(_.keys(phoneOptions), (phoneOptionsKey) => {
+    angular.forEach(keys(phoneOptions), (phoneOptionsKey) => {
       if (phoneOptionsKey === 'phoneConfiguration') {
         self.setConfigurations(phoneOptions[phoneOptionsKey]);
       } else if (phoneOptionsKey.indexOf('$') !== 0) {
@@ -189,9 +194,9 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
       let configsToSave = configsToSaveParam;
 
       if (!configsToSave) {
-        configsToSave = _.filter(
+        configsToSave = filter(
           self.configurations,
-          config => !_.isEqual(config.value, config.prevValue),
+          config => !isEqual(config.value, config.prevValue),
         );
       }
 
@@ -199,7 +204,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony,
         serviceName: self.serviceName,
         billingAccount: self.billingAccount,
       }, {
-        newConfigurations: _.map(configsToSave, config => ({
+        newConfigurations: map(configsToSave, config => ({
           key: config.name,
           value: config.value.toString(),
         })),

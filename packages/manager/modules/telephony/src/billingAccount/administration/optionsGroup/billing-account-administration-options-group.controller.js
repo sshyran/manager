@@ -1,5 +1,8 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import get from 'lodash/get';
+import pick from 'lodash/pick';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministrationOptionsGroup(
   $q,
@@ -52,7 +55,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
     return $q.all([
       OvhApiTelephony.v6().edit({
         billingAccount: $stateParams.billingAccount,
-      }, _.pick(self.optionsGroupForm.telephony, telephonyAttributes)).$promise,
+      }, pick(self.optionsGroupForm.telephony, telephonyAttributes)).$promise,
       OvhApiMe.Telephony().Settings().v6().change({
         settings: self.optionsGroupForm.user,
       }).$promise,
@@ -61,7 +64,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
       self.userSettings = angular.copy(self.optionsGroupForm.user);
       TucToast.success($translate.instant('telephony_billing_account_administration_options_group_success_changing'));
     }).catch((err) => {
-      TucToast.error([$translate.instant('telephony_billing_account_administration_options_group_error_changing'), _.get(err, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_billing_account_administration_options_group_error_changing'), get(err, 'data.message', '')].join(' '));
       return $q.reject(err);
     }).finally(() => {
       self.isChanging = false;
@@ -93,7 +96,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
       self.optionsGroupForm.telephony = angular.copy(self.telephonySettings);
       self.optionsGroupForm.user = angular.copy(self.userSettings);
     }).catch((err) => {
-      TucToast.error([$translate.instant('telephony_billing_account_administration_options_group_error_loading'), _.get(err, 'data.message', '')].join(' '));
+      TucToast.error([$translate.instant('telephony_billing_account_administration_options_group_error_loading'), get(err, 'data.message', '')].join(' '));
       return $q.reject(err);
     }).finally(() => {
       self.isLoading = false;

@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyAliasConfigurationStatsEasyHuntingCtrl', function (OvhApiTelephony) {
   const self = this;
 

@@ -1,4 +1,8 @@
-import _ from 'lodash';
+
+
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import pick from 'lodash/pick';
 
 export default /* @ngInject */ function ($stateParams, $translate, $timeout,
   TelephonyMediator, OvhApiTelephony, TucToast, TucToastError, tucTelephonyBulk) {
@@ -20,14 +24,14 @@ export default /* @ngInject */ function ($stateParams, $translate, $timeout,
     return OvhApiTelephony.Fax().v6().changePassword({
       billingAccount: $stateParams.billingAccount,
       serviceName: $stateParams.serviceName,
-    }, _.pick(self.passwordForm, 'password')).$promise.then(() => {
+    }, pick(self.passwordForm, 'password')).$promise.then(() => {
       self.passwordForm.isSuccess = true;
       $timeout(() => {
         self.reset();
         form.$setUntouched();
       }, 3000);
     }).catch((err) => {
-      TucToast.error($translate.instant('telephony_service_fax_password_change_error', { error: _.get(err, 'data.message') }));
+      TucToast.error($translate.instant('telephony_service_fax_password_change_error', { error: get(err, 'data.message') }));
     }).finally(() => {
       self.passwordForm.isUpdating = false;
     });
@@ -80,7 +84,7 @@ export default /* @ngInject */ function ($stateParams, $translate, $timeout,
   };
 
   self.filterServices = function filterServices(services) {
-    return _.filter(services, service => ['fax', 'voicefax'].indexOf(service.featureType) > -1);
+    return filter(services, service => ['fax', 'voicefax'].indexOf(service.featureType) > -1);
   };
 
   self.getBulkParams = function getBulkParams() {
@@ -111,7 +115,7 @@ export default /* @ngInject */ function ($stateParams, $translate, $timeout,
   };
 
   self.onBulkError = function onBulkError(error) {
-    TucToast.error([$translate.instant('telephony_service_fax_password_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+    TucToast.error([$translate.instant('telephony_service_fax_password_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 
   /* -----  End of BULK  ------ */

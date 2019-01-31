@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import endsWith from 'lodash/endsWith';
 
 export default class TelecomTelephonyServiceTimeConditionImportCtrl {
   /* @ngInject */
@@ -30,7 +32,7 @@ export default class TelecomTelephonyServiceTimeConditionImportCtrl {
   checkValidFileExtention(file) {
     const jsonType = '.json';
     const fileName = file ? file.name : '';
-    this.validFormatFile = _.endsWith(fileName.toLowerCase(), jsonType);
+    this.validFormatFile = endsWith(fileName.toLowerCase(), jsonType);
     this.hasChecked = true;
 
     return this.validFormatFile;

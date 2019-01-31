@@ -1,4 +1,16 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import difference from 'lodash/difference';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import isEqual from 'lodash/isEqual';
+import map from 'lodash/map';
+import now from 'lodash/now';
+import random from 'lodash/random';
+import remove from 'lodash/remove';
+import sortBy from 'lodash/sortBy';
 import angular from 'angular';
 
 export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabxMenuEntry) => {
@@ -29,7 +41,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
     this.serviceName = menuOptions.serviceName;
 
     // other attributes
-    this.menuId = menuOptions.menuId || _.random(_.now());
+    this.menuId = menuOptions.menuId || random(now());
     this.name = null;
     this.greetSound = null;
     this.greetSoundTts = null;
@@ -114,7 +126,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
     });
   };
 
-  TelephonyGroupNumberOvhPabxMenu.prototype.remove = function remove() {
+  TelephonyGroupNumberOvhPabxMenu.prototype.remove = function () {
     const self = this;
 
     self.status = 'DELETING';
@@ -140,8 +152,8 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
         serviceName: self.serviceName,
         menuId: self.menuId,
       }).$promise
-      .then(menuEntryIds => $q.all(_.map(
-        _.chunk(menuEntryIds, 50),
+      .then(menuEntryIds => $q.all(map(
+        chunk(menuEntryIds, 50),
         chunkIds => OvhApiTelephony.OvhPabx().Menu().Entry().v6()
           .getBatch({
             billingAccount: self.billingAccount,
@@ -150,9 +162,14 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
             entryId: chunkIds,
           }).$promise
           .then((resources) => {
-            angular.forEach(_.chain(resources).map('value').sortBy('position').value(), (menuEntryOptions) => {
-              self.addEntry(menuEntryOptions);
-            });
+            angular.forEach(
+              sortBy(
+                map(resources, 'value'),
+                'position',
+              ), (menuEntryOptions) => {
+                self.addEntry(menuEntryOptions);
+              },
+            );
             return self;
           }),
       )));
@@ -168,7 +185,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
     }
 
     if (menuEntryOptions.entryId) {
-      entry = _.find(self.entries, {
+      entry = find(self.entries, {
         entryId: menuEntryOptions.entryId,
       });
     }
@@ -193,7 +210,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
   TelephonyGroupNumberOvhPabxMenu.prototype.removeEntry = function removeEntry(entry) {
     const self = this;
 
-    _.remove(self.entries, entry);
+    remove(self.entries, entry);
 
     return self;
   };
@@ -207,7 +224,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
   TelephonyGroupNumberOvhPabxMenu.prototype.getFirstAvailableDtmfEntryKey = function
   getFirstAvailableDtmfEntryKey() {
     const self = this;
-    return _.first(_.difference(allDtmfKeys, _.map(self.entries, 'dtmf')));
+    return head(difference(allDtmfKeys, map(self.entries, 'dtmf')));
   };
 
   TelephonyGroupNumberOvhPabxMenu.prototype.getAllDtmfEntryKeys = function getAllDtmfEntryKeys() {
@@ -258,7 +275,7 @@ export default /* @ngInject */ ($q, OvhApiTelephony, TelephonyGroupNumberOvhPabx
     }
 
     if (attr) {
-      return !_.isEqual(_.get(self.saveForEdition, attr), _.get(self, attr));
+      return !isEqual(get(self.saveForEdition, attr), get(self, attr));
     }
     return self.hasChange('name') || self.hasChange('greetSound') || self.hasChange('invalidSound') || self.hasChange('greetSoundTts') || self.hasChange('invalidSoundTts');
   };

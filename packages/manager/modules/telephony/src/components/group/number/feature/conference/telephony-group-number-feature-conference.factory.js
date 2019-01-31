@@ -1,4 +1,16 @@
-import _ from 'lodash';
+
+
+import assign from 'lodash/assign';
+import compact from 'lodash/compact';
+import difference from 'lodash/difference';
+import find from 'lodash/find';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import map from 'lodash/map';
+import omit from 'lodash/omit';
+import pick from 'lodash/pick';
+import remove from 'lodash/remove';
 import angular from 'angular';
 
 /**
@@ -92,9 +104,9 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
       featureOptions = {};
     }
 
-    self.locked = _.get(featureOptions, 'locked', false);
-    self.membersCount = _.get(featureOptions, 'membersCount', null);
-    self.dateStart = _.get(featureOptions, 'dateStart', null);
+    self.locked = get(featureOptions, 'locked', false);
+    self.membersCount = get(featureOptions, 'membersCount', null);
+    self.dateStart = get(featureOptions, 'dateStart', null);
 
     return self;
   };
@@ -108,7 +120,7 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
         featureSettings = {};
       }
 
-      _.assign(self, _.pick(featureSettings, settingsAttributes));
+      assign(self, pick(featureSettings, settingsAttributes));
       return self;
     };
 
@@ -121,8 +133,8 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
         featureWebAccess = [];
       }
 
-      self.webAccess.read = _.find(featureWebAccess, { type: 'read' });
-      self.webAccess.write = _.find(featureWebAccess, { type: 'write' });
+      self.webAccess.read = find(featureWebAccess, { type: 'read' });
+      self.webAccess.write = find(featureWebAccess, { type: 'write' });
 
       return self;
     };
@@ -157,21 +169,21 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
     return OvhApiTelephony.Conference().Participants().Aapi().query({
       billingAccount: self.billingAccount,
       serviceName: self.serviceName,
-    }).$promise.then(participants => self.updateParticipantList(_.chain(participants).map('value').filter(null).value()));
+    }).$promise.then(participants => self.updateParticipantList(filter(map(participants, 'value'), null)));
   };
 
   TelephonyGroupNumberConference.prototype.save = function save() {
     const self = this;
-    const settings = _.pick(self, settingsAttributes);
+    const settings = pick(self, settingsAttributes);
 
-    if (_.isEmpty(settings.pin)) {
+    if (isEmpty(settings.pin)) {
       settings.pin = 0;
     }
 
     return OvhApiTelephony.Conference().v6().updateSettings({
       billingAccount: self.billingAccount,
       serviceName: self.serviceName,
-    }, _.omit(settings, ['featureType', 'eventsChannel', 'announceFilename'])).$promise.then(() => self);
+    }, omit(settings, ['featureType', 'eventsChannel', 'announceFilename'])).$promise.then(() => self);
   };
 
   TelephonyGroupNumberConference.prototype.lock = function lock() {
@@ -209,7 +221,7 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
         billingAccount: self.billingAccount,
         serviceName: self.serviceName,
       }).$promise
-      .then(ids => $q.all(_.map(ids, id => OvhApiTelephony.Conference().WebAccess().v6().get({
+      .then(ids => $q.all(map(ids, id => OvhApiTelephony.Conference().WebAccess().v6().get({
         billingAccount: self.billingAccount,
         serviceName: self.serviceName,
         id,
@@ -221,7 +233,7 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
   TelephonyGroupNumberConference.prototype.generateWebAccess = function generateWebAccess() {
     const self = this;
 
-    return TelephonyMediator.getApiModelEnum('telephony.ConferenceWebAccessTypeEnum').then(accessType => $q.all(_.map(accessType, type => OvhApiTelephony.Conference().WebAccess().v6().create({
+    return TelephonyMediator.getApiModelEnum('telephony.ConferenceWebAccessTypeEnum').then(accessType => $q.all(map(accessType, type => OvhApiTelephony.Conference().WebAccess().v6().create({
       billingAccount: self.billingAccount,
       serviceName: self.serviceName,
     }, {
@@ -231,11 +243,11 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
 
   TelephonyGroupNumberConference.prototype.deleteWebAccess = function deleteWebAccess() {
     const self = this;
-    const ids = [].concat(_.get(self.webAccess, 'read.id'), _.get(self.webAccess, 'write.id'));
+    const ids = [].concat(get(self.webAccess, 'read.id'), get(self.webAccess, 'write.id'));
 
     return $q
-      .all(_.map(
-        _.chain(ids).compact().value(),
+      .all(map(
+        compact(ids),
         id => OvhApiTelephony.Conference().WebAccess().v6()
           .remove({
             billingAccount: self.billingAccount,
@@ -288,24 +300,24 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
   TelephonyGroupNumberConference
     .prototype.updateParticipantList = function updateParticipantList(participantsList) {
       const self = this;
-      const curParticipantIds = _.map(self.participants, 'id');
-      const participantsListIds = _.map(participantsList, 'id');
-      const participantsIdsToRemove = _.difference(curParticipantIds, participantsListIds);
-      const participantsIdsToAddOrUpdate = _.difference(
+      const curParticipantIds = map(self.participants, 'id');
+      const participantsListIds = map(participantsList, 'id');
+      const participantsIdsToRemove = difference(curParticipantIds, participantsListIds);
+      const participantsIdsToAddOrUpdate = difference(
         participantsListIds,
         participantsIdsToRemove,
       );
 
       // remove participants
       angular.forEach(participantsIdsToRemove, (id) => {
-        _.remove(self.participants, {
+        remove(self.participants, {
           id,
         });
       });
 
       // add participants
       angular.forEach(participantsIdsToAddOrUpdate, (id) => {
-        self.addParticipant(_.find(participantsList, {
+        self.addParticipant(find(participantsList, {
           id,
         }));
       });
@@ -316,7 +328,7 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
   TelephonyGroupNumberConference
     .prototype.addParticipant = function addParticipant(participantOptions) {
       const self = this;
-      let connectedParticipant = _.find(self.participants, {
+      let connectedParticipant = find(self.participants, {
         id: participantOptions.id,
       });
 
@@ -339,14 +351,14 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
   TelephonyGroupNumberConference.prototype.muteAllParticipants = function muteAllParticipants() {
     const self = this;
 
-    return $q.allSettled(_.map(self.participants, participant => participant.mute()));
+    return $q.allSettled(map(self.participants, participant => participant.mute()));
   };
 
   TelephonyGroupNumberConference
     .prototype.unmuteAllParticipants = function unmuteAllParticipants() {
       const self = this;
 
-      return $q.allSettled(_.map(self.participants, participant => participant.unmute()));
+      return $q.allSettled(map(self.participants, participant => participant.unmute()));
     };
 
   /* ----------  EDITION  ----------*/
@@ -355,7 +367,7 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
     const self = this;
 
     self.inEdition = true;
-    self.saveForEdition = _.assign({}, _.pick(self, settingsAttributes));
+    self.saveForEdition = assign({}, pick(self, settingsAttributes));
 
     return self;
   };
@@ -364,7 +376,7 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
     const self = this;
 
     if (self.saveForEdition && cancel) {
-      _.assign(self, _.pick(self.saveForEdition, settingsAttributes));
+      assign(self, pick(self.saveForEdition, settingsAttributes));
     }
 
     self.saveForEdition = null;
@@ -381,8 +393,8 @@ export default /* @ngInject */ ($q, $timeout, TelephonyGroupNumberConferencePart
     }
 
     return self.inEdition && !angular.equals(
-      _.pick(self.saveForEdition, settingsAttributes),
-      _.pick(self, settingsAttributes),
+      pick(self.saveForEdition, settingsAttributes),
+      pick(self, settingsAttributes),
     );
   };
 

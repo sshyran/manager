@@ -1,16 +1,39 @@
-angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', function ($q, $stateParams, $translate, $state, TucToast, TelecomTelephonyLineCallsForwardService, tucValidator, tucTelephonyBulk, tucTelecomVoip) {
+
+
+import bind from 'lodash/bind';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import forEach from 'lodash/forEach';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import map from 'lodash/map';
+import set from 'lodash/set';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
+
+angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', function TelecomTelephonyLineCallsForwardCtrl(
+  $q,
+  $stateParams,
+  $translate,
+  $state,
+  TucToast,
+  TelecomTelephonyLineCallsForwardService,
+  tucValidator,
+  tucTelephonyBulk,
+  tucTelecomVoip,
+) {
   const self = this;
   self.validator = tucValidator;
 
   function getEnabledTypes(types) {
-    return _.pluck(_.filter(types, { enable: true }), 'id');
+    return map(filter(types, { enable: true }), 'id');
   }
 
   /**
    * Save the current forwards
    * @return {Promise}
    */
-  self.save = function () {
+  self.save = function save() {
     self.loading.save = true;
     return TelecomTelephonyLineCallsForwardService
       .saveForwards($stateParams.billingAccount, $stateParams.serviceName, self.forwards)
@@ -36,7 +59,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
    * @param  {[type]} num [description]
    * @return {[type]}     [description]
    */
-  self.seemsPhoneNumber = function (num, forward) {
+  self.seemsPhoneNumber = function seemsPhoneNumber(num, forward) {
     if (forward.enable) {
       return /^00[\d\s]*$|^\+\d[\d\s]*$/.test(num);
     }
@@ -46,18 +69,18 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
   /**
    * Cancel modifications
    */
-  self.cancel = function () {
+  self.cancel = function cancel() {
     self.setCancelBuffer(true);
   };
 
-  self.toggleChecked = function (forward) {
-    _.forEach(self.forwards, (fwd) => {
+  self.toggleChecked = function toggleChecked(forward) {
+    forEach(self.forwards, (fwd) => {
       if (forward.type === 'Unconditional') {
         if (fwd.type !== forward.type) {
-          _.set(fwd, 'enable', false);
+          set(fwd, 'enable', false);
         }
       } else if (fwd.type === 'Unconditional') {
-        _.set(fwd, 'enable', false);
+        set(fwd, 'enable', false);
       }
       return false;
     });
@@ -67,10 +90,10 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
    * Do we need to save ?
    * @return {Bool}
    */
-  self.needSave = function () {
+  self.needSave = function needSave() {
     let toSave = false;
-    _.forEach(self.forwards, (forward) => {
-      const saved = _.find(self.saved, { type: forward.type });
+    forEach(self.forwards, (forward) => {
+      const saved = find(self.saved, { type: forward.type });
       if (!saved || saved.footPrint !== forward.footPrint) {
         toSave = true;
       }
@@ -82,8 +105,8 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
    * Reset the number on nature change (fax -> voicemail, for instance)
    * @param {Object} forward Forward description
    */
-  self.resetNumber = function (forward) {
-    _.set(forward, 'number', _.first(self.getFilteredNumbers('', forward.nature.types)));
+  self.resetNumber = function resetNumber(forward) {
+    set(forward, 'number', head(self.getFilteredNumbers('', forward.nature.types)));
   };
 
   /* ===========================
@@ -104,19 +127,25 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
    * @param  {Array} origin fax, line voicemail
    * @return {Array}
    */
-  self.getFilteredNumbers = function (search, origin) {
+  self.getFilteredNumbers = function getFilteredNumbers(search, origin) {
     const searchReg = new RegExp(search, 'i');
 
-    return _.chain(self.allOvhNumbers)
-      .filter(num => (searchReg.test(num.serviceName) || searchReg.test(num.description))
-        && (!origin || origin.indexOf(num.type) > -1)
-        && filterType(num.type)
-        && filterBillingAccount(num.billingAccount))
-      .sortBy(num => (num.formatedNumber === $stateParams.serviceName ? 0 : 1)).uniq('serviceName')
-      .value();
+    return uniqBy(
+      sortBy(
+        filter(
+          self.allOvhNumbers,
+          num => (searchReg.test(num.serviceName) || searchReg.test(num.description))
+            && (!origin || origin.indexOf(num.type) > -1)
+            && filterType(num.type)
+            && filterBillingAccount(num.billingAccount),
+        ),
+        num => (num.formatedNumber === $stateParams.serviceName ? 0 : 1),
+      ),
+      'serviceName',
+    );
   };
 
-  self.filterTypes = function () {
+  self.filterTypes = function filterTypes() {
     self.filter.types = getEnabledTypes(self.types);
     self.resetNumbers();
   };
@@ -126,29 +155,29 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
   /**
    * Make a save of the current data
    */
-  self.setCancelBuffer = function (restore) {
+  self.setCancelBuffer = function setCancelBuffer(restore) {
     if (restore) {
       self.forwards = angular.copy(self.saved);
-      _.forEach(self.forwards, (forward) => {
-        _.set(forward, 'nature', _.find(self.lineOptionForwardNatureTypeEnum, { value: forward.nature.value }));
-        _.set(forward, 'number', _.find(self.allOvhNumbers, { type: forward.number.type, serviceName: forward.number.serviceName }));
+      forEach(self.forwards, (forward) => {
+        set(forward, 'nature', find(self.lineOptionForwardNatureTypeEnum, { value: forward.nature.value }));
+        set(forward, 'number', find(self.allOvhNumbers, { type: forward.number.type, serviceName: forward.number.serviceName }));
       });
     } else {
       self.saved = angular.copy(self.forwards);
     }
-    self.masterForward = _.find(self.forwards, { master: true });
+    self.masterForward = find(self.forwards, { master: true });
   };
 
   /**
    * get the cancellation of the data
    * @return {Object} saved data
    */
-  self.getCancelBuffer = function () {
+  self.getCancelBuffer = function getCancelBuffer() {
     return self.saved;
   };
 
-  self.resetNumbers = function () {
-    return _.map(self.forwards, forward => self.resetNumber(forward));
+  self.resetNumbers = function resetNumbers() {
+    return map(self.forwards, forward => self.resetNumber(forward));
   };
 
   /**
@@ -204,15 +233,15 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
   }
 
   function extractNatureFromForward(forward) {
-    const nature = _.get(forward.nature, 'value', null);
+    const nature = get(forward.nature, 'value', null);
 
     return nature === 'external' ? 'number' : nature;
   }
 
   function extractNumberFromForward(forward) {
-    const number = _.get(forward.nature, 'value', null) === 'external' ? _.get(forward.externalNumber, 'serviceName', null) : _.get(forward.number, 'serviceName', null);
+    const number = get(forward.nature, 'value', null) === 'external' ? get(forward.externalNumber, 'serviceName', null) : get(forward.number, 'serviceName', null);
 
-    return number || _.get(forward.number, 'serviceName', null);
+    return number || get(forward.number, 'serviceName', null);
   }
 
   function init() {
@@ -240,7 +269,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
     tucTelecomVoip.fetchAll().then((billingAccounts) => {
       self.listBillingAccounts = billingAccounts;
       self.listBillingAccounts.unshift({ billingAccount: null, description: 'Tous les groupes' });
-      self.filter.billingAccount = _.get(_.find(self.listBillingAccounts, { billingAccount: $stateParams.billingAccount }), 'billingAccount', null);
+      self.filter.billingAccount = get(find(self.listBillingAccounts, { billingAccount: $stateParams.billingAccount }), 'billingAccount', null);
 
       return billingAccounts;
     }).then(loadAllOvhNumbers).then(loadNatures)
@@ -268,16 +297,16 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
     },
   };
 
-  self.filterServices = function (services) {
-    return _.filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
+  self.filterServices = function filterServices(services) {
+    return filter(services, service => ['sip', 'mgcp'].indexOf(service.featureType) > -1);
   };
 
-  self.getBulkParams = function () {
+  self.getBulkParams = function getBulkParams() {
     const data = {};
-    const forwardBackup = _.find(self.forwards, 'type', 'Backup');
-    const forwardBusy = _.find(self.forwards, 'type', 'Busy');
-    const forwardNoReply = _.find(self.forwards, 'type', 'NoReply');
-    const forwardUnconditional = _.find(self.forwards, 'type', 'Unconditional');
+    const forwardBackup = find(self.forwards, bind('type', 'Backup'));
+    const forwardBusy = find(self.forwards, bind('type', 'Busy'));
+    const forwardNoReply = find(self.forwards, bind('type', 'NoReply'));
+    const forwardUnconditional = find(self.forwards, bind('type', 'Unconditional'));
 
     if (forwardBackup) {
       data.forwardBackup = forwardBackup.enable;
@@ -307,7 +336,7 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
     return data;
   };
 
-  self.onBulkSuccess = function (bulkResult) {
+  self.onBulkSuccess = function onBulkSuccess(bulkResult) {
     // display message of success or error
     tucTelephonyBulk.getTucToastInfos(bulkResult, {
       fullSuccess: $translate.instant('telephony_line_actions_line_calls_forward_bulk_all_success'),
@@ -327,8 +356,8 @@ angular.module('managerApp').controller('TelecomTelephonyLineCallsForwardCtrl', 
     init();
   };
 
-  self.onBulkError = function (error) {
-    TucToast.error([$translate.instant('telephony_line_actions_line_calls_forward_bulk_on_error'), _.get(error, 'msg.data')].join(' '));
+  self.onBulkError = function onBulkError(error) {
+    TucToast.error([$translate.instant('telephony_line_actions_line_calls_forward_bulk_on_error'), get(error, 'msg.data')].join(' '));
   };
 
   /* -----  End of BULK  ------ */

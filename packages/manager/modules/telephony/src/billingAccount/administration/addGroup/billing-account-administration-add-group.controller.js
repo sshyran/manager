@@ -1,4 +1,6 @@
-import _ from 'lodash';
+
+
+import get from 'lodash/get';
 
 export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministrationAddGroup(
   $translate,
@@ -20,10 +22,10 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountAdministra
   };
 
   self.getDisplayedPrice = function getDisplayedPrice() {
-    if (_.get(self, 'prices.withTax.value') === 0) {
+    if (get(self, 'prices.withTax.value') === 0) {
       return $translate.instant('telephony_add_group_free');
     }
-    return _.get(self, 'prices.withTax.text', '-');
+    return get(self, 'prices.withTax.text', '-');
   };
 
   self.orderGroup = function orderGroup() {

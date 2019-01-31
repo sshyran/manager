@@ -1,5 +1,10 @@
 
-import _ from 'lodash';
+
+import find from 'lodash/find';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import mapKeys from 'lodash/mapKeys';
+import pick from 'lodash/pick';
 
 export default /* @ngInject */ function (
   $q,
@@ -31,12 +36,12 @@ export default /* @ngInject */ function (
           self.predefinedNumbers = data.pool;
           self.prices = data.prices;
           self.contracts = data.contracts;
-          _.mapKeys(self.prices, (value, name) => {
+          mapKeys(self.prices, (value, name) => {
             self.prices[name].title = $translate.instant(['telephony', 'order', 'number', 'type', name, 'label'].join('_'));
           });
           if (self.predefinedNumbers) {
-            self.form.premium = _.first(self.predefinedNumbers.premium);
-            self.form.common = _.first(self.predefinedNumbers.common);
+            self.form.premium = head(self.predefinedNumbers.premium);
+            self.form.common = head(self.predefinedNumbers.common);
           }
           return data;
         },
@@ -126,10 +131,10 @@ export default /* @ngInject */ function (
         'socialNomination',
       ]);
     }
-    const form = _.pick(this.form, filter);
+    const form = pick(this.form, filter);
     form.offer = 'alias';
     form.country = self.user.country;
-    form.zone = _.get(this.form, 'zone.city');
+    form.zone = get(this.form, 'zone.city');
 
     if (form.pool === 1) {
       delete form.pool;
@@ -192,7 +197,7 @@ export default /* @ngInject */ function (
     }));
 
     self.form = {
-      amount: _.find(
+      amount: find(
         self.preAmount,
         {
           value: 1,

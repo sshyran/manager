@@ -1,3 +1,5 @@
+
+
 angular.module('managerApp').controller('TelecomTelephonyLinePhoneAccessoriesFinalizeCtrl', function ($q, TucTelephonyAccessoriesOrderProcess) {
   const self = this;
 

@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import assign from 'lodash/assign';
 
 export default /* @ngInject */ function ($stateParams, $q, $uibModalInstance,
   OvhApiTelephony, campaign, TucToastError) {
@@ -54,7 +56,7 @@ export default /* @ngInject */ function ($stateParams, $q, $uibModalInstance,
 
     self.loading.init = true;
     return fetchCampaignDetail(campaign)
-      .then(details => _.assign(self.details, details))
+      .then(details => assign(self.details, details))
       .catch((err) => {
         if (err.status === 400) {
           return $q.reject(err);

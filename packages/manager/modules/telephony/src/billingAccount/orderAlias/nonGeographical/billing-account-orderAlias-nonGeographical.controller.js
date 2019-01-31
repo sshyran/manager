@@ -1,4 +1,9 @@
-import _ from 'lodash';
+
+
+import find from 'lodash/find';
+import forEach from 'lodash/forEach';
+import head from 'lodash/head';
+import pick from 'lodash/pick';
 
 export default /* @ngInject */ function TelecomTelephonyAliasOrderNonGeographicalCtrl(
   $q,
@@ -30,12 +35,12 @@ export default /* @ngInject */ function TelecomTelephonyAliasOrderNonGeographica
         self.predefinedNumbers = data.pool;
         self.prices = data.prices;
         self.contracts = data.contracts;
-        _.forEach(Object.keys(self.prices), (name) => {
+        forEach(Object.keys(self.prices), (name) => {
           self.prices[name].title = $translate.instant(['telephony', 'order', 'number', 'type', name, 'label'].join('_'));
         });
         if (self.predefinedNumbers) {
-          self.form.premium = _.first(self.predefinedNumbers.premium);
-          self.form.common = _.first(self.predefinedNumbers.common);
+          self.form.premium = head(self.predefinedNumbers.premium);
+          self.form.common = head(self.predefinedNumbers.common);
         }
         return data;
       },
@@ -116,7 +121,7 @@ export default /* @ngInject */ function TelecomTelephonyAliasOrderNonGeographica
         'socialNomination',
       ]);
     }
-    const form = _.pick(this.form, filter);
+    const form = pick(this.form, filter);
     form.offer = 'alias';
     form.country = self.user.country;
     if (form.pool === 1) {
@@ -180,7 +185,7 @@ export default /* @ngInject */ function TelecomTelephonyAliasOrderNonGeographica
     }));
 
     self.form = {
-      amount: _.find(
+      amount: find(
         self.preAmount,
         {
           value: 1,

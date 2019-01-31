@@ -1,5 +1,7 @@
+
+
 import angular from 'angular';
-import _ from 'lodash';
+import kebabCase from 'lodash/kebabCase';
 
 import controller from './telecom-telephony-service-choice-popover.directive.controller';
 
@@ -22,7 +24,7 @@ export default /* @ngInject */ $compile => ({
         // add attribute to element to allow a popover on it
         tElement.attr('data-responsive-popover', "'telecom/telephony/components/service/telecom-telephony-service-choice-popover.html'");
         angular.forEach(tCtrl.popoverOptions, (optionValue, key) => {
-          const tmpAttrKey = `data-${_.kebabCase(key)}`;
+          const tmpAttrKey = `data-${kebabCase(key)}`;
           if (key !== 'popoverIsOpen') {
             tElement.attr(tmpAttrKey, optionValue);
           } else {

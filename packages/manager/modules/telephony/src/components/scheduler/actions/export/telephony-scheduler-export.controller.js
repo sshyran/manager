@@ -1,4 +1,10 @@
-import _ from 'lodash';
+
+
+import chunk from 'lodash/chunk';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import map from 'lodash/map';
 
 export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData,
   telephonyScheduler, SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE) {
@@ -23,8 +29,8 @@ export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData,
     =============================== */
 
   self.convertCategoryToSlot = function convertCategoryToSlot(category) {
-    return _.find(self.timeCondition.slots, {
-      name: _.get(SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE, category),
+    return find(self.timeCondition.slots, {
+      name: get(SCHEDULER_CATEGORY_TO_TIME_CONDITION_SLOT_TYPE, category),
     });
   };
 
@@ -47,9 +53,13 @@ export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData,
 
     return self.scheduler.getEvents().then(() => {
       const fileName = `${[self.scheduler.billingAccount, self.scheduler.serviceName, 'export'].join('_')}.ics`;
-      const filters = _.chain(categories).filter({
-        active: false,
-      }).map('value').value();
+      const filters = map(
+        filter(
+          categories,
+          { active: false },
+        ),
+        'value',
+      );
       const blob = new Blob([self.scheduler.exportToIcs(filters)], {
         type: 'text/calendar;charset=utf-8;',
       });
@@ -94,15 +104,18 @@ export default /* @ngInject */ function ($timeout, $uibModalInstance, modalData,
     self.filters = modalData.filters;
 
     return telephonyScheduler.getAvailableCategories().then((apiCategories) => {
-      categories = _.chain(apiCategories)
-        .filter(category => (self.timeCondition ? self.convertCategoryToSlot(category) : true))
-        .map(category => ({
-          value: category,
-          active: self.filters.indexOf(category) === -1,
-        }))
-        .value();
+      categories = map(
+        filter(
+          apiCategories,
+          category => (self.timeCondition ? self.convertCategoryToSlot(category) : true),
+        ),
+        value => ({
+          value,
+          active: self.filters.indexOf(value) === -1,
+        }),
+      );
 
-      self.chunkedCategories = _.chunk(categories, 2);
+      self.chunkedCategories = chunk(categories, 2);
     }).finally(() => {
       self.loading.init = false;
     }).catch((error) => {

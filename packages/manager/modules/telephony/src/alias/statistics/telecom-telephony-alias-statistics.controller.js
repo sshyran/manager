@@ -1,3 +1,8 @@
+
+
+import capitalize from 'lodash/capitalize';
+import get from 'lodash/get';
+
 angular.module('managerApp').controller('TelecomTelephonyAliasStatisticsCtrl', class TelecomTelephonyAliasStatisticsCtrl {
   constructor(
     $q, $state, $stateParams, $timeout, $translate, $uibModal,
@@ -28,7 +33,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasStatisticsCtrl', c
       })
       .catch((error) => {
         this.TucToast.error(
-          `${this.$translate.instant('telephony_alias_statistics_fetch_error')} ${_.get(error, 'data.message', error.message)}`,
+          `${this.$translate.instant('telephony_alias_statistics_fetch_error')} ${get(error, 'data.message', error.message)}`,
         );
       })
       .finally(() => {
@@ -70,7 +75,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasStatisticsCtrl', c
       })
       .catch((error) => {
         this.TucToast.error(
-          `${this.$translate.instant('telephony_alias_statistics_fetch_error')} ${_.get(error, 'data.message', error.message)}`,
+          `${this.$translate.instant('telephony_alias_statistics_fetch_error')} ${get(error, 'data.message', error.message)}`,
         );
       });
   }
@@ -143,7 +148,7 @@ angular.module('managerApp').controller('TelecomTelephonyAliasStatisticsCtrl', c
     this.$uibModal.open({
       animation: true,
       templateUrl: `components/telecom/telephony/alias/liveCalls/${action}/telecom-telephony-alias-configuration-liveCalls-${action}.html`,
-      controller: `TelecomTelephonyAliasConfigurationLiveCalls${_.capitalize(action)}Ctrl`,
+      controller: `TelecomTelephonyAliasConfigurationLiveCalls${capitalize(action)}Ctrl`,
       controllerAs: '$ctrl',
       resolve: {
         params: () => (
