@@ -9,7 +9,6 @@ import keysIn from 'lodash/keysIn';
 import map from 'lodash/map';
 import round from 'lodash/round';
 import size from 'lodash/size';
-import sort from 'lodash/sort';
 import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
 
@@ -84,7 +83,7 @@ export default /* @ngInject */ function TelecomTelephonyBillingAccountBillingGro
         self.consumptions.groupedByDialedNumber = map(dialedNumbers, (dialed) => {
           const consumptions = filter(self.consumptions.raw, { dialed });
           const totalPrice = round(sumBy(consumptions, 'price'), 2);
-          const operators = sort(keysIn(groupBy(consumptions, 'operator')));
+          const operators = keysIn(groupBy(consumptions, 'operator')).sort();
           const details = map(operators, (operator) => {
             const operatorConsumptions = filter(consumptions, { operator });
             const totalOperatorPrice = round(sumBy(operatorConsumptions, 'price'), 2);
