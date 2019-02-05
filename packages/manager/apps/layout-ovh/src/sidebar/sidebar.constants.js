@@ -196,7 +196,7 @@ export const STATE_MAPPING_SERVICE = {
     },
   },
   '/telephony/{billingAccount}': {
-    state: 'telephony',
+    state: 'telephony.billingAccount.dashboard',
     stateParams: {
       billingAccount: 'resource.name',
     },
