@@ -1,11 +1,10 @@
 import angular from 'angular';
 import 'oclazyload';
-
 import '@ovh-ux/manager-telecom-styles';
 
-import routing from './telecom-telephony-billing-account.routes';
+import routing from './telecom-telephony-line.routes';
 
-const moduleName = 'ovhManagerTelephony.billingAccount';
+const moduleName = 'ovhManagerTelephony.line';
 
 angular
   .module(moduleName, [

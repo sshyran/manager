@@ -13,6 +13,7 @@ import 'ovh-manager-webfont/dist/css/ovh-font.css';
 import 'font-awesome/css/font-awesome.css';
 
 import billingAccount from './billingAccount';
+import line from './line';
 
 import constant from './telecom-telephony.constant';
 import components from './components';
@@ -33,6 +34,7 @@ angular.module(moduleName, [
   'ngOvhTelecomUniverseComponents',
   'ui.router',
   billingAccount,
+  line,
 ])
   .constant('PAGINATION_PER_PAGE', 5)
   .constant('TELEPHONY_INFRASTRUCTURE_OPTIONS', constant.TELEPHONY_INFRASTRUCTURE_OPTIONS)
