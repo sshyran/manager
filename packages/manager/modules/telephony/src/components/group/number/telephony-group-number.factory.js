@@ -1,7 +1,5 @@
-
-
 import angular from 'angular';
-import capitalize from 'lodash/capitalize';
+import upperFirst from 'lodash/upperFirst';
 import filter from 'lodash/filter';
 import head from 'lodash/head';
 import isEqual from 'lodash/isEqual';
@@ -83,7 +81,7 @@ export default /* @ngInject */ ($q, $injector, OvhApiTelephony, tucVoipServiceTa
       return self.feature;
     }
 
-    const FeatureTypeFactory = $injector.get(`TelephonyGroupNumber${capitalize(self.getFeatureFamily(featureType))}`);
+    const FeatureTypeFactory = $injector.get(`TelephonyGroupNumber${upperFirst(self.getFeatureFamily(featureType))}`);
 
     return new FeatureTypeFactory({
       billingAccount: self.billingAccount,
