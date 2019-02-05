@@ -46,7 +46,6 @@ angular
     ngSanitize,
     'oui',
     overthebox,
-    'ovh-angular-otrs',
     sidebar,
     sms,
     telephony,
@@ -54,8 +53,5 @@ angular
     'ui.bootstrap',
     welcome,
   ])
-  .config((OtrsPopupProvider /* , constants */) => {
-    OtrsPopupProvider.setBaseUrlTickets('');
-  })
   .config($locationProvider => $locationProvider.hashPrefix(''))
   .config(routing);
