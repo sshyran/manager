@@ -1,6 +1,7 @@
 import angular from 'angular';
 import '@ovh-ux/manager-core';
 import '@ovh-ux/ng-ovh-telecom-universe-components';
+import '@ovh-ux/ng-q-allsettled';
 import 'ng-at-internet';
 import 'oclazyload';
 import 'ovh-angular-responsive-tabs';
@@ -30,6 +31,7 @@ angular.module(moduleName, [
   'ovhManagerCore',
   service,
   'ngOvhTelecomUniverseComponents',
+  'ngQAllSettled',
   'ui.router',
   billingAccount,
   line,
