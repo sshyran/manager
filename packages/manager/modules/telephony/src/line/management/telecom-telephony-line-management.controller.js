@@ -1,8 +1,8 @@
-
-
 import get from 'lodash/get';
+// TelecomTelephonyLineManagementCtrl
 
-angular.module('managerApp').controller('TelecomTelephonyLineManagementCtrl', function ($q, $translate, $stateParams, TelecomMediator, TelephonyMediator, OvhApiTelephony) {
+export default /* @ngInject */ function ($q, $translate, $stateParams,
+  TelecomMediator, TelephonyMediator, OvhApiTelephony) {
   const self = this;
 
   this.loading = {
@@ -130,4 +130,4 @@ angular.module('managerApp').controller('TelecomTelephonyLineManagementCtrl', fu
   /* -----  End of INITIALIZATION  ------*/
 
   init();
-});
+}

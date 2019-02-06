@@ -9,7 +9,8 @@ import scheduler from './scheduler';
 import service from './service';
 import timeCondition from './timeCondition';
 
-import mediatorService from './telephony-mediator.service';
+import telephonyMediatorService from './telephony-mediator.service';
+import telecomMediatorService from './telecom-mediator.service';
 import voipService from './telephony-voip-service.service';
 /* @TODO remove reference to sidebar service -> should be managed by the host project */
 // import sidebarService from './sidebar/telephony-sidebar.service';
@@ -24,8 +25,9 @@ angular.module(moduleName, [
   service,
   timeCondition,
 ])
-  .service('TelephonyMediator', mediatorService)
-  .service('TelephonyVoipService', voipService);
+  .service('TelephonyMediator', telephonyMediatorService)
+  .service('TelephonyVoipService', voipService)
+  .service('TelecomMediator', telecomMediatorService);
 // .service('TelephonySidebar', sidebarService);
 
 export default moduleName;

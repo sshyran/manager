@@ -3,6 +3,8 @@ import merge from 'lodash/merge';
 
 import template from './telecom-telephony-line.html';
 import lineCtrl from './telecom-telephony-line.controller';
+import lineManagementCtrl from './management/telecom-telephony-line-management.controller';
+import lineManagementTpl from './management/telecom-telephony-line-management.html';
 
 const moduleName = 'ovhManagerTelephonyLineComponent';
 
@@ -10,10 +12,21 @@ angular.module(moduleName, [
 ])
   .config(($stateProvider) => {
     $stateProvider.state('telephony.billingAccount.line', {
-      url: '/line/:serviceName',
-      template,
-      controller: lineCtrl,
-      controllerAs: 'LineCtrl',
+      url: '/line',
+      abstract: true,
+      views: {
+        '@telephony': {
+          template,
+          controller: lineCtrl,
+          controllerAs: 'LineCtrl',
+        },
+      },
+    });
+    $stateProvider.state('telephony.billingAccount.line.management', {
+      url: '/:serviceName',
+      template: lineManagementTpl,
+      controller: lineManagementCtrl,
+      controllerAs: 'LineManagementCtrl',
       translations: [
         '.',
         './details',
@@ -37,22 +50,5 @@ angular.module(moduleName, [
       },
     });
   });
-/*
-views: {
-  'telephonyView@telephony': {
-    templateUrl: 'app/telecom/telephony/line/telecom-telephony-line.html',
-  },
-  'lineView@telephony.line': {
-    templateUrl: 'app/telecom/telephony/line/telecom-telephony-line-main.view.html',
-    controller: 'TelecomTelephonyLineCtrl',
-    controllerAs: 'LineCtrl',
-  },
-  'lineInnerView@telephony.line': {
-    templateUrl: 'app/telecom/telephony/line/management/telecom-telephony-line-management.html',
-    controller: 'TelecomTelephonyLineManagementCtrl',
-    controllerAs: 'LineManagementCtrl',
-  },
-},
-*/
 
 export default moduleName;
