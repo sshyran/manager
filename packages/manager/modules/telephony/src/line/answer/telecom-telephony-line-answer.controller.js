@@ -1,6 +1,4 @@
-
-
-angular.module('managerApp').controller('TelecomTelephonyLineAnswerCtrl', function ($translate) {
+export default /* @nInject */ function ($translate) {
   const self = this;
 
   self.actions = null;
@@ -34,4 +32,4 @@ angular.module('managerApp').controller('TelecomTelephonyLineAnswerCtrl', functi
   /* -----  End of INITIALIZATION  ------*/
 
   init();
-});
+}

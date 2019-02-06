@@ -54,3 +54,5 @@ views: {
   },
 },
 */
+
+export default moduleName;

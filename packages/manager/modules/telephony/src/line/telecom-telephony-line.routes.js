@@ -1,6 +1,6 @@
 export default /* @ngInject */ ($stateProvider) => {
   $stateProvider.state('telephony.billingAccount.line.**', {
-    url: '/line/:line',
+    url: '/line/:serviceName',
     lazyLoad: ($transition$) => {
       const $ocLazyLoad = $transition$.injector().get('$ocLazyLoad');
 

@@ -1,5 +1,3 @@
-
-
 import angular from 'angular';
 import '@ovh-ux/manager-core';
 import '@ovh-ux/ng-ovh-telecom-universe-components';
