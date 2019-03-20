@@ -24,6 +24,7 @@ import 'ovh-manager-webfont/dist/css/ovh-font.css';
 import 'ovh-ui-kit/dist/oui.css';
 import 'ovh-ui-kit-bs/dist/ovh-ui-kit-bs.css';
 import 'font-awesome/css/font-awesome.css';
+import 'flag-icon-css/css/flag-icon.css';
 
 import components from './components';
 import offer from './offer';
@@ -53,6 +54,7 @@ import {
 } from './constants';
 
 // TODO : import './index.less';
+import './components/index.less';
 
 const moduleName = 'ovhManagerPci';
 
