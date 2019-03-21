@@ -97,6 +97,7 @@ export default class KubernetesNodesCtrl {
       controller: deleteController,
       controllerAs: '$ctrl',
       backdrop: 'static',
+      openedClass: 'modal-open kubernetes',
       resolve: {
         nodeId() {
           return nodeId;
