@@ -1,9 +1,11 @@
 import find from 'lodash/find';
+import filter from 'lodash/filter';
 import get from 'lodash/get';
 
 export default /* @ngInject */ function CloudProjectInstanceDashboardCtrl(
   OvhApiCloud,
   OvhApiCloudProjectInstance,
+  OvhApiCloudProjectNetwork,
   OvhApiCloudProjectVolume,
 ) {
   this.instance = null;
@@ -11,19 +13,20 @@ export default /* @ngInject */ function CloudProjectInstanceDashboardCtrl(
   this.loading = {
     instance: false,
     volumes: false,
+    privateNetworks: false,
   };
 
   this.$onInit = function $onInit() {
     this.loadInstance();
     this.loadAttachedVolumes();
-
-    console.log(OvhApiCloud.v6());
-
+    this.loadPrivateNetworks();
+    /*
     OvhApiCloud.v6().subsidiaryPrice({
       flavorId: 'ac74cb45-d895-47dd-b9cf-c17778033d83',
       ovhSubsidiary: 'FR',
       region: 'SBG1',
     }).$promise.then(console.log);
+    */
   };
 
   this.loadInstance = function loadInstance() {
@@ -48,6 +51,18 @@ export default /* @ngInject */ function CloudProjectInstanceDashboardCtrl(
       console.log(volumes);
     }).finally(() => {
       this.loading.volumes = false;
+    });
+  };
+
+  this.loadPrivateNetworks = function loadPrivateNetworks() {
+    this.loading.privateNetworks = true;
+    return OvhApiCloudProjectNetwork.Private().v6().query({
+      serviceName: this.projectId,
+    }).$promise.then((networks) => {
+      this.networks = filter(networks, { type: 'private' });
+      console.log(this.networks);
+    }).finally(() => {
+      this.loading.privateNetworks = false;
     });
   };
 

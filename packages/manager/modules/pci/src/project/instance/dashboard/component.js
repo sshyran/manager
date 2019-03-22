@@ -7,5 +7,16 @@ export default {
   bindings: {
     projectId: '<',
     instanceId: '<',
+    onClickEdit: '&',
+    onClickBackupCreate: '&',
+    onClickRescue: '&',
+    onClickSoftReboot: '&',
+    onClickHardReboot: '&',
+    onClickReinstall: '&',
+    onClickDelete: '&',
+    onClickManageVolumes: '&',
+    onClickVolumeAttach: '&',
+    onClickNetworkManage: '&',
+    onClickNetworkAttach: '&',
   },
 };

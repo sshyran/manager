@@ -3,6 +3,7 @@ import '@uirouter/angularjs';
 import '@ovh-ux/ng-translate-async-loader';
 
 import component from './component';
+import instanceStatusComponent from './instance-status.component';
 
 const moduleName = 'ovhManagerPciProjectInstanceDashboard';
 
@@ -12,6 +13,7 @@ angular
     'ui.router',
   ])
   .component('ovhManagerPciProjectInstanceDashboardComponent', component)
+  .component('ovhManagerPciProjectInstanceDashboardInstanceStatusComponent', instanceStatusComponent)
   .config(/* @ngInject */ ($stateProvider) => {
     $stateProvider.state('iaas.pci-project.instance.dashboard', {
       url: '/dashboard',
@@ -25,10 +27,9 @@ angular
         projectId: /* @ngInject */ $stateParams => $stateParams.projectId,
         instanceId: /* @ngInject */ $stateParams => $stateParams.instanceId,
       },
-      translations: [
-        './',
-      ],
+      translations: ['.'],
     });
-  });
+  })
+  .run(/* @ngTranslationsInject:json ./translations */);
 
 export default moduleName;
