@@ -12,6 +12,7 @@ import add from './add';
 import billing from './billing';
 import compute from './compute';
 import details from './details';
+import instance from './instance';
 import onboarding from './onboarding';
 import openstack from './openstack';
 import rename from './rename';
@@ -33,6 +34,7 @@ angular
     billing,
     compute,
     details,
+    instance,
     'ui.router',
     componentsProjectRights,
     'oc.lazyLoad',

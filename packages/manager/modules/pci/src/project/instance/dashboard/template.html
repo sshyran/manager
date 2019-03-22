@@ -1,0 +1,124 @@
+<div>
+  <h1 ng-bind="$ctrl.instance.name"></h1>
+  <div class="row">
+    <div class="col-md-4">
+      <oui-tile heading="Gestion">
+        <oui-tile-button href="#">
+          <span data-translate="cloud_project_instance_dashboard_edit"></span>
+        </oui-tile-button>
+        <oui-tile-button href="#">Créer un backup</oui-tile-button>
+        <oui-tile-button href="#">Redémarrer en mode rescue</oui-tile-button>
+        <oui-tile-button href="#">Redémarrer à chaud (soft)</oui-tile-button>
+        <oui-tile-button href="#">Redémarrer à froid (hard)</oui-tile-button>
+        <oui-tile-button href="#">Réinstaller</oui-tile-button>
+        <oui-tile-button href="#">Supprimer</oui-tile-button>
+      </oui-tile>
+    </div>
+    <div class="col-md-4">
+      <oui-tile heading="Information" loading="$ctrl.loading.instance">
+        <oui-tile-definition term="Status">
+          <oui-tile-description>
+            <span class="oui-status oui-status_info" ng-bind="$ctrl.instance.status"></span>
+          </oui-tile-description>
+        </oui-tile-definition>
+        <oui-tile-definition term="Localisation">
+          <oui-tile-description>
+            <span ng-bind="$ctrl.instance.region"></span>
+          </oui-tile-description>
+        </oui-tile-definition>
+        <div class="oui-tile__item">
+          <dl class="oui-tile__definition">
+            <dt class="oui-tile__term">Modèle</dt>
+            <dd class="oui-tile__description">
+              <span ng-bind="$ctrl.instance.flavor.name | uppercase"></span>
+            </dd>
+            <dt class="oui-tile__term">Mémoire vive</dt>
+            <dd class="oui-tile__description">
+              <span ng-bind="$ctrl.instance.flavor.ram * 1000 * 1000 | cucBytes"></span>
+            </dd>
+            <dt class="oui-tile__term">Processeur</dt>
+            <dd class="oui-tile__description">
+              <span ng-bind="$ctrl.instance.flavor.vcpus"></span>
+              <span>vCores</span>
+            </dd>
+            <dt class="oui-tile__term">Stockage</dt>
+            <dd class="oui-tile__description">
+              <span ng-bind="$ctrl.instance.flavor.disk * 1024 * 1024 * 1024 | cucBytes:2:'true'"></span>
+            </dd>
+            <dt class="oui-tile__term">Bande passante publique</dt>
+            <dd class="oui-tile__description">
+              <span ng-bind="$ctrl.instance.flavor.outboundBandwidth"></span>
+              <span>Mbps</span>
+            </dd>
+          </dl>
+        </div>
+        <div class="oui-tile__item" ng-if="$ctrl.loading.volumes">
+          <dl class="oui-tile__definition">
+            <dt class="oui-tile__term">Volume(s)</dt>
+            <dd class="oui-tile__description text-center">
+              <oui-spinner size="m"></oui-spinner>
+            </dd>
+          </dl>
+        </div>
+        <oui-tile-definition term="Volume(s)">
+          <oui-tile-description
+            ng-if="!$ctrl.loading.volumes"
+            ng-repeat="volume in $ctrl.volumes track by volume.id">
+            <span ng-bind="volume.name"></span>
+            <span ng-bind="volume.size * 1024 * 1024 * 1024 | cucBytes:2:'true'"></span>
+          </oui-tile-description>
+          <oui-tile-description
+            ng-if="!$ctrl.loading.volumes && $ctrl.volumes.length === 0">
+            <span>-</span>
+          </oui-tile-description>
+          <oui-action-menu data-compact align="end">
+            <oui-action-menu-item text="Gérer les volumes"></oui-action-menu-item>
+            <oui-action-menu-item text="Attacher un volume"></oui-action-menu-item>
+          </oui-action-menu>
+        </oui-tile-definition>
+        <oui-tile-definition term="ID Openstack Nova">
+          <oui-tile-description>
+            <span ng-bind="$ctrl.instance.id"></span>
+          </oui-tile-description>
+        </oui-tile-definition>
+        <oui-tile-definition term="Image">
+          <oui-tile-description>
+            <span ng-bind="$ctrl.instance.image.name || '-'"></span>
+          </oui-tile-description>
+        </oui-tile-definition>
+      </oui-tile>
+    </div>
+    <div class="col-md-4">
+      <oui-tile heading="Réseaux" loading="$ctrl.loading.instance">
+        <oui-tile-definition term="IPv4">
+          <oui-tile-description>
+            <oui-clipboard
+              ng-if="$ctrl.getIp(4)"
+              model="$ctrl.getIp(4) || ''">
+            </oui-clipboard>
+            <span ng-if="!$ctrl.getIp(4)">-</span>
+          </oui-tile-description>
+        </oui-tile-definition>
+        <oui-tile-definition term="IPv6">
+          <oui-tile-description>
+            <oui-clipboard
+              ng-if="$ctrl.getIp(6)"
+              model="$ctrl.getIp(6)">
+            </oui-clipboard>
+            <span ng-if="!$ctrl.getIp(6)">-</span>
+          </oui-tile-description>
+        </oui-tile-definition>
+        <oui-tile-definition term="Informations de connexion">
+          <oui-tile-description>
+            <oui-clipboard model="$ctrl.getConnectionInfos()"></oui-clipboard>
+          </oui-tile-description>
+        </oui-tile-definition>
+        <oui-tile-definition term="Clé SSH">
+          <oui-tile-description>
+            <span ng-bind="$ctrl.instance.sshKey.name || '-'"></span>
+          </oui-tile-description>
+        </oui-tile-definition>
+      </oui-tile>
+    </div>
+  </div>
+</div>

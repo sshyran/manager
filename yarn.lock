@@ -1687,13 +1687,6 @@
   dependencies:
     lodash "^4.17.11"
 
-"@ovh-ux/ng-ovh-apiv7@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ovh-ux/ng-ovh-apiv7/-/ng-ovh-apiv7-2.0.0.tgz#838e6c224bb37928de84b4a0eb8c0c8a6713f1d7"
-  integrity sha512-EnJEEmoNCTjnCv/501GDZjxYt17YgGbVBr6BfqF6kD4FSf+TQpsP2sOKEXDLIj0oJUYRhU4z5d97AjX9zFSrFg==
-  dependencies:
-    lodash "^4.17.11"
-
 "@ovh-ux/ng-ovh-contracts@^3.0.0-beta.3":
   version "3.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@ovh-ux/ng-ovh-contracts/-/ng-ovh-contracts-3.0.0-beta.3.tgz#1dcd3612160f4c5eebd31a4bc12a2c632b35618f"
@@ -9089,6 +9082,13 @@ ovh-api-services@^6.1.2:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/ovh-api-services/-/ovh-api-services-6.2.0.tgz#34fcac88949954799c352b559abe6e6f7df3dbb0"
   integrity sha512-shTtC5xVZNgZBAASjVMWsYxyAwy4Gz0qa3rf3k+TTcYOzsFt43pU8iLG/jPnIl/VRSgWRNOhxCbxApQqgENTEw==
+  dependencies:
+    lodash "^3.10.1"
+
+ovh-api-services@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/ovh-api-services/-/ovh-api-services-6.4.0.tgz#cd5e662d54ec6760a3b95142d0beca41ad09766c"
+  integrity sha512-gGCzMyn+Z+M5Lh6bRCHxp3jzUT3f+g5zD7iE5fyV5VdxmAp2M6DQ0F+Pgs7hqp7Bs+S8cGLKzsvz9M2rHJKwEQ==
   dependencies:
     lodash "^3.10.1"
 
