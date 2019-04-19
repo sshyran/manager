@@ -21,6 +21,16 @@ export default /* @ngInject */ ($stateProvider) => {
           nodeId,
         }),
 
+        switchBillingType: /* @ngInject */ (
+          $state, kubeId, projectId,
+        ) => (nodeId, nodeName, instanceId) => $state.go('pci.projects.project.kubernetes.details.nodes.billing-type', {
+          kubeId,
+          projectId,
+          nodeId,
+          nodeName,
+          instanceId,
+        }),
+
         nodes: /* @ngInject */ (
           kubeId,
           OvhApiCloudProjectKube,
