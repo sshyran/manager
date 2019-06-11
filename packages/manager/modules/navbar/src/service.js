@@ -9,6 +9,10 @@ export default class {
     return this.OvhApiMe.v6().get().$promise;
   }
 
+  getSupportLevel() {
+    return this.OvhApiMe.v6().supportLevel().$promise;
+  }
+
   getUniverses(version) {
     return this.OvhApiUniverses.Aapi().query({
       version,
