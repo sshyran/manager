@@ -17,7 +17,14 @@ export default /* @ngInject */ ($stateProvider) => {
           };
         }
 
-        return null;
+        return transition.injector()
+          .getAsync('shouldProcessChallenge')
+          .then((shouldProcessChallenge) => {
+            if (shouldProcessChallenge) {
+              return { state: 'pci.projects.new.payment.challenge' };
+            }
+            return null;
+          });
       },
       onEnter: /* @ngInject */ (
         $transition$,
