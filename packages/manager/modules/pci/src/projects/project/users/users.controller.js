@@ -6,15 +6,18 @@ export default class CloudProjectUsersCtrl {
     $q,
     $translate,
     CucCloudMessage,
+    OvhApiCloudProjectUserRole,
     PciProjectsProjectUsersService,
   ) {
     this.$q = $q;
     this.$translate = $translate;
     this.CucCloudMessage = CucCloudMessage;
+    this.OvhApiCloudProjectUserRole = OvhApiCloudProjectUserRole;
     this.PciProjectsProjectUsersService = PciProjectsProjectUsersService;
   }
 
   $onInit() {
+    this.showRolesMatrix = false;
     this.loadMessages();
   }
 
@@ -59,5 +62,17 @@ export default class CloudProjectUsersCtrl {
           },
         ));
       });
+  }
+
+  getUserRoles(user) {
+    return this.OvhApiCloudProjectUserRole.v6()
+      .query({
+        serviceName: this.projectId,
+        userId: user.id,
+      }).$promise
+      .then(roles => ({
+        ...user,
+        roles,
+      }));
   }
 }

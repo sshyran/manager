@@ -10,6 +10,8 @@ import downloadOpenRc from './download-openrc';
 import downloadRclone from './download-rclone';
 import onboarding from './onboarding';
 import openstackToken from './openstack-token';
+import roles from './roles';
+import rolesMatrix from './roles-matrix/roles-matrix.module';
 
 import component from './users.component';
 import routing from './users.routing';
@@ -28,6 +30,8 @@ angular
     onboarding,
     openstackToken,
     'ovh-api-services',
+    roles,
+    rolesMatrix,
     'ui.router',
   ])
   .config(routing)
