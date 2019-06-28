@@ -88,12 +88,19 @@ export const MENU = [
         title: 'Managed Kubernetes Service',
       },
       {
+        beta: true,
         id: 'private-registry',
         options: {
           state: 'pci.projects.project.private-registry',
         },
         title: 'Managed Private Registry',
-        beta: true,
+      },
+      {
+        id: 'workflow-management',
+        options: {
+          state: 'pci.projects.project.workflow',
+        },
+        title: 'Workflow Management',
       },
     ],
     regions: ['CA', 'EU'],
