@@ -9373,13 +9373,6 @@ ovh-ui-kit@^2.23.1, ovh-ui-kit@^2.33.3:
   dependencies:
     less-plugin-remcalc "^0.1.0"
 
-ovh-ui-kit@^2.33.1:
-  version "2.33.1"
-  resolved "https://registry.yarnpkg.com/ovh-ui-kit/-/ovh-ui-kit-2.33.1.tgz#b02f0ec3469a3dee9b7d17487aacebe99ff0a2cd"
-  integrity sha512-/29Oh81WGOU1QQPCiWUVoKCX5QsGybFQ9/0nTn5uvhVIl808Cvx7qUiRflqHySYe+nehFkPHy3ssJPUo97Y9jA==
-  dependencies:
-    less-plugin-remcalc "^0.1.0"
-
 p-defer@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/p-defer/-/p-defer-1.0.0.tgz#9f6eb182f6c9aa8cd743004a7d4f96b196b0fb0c"
