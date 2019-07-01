@@ -9330,18 +9330,6 @@ ovh-ngstrap@^4.0.2:
   resolved "https://registry.yarnpkg.com/ovh-ngstrap/-/ovh-ngstrap-4.0.2.tgz#059291bfb9f59b78df991e476dd2ede0507cb3c9"
   integrity sha1-BZKRv7n1m3jfmR5HbdLt4FB8s8k=
 
-ovh-ui-angular@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/ovh-ui-angular/-/ovh-ui-angular-3.3.1.tgz#87aa80333d638be289f2eb1bb0cb5e1a2fda413a"
-  integrity sha512-2G1FpOBBAva3sYRz/VzAMSIm0arl8EaXUuZAPDgYSjf3/LWvlCEBkK/Rjy3L7/UYWfDk0hOkAmY1vTmcuvX56A==
-  dependencies:
-    bloodhound-js "^1.2.3"
-    clipboard "^2.0.1"
-    escape-string-regexp "^1.0.5"
-    flatpickr "^4.5.2"
-    popper.js "^1.14.4"
-    ui-select "^0.19.8"
-
 ovh-ui-angular@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/ovh-ui-angular/-/ovh-ui-angular-3.3.2.tgz#c2940948dc0ec6d5d1a82e53d316872ccb9ec30c"
