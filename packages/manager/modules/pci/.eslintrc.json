@@ -1,5 +1,5 @@
 {
-  "extends": "../../../../.eslintrc.js",
+  "extends": "../../../../.eslintrc.json",
   "globals": {
     "__FEEDBACK_URL__": true,
     "JSURL": true,

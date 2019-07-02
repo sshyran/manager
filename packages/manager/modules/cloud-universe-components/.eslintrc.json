@@ -1,6 +1,6 @@
 {
   "extends": "../../../../.eslintrc.json",
   "globals": {
-    "Tour": true
+    "d3": true
   }
 }
